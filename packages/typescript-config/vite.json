@@ -1,0 +1,23 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "./base.json",
+    "compilerOptions": {
+        "moduleResolution": "Bundler",
+        "jsx": "react-jsx",
+        "target": "ESNext",
+        "useDefineForClassFields": true,
+        "module": "ESNext",
+        "lib": [
+            "ESNext",
+            "DOM"
+        ],
+        "types": [
+            "node",
+            "vite/client"
+        ],
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        "noEmit": true,
+        "noImplicitReturns": true
+    }
+}

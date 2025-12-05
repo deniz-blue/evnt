@@ -1,0 +1,20 @@
+{
+  "include": [
+    "**/*",
+    "**/.server/**/*",
+    "**/.client/**/*",
+    ".react-router/types/**/*"
+  ],
+  "extends": "@repo/typescript-config/vite.json",
+  "compilerOptions": {
+    "rootDirs": [
+      ".",
+      "./.react-router/types"
+    ],
+    "paths": {
+      "~/*": [
+        "./app/*"
+      ]
+    }
+  }
+}
