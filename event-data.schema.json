@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "v": {
+      "type": "number",
+      "const": 0
+    },
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "$ref": "#/$defs/Translations"
+    },
+    "description": {
+      "$ref": "#/$defs/Translations"
+    },
+    "venues": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "venueId": {
+                "type": "string"
+              },
+              "venueName": {
+                "$ref": "#/$defs/Translations"
+              },
+              "venueType": {
+                "type": "string",
+                "const": "physical"
+              },
+              "address": {
+                "type": "object",
+                "properties": {
+                  "countryCode": {
+                    "type": "string"
+                  },
+                  "postalCode": {
+                    "type": "string"
+                  },
+                  "addr": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "coordinates": {
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "number"
+                  },
+                  "lng": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "lat",
+                  "lng"
+                ],
+                "additionalProperties": false
+              },
+              "googleMapsPlaceId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "venueId",
+              "venueName",
+              "venueType"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "venueId": {
+                "type": "string"
+              },
+              "venueName": {
+                "$ref": "#/$defs/Translations"
+              },
+              "venueType": {
+                "type": "string",
+                "const": "online"
+              },
+              "url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "venueId",
+              "venueName",
+              "venueType"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "instances": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "venueIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "start": {
+            "type": "string"
+          },
+          "end": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "venueIds"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "v",
+    "name",
+    "venues",
+    "instances"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Translations": {
+      "id": "Translations",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    }
+  }
+}

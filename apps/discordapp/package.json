@@ -1,0 +1,24 @@
+{
+  "name": "discordapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.18.2",
+  "devDependencies": {
+    "@repo/model": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^25.0.3",
+    "@types/react": "npm:pure-react-types@^0.1.4"
+  },
+  "dependencies": {
+    "discord-jsx-renderer": "^0.0.12",
+    "discord.js": "^14.25.1",
+    "react": "^19.2.1"
+  }
+}

@@ -1,3 +1,6 @@
-stuff :3
+# Deniz's Structured Event Data Format
 
-screw AI generated readme files
+Links:
+- [Format Specification](./docs/README.md)
+- [Zod Schema](./packages/schema/)
+- [Generated JSON Schema](./event-data.schema.json)

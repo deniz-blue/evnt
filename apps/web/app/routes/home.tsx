@@ -1,31 +1,36 @@
 import type { Route } from "./+types/home";
-import { Container, Title, Text, Button, Group, Stack } from "@mantine/core";
-import { IconHome, IconCalendar } from "@tabler/icons-react";
+import { Container, JsonInput } from "@mantine/core";
+import { EventDataSchema, type EventData } from "@repo/model";
+import { RecursiveEditor } from "@denizblue/mantine-zod-form";
+import { useState } from "react";
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "Events Format" },
-    { name: "description", content: "Events Format Application" },
-  ];
+export function meta({ }: Route.MetaArgs) {
+	return [
+		{ title: "Universal Events Format" },
+	];
 }
 
 export default function Home() {
-  return (
-    <Container size="md" py="xl">
-      <Stack gap="lg" align="center">
-        <Title order={1}>Events Format</Title>
-        <Text c="dimmed" ta="center">
-          Welcome to the Events Format application built with React Router v7, Mantine, and TypeScript.
-        </Text>
-        <Group>
-          <Button leftSection={<IconHome size={16} />} variant="filled">
-            Home
-          </Button>
-          <Button leftSection={<IconCalendar size={16} />} variant="outline">
-            Calendar
-          </Button>
-        </Group>
-      </Stack>
-    </Container>
-  );
+	const [state, setState] = useState({
+		v: 0,
+		name: {},
+		instances: [],
+		venues: [],
+	} satisfies EventData)
+
+	return (
+		<Container size="md" py="xl">
+			<RecursiveEditor
+				schema={EventDataSchema}
+				value={state}
+				onChange={s => setState(s as any)}
+			/>
+
+			<JsonInput
+				value={JSON.stringify(state, null, 2)}
+				readOnly
+				autosize
+			/>
+		</Container>
+	);
 }
