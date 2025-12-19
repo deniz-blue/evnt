@@ -7,13 +7,13 @@ export const AddressSchema = z.object({
     countryCode: z.string().optional(),
     postalCode: z.string().optional(),
     addr: z.string().optional(),
-})
+}).meta({ id: "Address" });
 
 export type LatLng = z.infer<typeof LatLngSchema>;
 export const LatLngSchema = z.object({
     lat: z.number(),
     lng: z.number(),
-})
+}).meta({ id: "LatLng" });
 
 export type PhysicalVenue = z.infer<typeof PhysicalVenueSchema>;
 export const PhysicalVenueSchema = BaseVenueSchema.extend({
@@ -21,4 +21,4 @@ export const PhysicalVenueSchema = BaseVenueSchema.extend({
     address: AddressSchema.optional(),
     coordinates: LatLngSchema.optional(),
     googleMapsPlaceId: z.string().optional(),
-})
+}).meta({ id: "PhysicalVenue" });

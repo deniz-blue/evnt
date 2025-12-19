@@ -10,4 +10,4 @@ export const LinkComponentSchema = z.object({
     disabled: z.boolean(),
     opensAt: PartialDateSchema.optional(),
     closesAt: PartialDateSchema.optional(),
-})
+}).meta({ id: "LinkComponent" });

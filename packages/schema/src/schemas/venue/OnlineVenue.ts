@@ -6,4 +6,4 @@ export type OnlineVenue = z.infer<typeof OnlineVenueSchema>;
 export const OnlineVenueSchema = BaseVenueSchema.extend({
     venueType: z.literal(VenueTypeSchema.enum.online),
     url: z.string().optional(),
-})
+}).meta({ id: "OnlineVenue" });

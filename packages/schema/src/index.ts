@@ -1,20 +1,11 @@
-import z from "zod";
-import { TranslationsSchema } from "./types/Translations";
-import { VenueSchema } from "./schemas/venue/Venue";
-import { EventInstanceSchema } from "./schemas/EventInstance";
-
 export * from "./types/Translations";
 export * from "./types/PartialDate";
 export * from "./schemas/venue/Venue";
+export * from "./schemas/EventData";
 export * from "./schemas/EventInstance";
-
-export type EventData = z.infer<typeof EventDataSchema>;
-export const EventDataSchema = z.object({
-    v: z.literal(0),
-    id: z.string().optional(),
-    name: TranslationsSchema,
-    description: TranslationsSchema.optional(),
-
-    venues: VenueSchema.array(),
-    instances: EventInstanceSchema.array(),
-})
+export * from "./schemas/venue/BaseVenue";
+export * from "./schemas/venue/PhysicalVenue";
+export * from "./schemas/venue/OnlineVenue";
+export * from "./schemas/venue/VenueType";
+export * from "./schemas/components/EventComponent";
+export * from "./schemas/components/LinkComponent";

@@ -12,4 +12,4 @@ export const EventInstanceSchema = z.object({
     // metadata
     // activities
     // organizers
-})
+}).meta({ id: "EventInstance" });
