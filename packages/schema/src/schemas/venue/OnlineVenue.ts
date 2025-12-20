@@ -3,7 +3,8 @@ import { VenueTypeSchema } from "./VenueType";
 import { BaseVenueSchema } from "./BaseVenue";
 
 export type OnlineVenue = z.infer<typeof OnlineVenueSchema>;
-export const OnlineVenueSchema = BaseVenueSchema.extend({
+export const OnlineVenueSchema = z.object({
     venueType: z.literal(VenueTypeSchema.enum.online),
+    ...BaseVenueSchema.shape,
     url: z.string().optional(),
 }).meta({ id: "OnlineVenue" });

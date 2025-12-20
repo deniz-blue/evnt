@@ -16,8 +16,9 @@ export const LatLngSchema = z.object({
 }).meta({ id: "LatLng" });
 
 export type PhysicalVenue = z.infer<typeof PhysicalVenueSchema>;
-export const PhysicalVenueSchema = BaseVenueSchema.extend({
+export const PhysicalVenueSchema = z.object({
     venueType: z.literal(VenueTypeSchema.enum.physical),
+    ...BaseVenueSchema.shape,
     address: AddressSchema.optional(),
     coordinates: LatLngSchema.optional().meta({ description: "Approximate coordinates" }),
     googleMapsPlaceId: z.string().optional(),

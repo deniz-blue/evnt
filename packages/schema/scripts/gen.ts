@@ -8,7 +8,16 @@ const MD_PATH = new URL("../../../docs/SCHEMA.md", import.meta.url);
 
 // Generate JSON Schema
 
-const eventDataSchema = schemas.EventDataSchema.toJSONSchema();
+const eventDataSchema = schemas.EventDataSchema.toJSONSchema({
+    override(ctx) {
+        // Remove examples/defaultSnippets/default from TranslationsSchema to reduce size
+        if (!!ctx.jsonSchema.$ref) {
+            ctx.jsonSchema.examples = undefined;
+            ctx.jsonSchema.defaultSnippets = undefined;
+            ctx.jsonSchema.default = undefined;
+        }
+    },
+});
 writeFileSync(
     JSON_SCHEMA_PATH,
     JSON.stringify(eventDataSchema, null, 2)

@@ -22,6 +22,10 @@
       "description": "A short description of the event",
       "$ref": "#/$defs/Translations"
     },
+    "status": {
+      "description": "The status of the event",
+      "$ref": "#/$defs/EventStatus"
+    },
     "venues": {
       "description": "The venues associated with this event",
       "type": "array",
@@ -54,8 +58,34 @@
   "$defs": {
     "Translations": {
       "id": "Translations",
+      "description": "A multilingual string",
+      "default": {
+        "en": ""
+      },
+      "examples": [
+        {
+          "en": "Example",
+          "tr": "Örnek",
+          "lt": "Pavyzdys"
+        }
+      ],
+      "defaultSnippets": [
+        {
+          "label": "Add English",
+          "body": {
+            "en": "$1"
+          }
+        },
+        {
+          "label": "Add other language",
+          "body": {
+            "$1": "$2"
+          }
+        }
+      ],
       "type": "object",
       "propertyNames": {
+        "description": "BCP37 or ISO 639-1 language code",
         "type": "string"
       },
       "additionalProperties": {
@@ -68,6 +98,36 @@
           }
         ]
       }
+    },
+    "EventStatus": {
+      "id": "EventStatus",
+      "anyOf": [
+        {
+          "description": "No disruptions - event is planned or has already occurred",
+          "type": "string",
+          "const": "planned"
+        },
+        {
+          "description": "Event is not finalized",
+          "type": "string",
+          "const": "uncertain"
+        },
+        {
+          "description": "The event has been postponed to an unknown later date",
+          "type": "string",
+          "const": "postponed"
+        },
+        {
+          "description": "The event has been cancelled",
+          "type": "string",
+          "const": "cancelled"
+        },
+        {
+          "description": "The event may be postponed or cancelled",
+          "type": "string",
+          "const": "suspended"
+        }
+      ]
     },
     "Venue": {
       "id": "Venue",
@@ -86,6 +146,10 @@
       "description": "A venue with a known or unknown physical location",
       "type": "object",
       "properties": {
+        "venueType": {
+          "type": "string",
+          "const": "physical"
+        },
         "venueId": {
           "description": "ID of the venue to be used in Event Instances",
           "type": "string"
@@ -93,10 +157,6 @@
         "venueName": {
           "description": "The name of the venue",
           "$ref": "#/$defs/Translations"
-        },
-        "venueType": {
-          "type": "string",
-          "const": "physical"
         },
         "address": {
           "$ref": "#/$defs/Address"
@@ -110,9 +170,9 @@
         }
       },
       "required": [
+        "venueType",
         "venueId",
-        "venueName",
-        "venueType"
+        "venueName"
       ],
       "additionalProperties": false
     },
@@ -158,6 +218,10 @@
       "id": "OnlineVenue",
       "type": "object",
       "properties": {
+        "venueType": {
+          "type": "string",
+          "const": "online"
+        },
         "venueId": {
           "description": "ID of the venue to be used in Event Instances",
           "type": "string"
@@ -166,18 +230,14 @@
           "description": "The name of the venue",
           "$ref": "#/$defs/Translations"
         },
-        "venueType": {
-          "type": "string",
-          "const": "online"
-        },
         "url": {
           "type": "string"
         }
       },
       "required": [
+        "venueType",
         "venueId",
-        "venueName",
-        "venueType"
+        "venueName"
       ],
       "additionalProperties": false
     },
@@ -198,16 +258,29 @@
           }
         },
         "start": {
-          "type": "string"
+          "description": "The start date and/or time",
+          "$ref": "#/$defs/PartialDate"
         },
         "end": {
-          "type": "string"
+          "description": "The end date and/or time",
+          "$ref": "#/$defs/PartialDate"
         }
       },
       "required": [
         "venueIds"
       ],
       "additionalProperties": false
+    },
+    "PartialDate": {
+      "id": "PartialDate",
+      "description": "An ISO 8601 date and time string that may be incomplete (e.g. '2023', '2023-05') and does not include timezone information (forced UTC)",
+      "defaultSnippets": [
+        {
+          "label": "Current Date&Time",
+          "body": "${1:${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}T${CURRENT_HOUR}:${CURRENT_MINUTE}}"
+        }
+      ],
+      "type": "string"
     },
     "EventComponent": {
       "id": "EventComponent",
@@ -236,22 +309,28 @@
       "type": "object",
       "properties": {
         "url": {
+          "description": "The URL of the link",
           "type": "string"
         },
         "name": {
+          "description": "The name of the link",
           "$ref": "#/$defs/Translations"
         },
         "description": {
+          "description": "A description of the link",
           "$ref": "#/$defs/Translations"
         },
         "disabled": {
+          "description": "Whether the link is disabled",
           "type": "boolean"
         },
         "opensAt": {
-          "type": "string"
+          "description": "The date and/or time when the link becomes active",
+          "$ref": "#/$defs/PartialDate"
         },
         "closesAt": {
-          "type": "string"
+          "description": "The date and/or time when the link becomes inactive",
+          "$ref": "#/$defs/PartialDate"
         }
       },
       "required": [

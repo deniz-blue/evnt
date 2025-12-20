@@ -5,8 +5,8 @@ export type EventInstance = z.infer<typeof EventInstanceSchema>;
 export const EventInstanceSchema = z.object({
     id: z.string().optional(),
     venueIds: z.string().array().meta({ description: "The IDs of the venues where this event instance takes place" }),
-    start: PartialDateSchema.optional(),
-    end: PartialDateSchema.optional(),
+    start: PartialDateSchema.optional().meta({ description: "The start date and/or time" }),
+    end: PartialDateSchema.optional().meta({ description: "The end date and/or time" }),
     
     // status
     // metadata

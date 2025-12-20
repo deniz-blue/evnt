@@ -3,7 +3,7 @@ export * from "./types/PartialDate";
 export * from "./schemas/venue/Venue";
 export * from "./schemas/EventData";
 export * from "./schemas/EventInstance";
-export * from "./schemas/venue/BaseVenue";
+export * from "./schemas/enums/EventStatus";
 export * from "./schemas/venue/PhysicalVenue";
 export * from "./schemas/venue/OnlineVenue";
 export * from "./schemas/venue/VenueType";

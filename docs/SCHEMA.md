@@ -12,6 +12,7 @@ _Object containing the following properties:_
 | `id`                 |                                       | `string`                                           |
 | **`name`** (\*)      | The name of the event                 | [Translations](#translations)                      |
 | `description`        | A short description of the event      | [Translations](#translations)                      |
+| `status`             | The status of the event               | [EventStatus](#eventstatus)                        |
 | **`venues`** (\*)    | The venues associated with this event | _Array of [Venue](#venue) items_                   |
 | **`instances`** (\*) | The instances of the event            | _Array of [EventInstance](#eventinstance) items_   |
 | `components`         | Additional components of the event    | _Array of [EventComponent](#eventcomponent) items_ |
@@ -30,17 +31,6 @@ _Object containing the following properties:_
 
 _All properties are optional._
 
-## BaseVenue
-
-_Object containing the following properties:_
-
-| Property             | Description                                   | Type                          |
-| :------------------- | :-------------------------------------------- | :---------------------------- |
-| **`venueId`** (\*)   | ID of the venue to be used in Event Instances | `string`                      |
-| **`venueName`** (\*) | The name of the venue                         | [Translations](#translations) |
-
-_(\*) Required._
-
 ## EventComponent
 
 _Union of the following possible types:_
@@ -57,12 +47,24 @@ _Object containing the following properties:_
 | :------------------ | :---------------------------------------------------------- | :-------------------------- |
 | `id`                |                                                             | `string`                    |
 | **`venueIds`** (\*) | The IDs of the venues where this event instance takes place | `Array<string>`             |
-| `start`             |                                                             | [PartialDate](#partialdate) |
-| `end`               |                                                             | [PartialDate](#partialdate) |
+| `start`             | The start date and/or time                                  | [PartialDate](#partialdate) |
+| `end`               | The end date and/or time                                    | [PartialDate](#partialdate) |
 
 _(\*) Required._
 
+## EventStatus
+
+_Union of the following possible types:_
+
+- `'planned'`
+- `'uncertain'`
+- `'postponed'`
+- `'cancelled'`
+- `'suspended'`
+
 ## LanguageKey
+
+BCP37 or ISO 639-1 language code
 
 _String._
 
@@ -81,14 +83,14 @@ _(\*) Required._
 
 _Object containing the following properties:_
 
-| Property            | Type                          |
-| :------------------ | :---------------------------- |
-| **`url`** (\*)      | `string`                      |
-| `name`              | [Translations](#translations) |
-| `description`       | [Translations](#translations) |
-| **`disabled`** (\*) | `boolean`                     |
-| `opensAt`           | [PartialDate](#partialdate)   |
-| `closesAt`          | [PartialDate](#partialdate)   |
+| Property            | Description                                         | Type                          |
+| :------------------ | :-------------------------------------------------- | :---------------------------- |
+| **`url`** (\*)      | The URL of the link                                 | `string`                      |
+| `name`              | The name of the link                                | [Translations](#translations) |
+| `description`       | A description of the link                           | [Translations](#translations) |
+| **`disabled`** (\*) | Whether the link is disabled                        | `boolean`                     |
+| `opensAt`           | The date and/or time when the link becomes active   | [PartialDate](#partialdate)   |
+| `closesAt`          | The date and/or time when the link becomes inactive | [PartialDate](#partialdate)   |
 
 _(\*) Required._
 
@@ -98,14 +100,16 @@ _Object containing the following properties:_
 
 | Property             | Description                                   | Type                          |
 | :------------------- | :-------------------------------------------- | :---------------------------- |
+| **`venueType`** (\*) |                                               | `'online'`                    |
 | **`venueId`** (\*)   | ID of the venue to be used in Event Instances | `string`                      |
 | **`venueName`** (\*) | The name of the venue                         | [Translations](#translations) |
-| **`venueType`** (\*) |                                               | `'online'`                    |
 | `url`                |                                               | `string`                      |
 
 _(\*) Required._
 
 ## PartialDate
+
+An ISO 8601 date and time string that may be incomplete (e.g. '2023', '2023-05') and does not include timezone information (forced UTC)
 
 _String._
 
@@ -117,9 +121,9 @@ _Object containing the following properties:_
 
 | Property             | Description                                   | Type                          |
 | :------------------- | :-------------------------------------------- | :---------------------------- |
+| **`venueType`** (\*) |                                               | `'physical'`                  |
 | **`venueId`** (\*)   | ID of the venue to be used in Event Instances | `string`                      |
 | **`venueName`** (\*) | The name of the venue                         | [Translations](#translations) |
-| **`venueType`** (\*) |                                               | `'physical'`                  |
 | `address`            |                                               | [Address](#address)           |
 | `coordinates`        | Approximate coordinates                       | [LatLng](#latlng)             |
 | `googleMapsPlaceId`  |                                               | `string`                      |
@@ -127,6 +131,8 @@ _Object containing the following properties:_
 _(\*) Required._
 
 ## Translations
+
+A multilingual string
 
 _Object record with dynamic keys:_
 
