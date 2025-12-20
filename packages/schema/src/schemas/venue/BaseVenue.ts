@@ -3,7 +3,7 @@ import { TranslationsSchema } from "../../types/Translations";
 
 export type BaseVenue = z.infer<typeof BaseVenueSchema>;
 export const BaseVenueSchema = z.object({
-    venueId: z.string(),
-    venueName: TranslationsSchema,
+    venueId: z.string().meta({ description: "ID of the venue to be used in Event Instances" }),
+    venueName: TranslationsSchema.meta({ description: "The name of the venue" }),
 }).meta({ id: "BaseVenue" });
 

@@ -16,7 +16,7 @@
     "scripts": {
         "build": "tsc",
         "prepublish": "tsc",
-        "jsonschema": "tsx ./scripts/exportjsonschema.ts"
+        "gen": "tsx ./scripts/gen.ts"
     },
     "keywords": [],
     "author": "alan404",
@@ -24,7 +24,8 @@
         "@repo/typescript-config": "workspace:*",
         "@types/node": "^22.19.1",
         "tsx": "^4.21.0",
-        "typescript": "^5.6.3"
+        "typescript": "^5.6.3",
+        "zod2md": "^0.2.4"
     },
     "dependencies": {
         "zod": "^4.2.1"
