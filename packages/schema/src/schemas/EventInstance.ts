@@ -1,5 +1,7 @@
 import z from "zod";
 import { PartialDateSchema } from "../types/PartialDate";
+import { EventActivitySchema } from "./activity/EventActivity";
+import { EventStatusSchema } from "./enums/EventStatus";
 
 export type EventInstance = z.infer<typeof EventInstanceSchema>;
 export const EventInstanceSchema = z.object({
@@ -8,10 +10,10 @@ export const EventInstanceSchema = z.object({
     start: PartialDateSchema.optional().meta({ description: "The start date and/or time" }),
     end: PartialDateSchema.optional().meta({ description: "The end date and/or time" }),
     
-    // status
-    // metadata
-    // activities
-    // organizers
+    status: EventStatusSchema.optional().meta({ description: "The status of the event instance" }),
+    activities: EventActivitySchema.array().optional().meta({ description: "The activities taking place during this event instance" }),
+    // TODO: metadata
+    // TODO: organizers
 }).meta({
     id: "EventInstance",
     title: "Event Instance",

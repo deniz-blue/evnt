@@ -9,3 +9,5 @@ export * from "./schemas/venue/OnlineVenue";
 export * from "./schemas/venue/VenueType";
 export * from "./schemas/components/EventComponent";
 export * from "./schemas/components/LinkComponent";
+export * from "./schemas/organizer/Organizer";
+export * from "./schemas/activity/EventActivity";

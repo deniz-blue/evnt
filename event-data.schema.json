@@ -264,6 +264,17 @@
         "end": {
           "description": "The end date and/or time",
           "$ref": "#/$defs/PartialDate"
+        },
+        "status": {
+          "description": "The status of the event instance",
+          "$ref": "#/$defs/EventStatus"
+        },
+        "activities": {
+          "description": "The activities taking place during this event instance",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EventActivity"
+          }
         }
       },
       "required": [
@@ -281,6 +292,27 @@
         }
       ],
       "type": "string"
+    },
+    "EventActivity": {
+      "id": "EventActivity",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "description": "The name of the activity",
+          "$ref": "#/$defs/Translations"
+        },
+        "description": {
+          "description": "The description of the activity",
+          "$ref": "#/$defs/Translations"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
     },
     "EventComponent": {
       "id": "EventComponent",
