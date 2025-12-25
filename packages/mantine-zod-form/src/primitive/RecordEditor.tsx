@@ -1,26 +1,30 @@
 import type { $ZodRecord } from "zod/v4/core";
-import type { EditorComponent } from "../types";
+import { FormContext, type EditorComponent } from "../types";
 import { Group, Stack, Text } from "@mantine/core";
 import { RecursiveEditor } from "../RecursiveEditor";
+import { useContext } from "react";
 
 export const RecordEditor: EditorComponent<$ZodRecord> = ({
     schema,
-    value,
-    onChange,
+    path,
 }) => {
+    const form = useContext(FormContext);
+    const value = form.getInputProps(path).value as Record<string, any>;
+
+    console.log("RecordEditor value at path", path, "is", value);
+
     return (
         <Stack>
-            {Object.entries(value).map(([k, v]) => (
+            {Object.entries(value || {}).map(([k, v]) => (
                 <Group grow key={k} gap={4}>
-                    <RecursiveEditor
-                        value={k}
-                        onChange={(newK) => {}}
+                    {/* TODO: wrap this in a smaller form or something idk */}
+                    {/* <RecursiveEditor
                         schema={schema._zod.def.keyType}
-                    />
+                        path={`${path}.${k}keyyyyyy`}
+                    /> */}
                     <RecursiveEditor
-                        value={v}
-                        onChange={(newV) => {}}
                         schema={schema._zod.def.valueType}
+                        path={`${path}.${k}`}
                     />
                 </Group>
             ))}

@@ -12,6 +12,7 @@ import type { Route } from "./+types/root";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
+import "@denizblue/mantine-zod-form/style.css";
 
 export function Layout({ children }: { children: React.ReactNode }) {
 	return (

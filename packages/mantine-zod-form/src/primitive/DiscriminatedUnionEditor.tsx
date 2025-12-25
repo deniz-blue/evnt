@@ -1,14 +1,19 @@
 import type { $ZodDiscriminatedUnion, $ZodLiteralDef, $ZodObject, $ZodObjectDef, $ZodOptional, $ZodTypes, $ZodUnion } from "zod/v4/core";
-import type { EditorComponent } from "../types";
-import { Box, Button, CloseButton, Flex, Group, Select, Stack, Text, TextInput } from "@mantine/core";
+import { FormContext, type EditorComponent } from "../types";
+import { Box, Button, CloseButton, Flex, Group, Input, Select, Stack, Text, TextInput } from "@mantine/core";
 import { RecursiveEditor } from "../RecursiveEditor";
 import { createDefaultValue } from "../default";
+import { useContext } from "react";
 
 export const DiscriminatedUnionEditor: EditorComponent<$ZodDiscriminatedUnion> = ({
     schema,
-    value,
-    onChange,
+    path,
 }) => {
+    const form = useContext(FormContext);
+    const value = form.getInputProps(path as any).value as unknown;
+    const onChange = (val: any) => {
+        form.setFieldValue(path as any, val);
+    };
     const discriminatorKey = schema._zod.def.discriminator;
 
     const schemas: Record<string, $ZodTypes> = Object.fromEntries(
@@ -28,7 +33,8 @@ export const DiscriminatedUnionEditor: EditorComponent<$ZodDiscriminatedUnion> =
     }
 
     return (
-        <Stack>
+        <Stack gap={0}>
+            <Input.Label>{path.split('.').slice(-1)[0]} (discriminated union)</Input.Label>
             <Select
                 label={discriminatorKey}
                 data={Object.keys(schemas).map(key => ({ value: key, label: key }))}
@@ -46,10 +52,7 @@ export const DiscriminatedUnionEditor: EditorComponent<$ZodDiscriminatedUnion> =
 
             <RecursiveEditor<any>
                 schema={activeSchema}
-                value={value}
-                onChange={newValue => {
-                    onChange(newValue);
-                }}
+                path={path}
             />
         </Stack>
     );

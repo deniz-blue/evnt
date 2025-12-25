@@ -1,7 +1,7 @@
 import type { Route } from "./+types/home";
 import { Container, JsonInput } from "@mantine/core";
-import { EventDataSchema, type EventData } from "@repo/model";
-import { RecursiveEditor } from "@denizblue/mantine-zod-form";
+import { EventDataSchema, type EventData, type Translations } from "@repo/model";
+import { ZodFormEditor } from "@denizblue/mantine-zod-form";
 import { useState } from "react";
 
 export function meta({ }: Route.MetaArgs) {
@@ -13,14 +13,14 @@ export function meta({ }: Route.MetaArgs) {
 export default function Home() {
 	const [state, setState] = useState({
 		v: 0,
-		name: {},
+		name: {} as Translations,
 		instances: [],
 		venues: [],
 	} satisfies EventData)
 
 	return (
 		<Container size="md" py="xl">
-			<RecursiveEditor
+			<ZodFormEditor
 				schema={EventDataSchema}
 				value={state}
 				onChange={s => setState(s as any)}

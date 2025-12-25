@@ -1,12 +1,13 @@
 import { z } from "zod";
 
 export type LanguageKey = z.infer<typeof LanguageKeySchema>;
-export const LanguageKeySchema = z.string().meta({
+export const LanguageKeySchema = z.string().brand<"LanguageKey">().meta({
     description: "BCP37 or ISO 639-1 language code",
 });
 
 export type Translations = z.infer<typeof TranslationsSchema>;
 export const TranslationsSchema = z.record(LanguageKeySchema, z.string().nullish())
+    .brand<"Translations">()
     .meta({
         id: "Translations",
         description: "A multilingual string",
