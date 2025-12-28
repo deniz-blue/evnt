@@ -9,11 +9,14 @@ importers:
   apps/discordapp:
     dependencies:
       discord-jsx-renderer:
-        specifier: ^0.0.12
-        version: 0.0.12(discord.js@14.25.1)(react@19.2.1)
+        specifier: ^0.0.13
+        version: 0.0.13(discord.js@14.25.1)(react@19.2.1)
       discord.js:
         specifier: ^14.25.1
         version: 14.25.1
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
       react:
         specifier: ^19.2.1
         version: 19.2.1
@@ -30,6 +33,9 @@ importers:
       '@types/react':
         specifier: npm:pure-react-types@^0.1.4
         version: pure-react-types@0.1.4
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
 
   apps/web:
     dependencies:
@@ -985,8 +991,8 @@ packages:
   discord-api-types@0.38.37:
     resolution: {integrity: sha512-Cv47jzY1jkGkh5sv0bfHYqGgKOWO1peOrGMkDFM4UmaGMOTgOW8QSexhvixa9sVOiz8MnVOBryWYyw/CEVhj7w==}
 
-  discord-jsx-renderer@0.0.12:
-    resolution: {integrity: sha512-R7cPJqLb7HzM0Xk7lYKpSqOW6Js9aZWMK2y81Rl4OE6LPYMA9kx+c1jaj8c/SMDsfOM8QUpcHBrVo2f31Ipb8w==}
+  discord-jsx-renderer@0.0.13:
+    resolution: {integrity: sha512-SNpifm0iogvm+t8qIhSzw3O+7I0ALQeUQhJ23dpY+cBsrgovyYnsa4i33xcJM0ViVhtjw3SKihswyjT8/kw83g==}
     engines: {node: '>=18'}
     peerDependencies:
       discord.js: ^14.23.2
@@ -998,6 +1004,10 @@ packages:
 
   dom-helpers@5.2.1:
     resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
+
+  dotenv@17.2.3:
+    resolution: {integrity: sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==}
+    engines: {node: '>=12'}
 
   electron-to-chromium@1.5.266:
     resolution: {integrity: sha512-kgWEglXvkEfMH7rxP5OSZZwnaDWT7J9EoZCujhnpLbfi0bbNtRkgdX2E3gt0Uer11c61qCYktB3hwkAS325sJg==}
@@ -2201,7 +2211,7 @@ snapshots:
 
   discord-api-types@0.38.37: {}
 
-  discord-jsx-renderer@0.0.12(discord.js@14.25.1)(react@19.2.1):
+  discord-jsx-renderer@0.0.13(discord.js@14.25.1)(react@19.2.1):
     dependencies:
       discord.js: 14.25.1
       mime-types: 3.0.2
@@ -2233,6 +2243,8 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.28.4
       csstype: 3.2.3
+
+  dotenv@17.2.3: {}
 
   electron-to-chromium@1.5.266: {}
 

@@ -1,5 +1,5 @@
 import type { EventData } from '@repo/model';
-import { useTranslations } from "../hooks/useTranslations";
+import { useTranslations } from "../../hooks/useTranslations";
 
 export const EventCard = ({
     value,
@@ -12,7 +12,6 @@ export const EventCard = ({
         <container>
             <text>
                 <b>{t(value.name)}</b>
-                <br />
                 <subtext>{t(value.description)}</subtext>
             </text>
         </container>

@@ -1,10 +1,10 @@
 import type { Translations } from "@repo/model";
 import { useCallback } from "react";
-import {} from "discord-jsx-renderer";
+import { useInteraction } from "discord-jsx-renderer";
 
 export const useTranslations = () => {
-    // TODO: upstream: impl useInteraction hook
-    const locale = "en";
+    const interaction = useInteraction();
+    const locale = (interaction?.locale ?? "en").split("-")[0] ?? "en";
 
     const tr = useCallback((value?: Translations) => {
         return value?.[locale] ?? value?.["en"] ?? "";
