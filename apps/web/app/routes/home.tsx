@@ -1,8 +1,6 @@
+import { useEventStore } from "../lib/database/useEventStore";
 import type { Route } from "./+types/home";
-import { Container, JsonInput } from "@mantine/core";
-import { EventDataSchema, type EventData, type Translations } from "@repo/model";
-import { ZodFormEditor } from "@denizblue/mantine-zod-form";
-import { useState } from "react";
+import { Button, Container, Stack, Title } from "@mantine/core";
 
 export function meta({ }: Route.MetaArgs) {
 	return [
@@ -11,26 +9,36 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function Home() {
-	const [state, setState] = useState({
-		v: 0,
-		name: {} as Translations,
-		instances: [],
-		venues: [],
-	} satisfies EventData)
+	const events = useEventStore((state) => state.events);
 
 	return (
 		<Container size="md" py="xl">
-			<ZodFormEditor
-				schema={EventDataSchema}
-				value={state}
-				onChange={s => setState(s as any)}
-			/>
+			<Title>
+				Home
+			</Title>
 
-			<JsonInput
-				value={JSON.stringify(state, null, 2)}
-				readOnly
-				autosize
-			/>
+			<Stack>
+				{events.map((event, index) => (
+					<div key={index}>
+						<p>Event {index + 1}:</p>
+						<pre>{JSON.stringify(event, null, 2)}</pre>
+					</div>
+				))}
+			</Stack>
+
+			<Button
+				onClick={() => {
+					useEventStore.getState().createLocalEvent({
+						instances: [],
+						name: { en: "Random Event " + Math.floor(Math.random() * 1000) },
+						description: { en: "This is a randomly generated event." },
+						venues: [],
+						v: 0,
+					});
+				}}
+			>
+				Add Random Data
+			</Button>
 		</Container>
 	);
 }
