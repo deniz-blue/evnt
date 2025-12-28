@@ -1,6 +1,18 @@
 # Deniz's Structured Event Data Format
 
-This data format specification is designed to be able to be generalized to all kinds of events in a way to be able to have as much structured data as possible. I have previously made a data structure for [events.deniz.blue](https://events.deniz.blue) and this is supposed to supersede it.
+A data format for defining any kind of event, big or small.
+
+The current schema is [defined using Zod4](../packages/schema); exported to [json schema](../event-data.schema.json) and [markdown](./SCHEMA.md).
+
+## Prior Art
+
+Back when I started going to cosplay conventions, in Turkey specifically, I had issues finding events and gathering information (date, time, place, price) about them. I created an instagram profile for announcing any events I came accross so others could find them too. After a while, I realized one crucial issue: properties of events are volatile, and can change; instagram posts cannot.
+
+To solve this issue, I started developing a [website](https://events.deniz.blue) for keeping a list of these events where users could follow events and recieve push notifications whenever something changes. At first I entered all the data manually, but the main idea was that event organizers would authenticate and update event data themselves. After a while, I noticed the need for i18n and implemented it, along with some other niche features. Developing the website sure took a while but it gave me valuable insight for the current event data format we are defining right here.
+
+This monorepo aims to fix these issues with the other related projects:
+- A decentralized way to share event information
+- Discord bot and Web app to view events
 
 ## Design Goals
 
