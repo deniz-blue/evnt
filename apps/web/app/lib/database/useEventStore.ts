@@ -5,6 +5,7 @@ import { openDB, type IDBPDatabase } from "idb";
 
 interface EventStore {
     db: IDBPDatabase | null;
+    channel: BroadcastChannel | null;
     events: AppEvent[];
     initialize: () => Promise<void>;
     sync: () => Promise<void>;
@@ -16,6 +17,7 @@ const StoreName = "events";
 export const useEventStore = create<EventStore>((set, get) => ({
     events: [],
     db: null,
+    channel: new BroadcastChannel("event-store"),
     initialize: async () => {
         const db = await openDB("event-store", 4, {
             upgrade(db) {
@@ -26,6 +28,13 @@ export const useEventStore = create<EventStore>((set, get) => ({
             },
         });
         set({ db });
+
+        get().channel?.addEventListener("message", async (msg) => {
+            if (msg.data === "update") {
+                await get().sync();
+            }
+        });
+        
         await get().sync();
     },
     sync: async () => {
@@ -34,6 +43,7 @@ export const useEventStore = create<EventStore>((set, get) => ({
     },
     createLocalEvent: async (data: EventData) => {
         await get().db?.add(StoreName, { source: { type: "local" }, data, timestamp: Date.now() });
+        get().channel?.postMessage("update");
         await get().sync();
     },
 }));

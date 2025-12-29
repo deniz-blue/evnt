@@ -1,6 +1,14 @@
 import type { PartialDate } from "../types/PartialDate";
 
-export class PartialDateUtils {
+interface IntlStringOptions {
+    locale?: string;
+    timezone?: string;
+    hour12?: Intl.DateTimeFormatOptions["hour12"];
+    weekday?: Intl.DateTimeFormatOptions["weekday"];
+    noCurrentYear?: boolean;
+};
+
+export class UtilPartialDate {
     static validate(value: string): value is PartialDate {
         return /^\d{4}(-\d{2}(-\d{2}(T\d{2}:\d{2})?)?)?$/.test(value);
     }
@@ -24,23 +32,23 @@ export class PartialDateUtils {
     }
 
     static hasCompleteDate(value: PartialDate): boolean {
-        return /^\d{4}-\d{2}-\d{2}$/.test(value);
+        return /^\d{4}-\d{2}-\d{2}/.test(value);
     }
 
     static hasMonth(value: PartialDate): boolean {
-        return /^\d{4}-\d{2}$/.test(value);
+        return /^\d{4}-\d{2}/.test(value);
     }
 
     static hasTime(value: PartialDate): boolean {
         return /T\d{2}:\d{2}$/.test(value);
     }
 
-    static getTimeString(value: PartialDate): string | null {
+    static getTimePart(value: PartialDate): string | null {
         if (!this.hasTime(value)) return null;
         return value.slice(-5);
     }
 
-    static getDateString(value: PartialDate): string {
+    static getDatePart(value: PartialDate): string {
         return value.slice(0, 10);
     }
 
@@ -50,34 +58,35 @@ export class PartialDateUtils {
         hour12 = false,
         weekday,
         noCurrentYear = true,
-    }: {
-        locale?: string;
-        timezone?: string;
-        hour12?: Intl.DateTimeFormatOptions["hour12"];
-        weekday?: Intl.DateTimeFormatOptions["weekday"];
-        noCurrentYear?: boolean;
-    } = {}): string {
+    }: IntlStringOptions = {}): string {
+        const datePart = this.toIntlDateString(value, { locale, timezone: timeZone, weekday, noCurrentYear });
+        const timePart = this.toIntlTimeString(value, { locale, timezone: timeZone, hour12 });
+        return timePart ? `${datePart} ${timePart}` : datePart;
+    }
+
+    static toIntlDateString(value: PartialDate, options: IntlStringOptions = {}): string {
         const date = this.toDate(value);
-        const options: Intl.DateTimeFormatOptions = {
-            timeZone,
-            year: noCurrentYear && new Date().getFullYear() === parseInt(value.slice(0, 4)) ? undefined : "numeric",
-            hour12,
+        const dateOptions: Intl.DateTimeFormatOptions = {
+            timeZone: options.timezone || "UTC",
+            year: options.noCurrentYear && new Date().getFullYear() === parseInt(value.slice(0, 4)) ? undefined : "numeric",
+            month: this.hasMonth(value) ? "long" : undefined,
+            day: this.hasCompleteDate(value) ? "numeric" : undefined,
+            weekday: options.weekday,
         };
+        return date.toLocaleDateString(options.locale || "en", dateOptions);
+    }
 
-        if (this.hasMonth(value))
-            options.month = "long";
-
-        if (this.hasCompleteDate(value)) {
-            options.day = "numeric";
-            options.weekday = weekday;
-        }
-
-        if (this.isComplete(value)) {
-            options.hour = "2-digit";
-            options.minute = "2-digit";
-        }
-
-        return date.toLocaleDateString(locale, options);
+    static toIntlTimeString(value: PartialDate, options: IntlStringOptions = {}): string {
+        if (!this.hasTime(value)) return "";
+        const date = this.toDate(value);
+        const timeOptions: Intl.DateTimeFormatOptions = {
+            timeZone: options.timezone || "UTC",
+            hour12: options.hour12 || false,
+            hour: "2-digit",
+            minute: "2-digit",
+            second: undefined,
+        };
+        return date.toLocaleTimeString(options.locale || "en", timeOptions);
     }
 
     static compare(a: PartialDate, b: PartialDate): number {

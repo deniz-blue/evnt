@@ -6,8 +6,9 @@ import {
 	Scripts,
 	ScrollRestoration,
 } from "react-router";
-import { MantineProvider, ColorSchemeScript } from "@mantine/core";
+import { ActionIcon, createTheme, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
+import { ModalsProvider } from "@mantine/modals";
 import type { Route } from "./+types/root";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
@@ -24,9 +25,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Links />
 			</head>
 			<body>
-				<MantineProvider forceColorScheme="dark">
+				<MantineProvider
+					forceColorScheme="dark"
+					theme={createTheme({
+						components: {
+							ActionIcon: {
+								defaultProps: {
+									variant: "light",
+								},
+							},
+							Button: {
+								defaultProps: {
+									variant: "light",
+								},
+							},
+						},
+					})}
+				>
 					<Notifications />
-					{children}
+					<ModalsProvider>
+						{children}
+					</ModalsProvider>
 				</MantineProvider>
 				<ScrollRestoration />
 				<Scripts />

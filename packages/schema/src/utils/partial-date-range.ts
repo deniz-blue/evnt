@@ -1,12 +1,12 @@
 import { PartialDate } from "../types/PartialDate";
-import { PartialDateUtils } from "./partial-date";
+import { UtilPartialDate } from "./partial-date";
 
 export interface PartialDateRange {
     start?: PartialDate;
     end?: PartialDate;
 }
 
-export class PartialDateRangeUtils {
+export class UtilPartialDateRange {
     static isRange(range: PartialDateRange): range is Required<PartialDateRange> {
         return (
             range.start !== undefined &&
@@ -17,18 +17,18 @@ export class PartialDateRangeUtils {
     static isSingleDay(range: PartialDateRange): boolean {
         if (!this.isRange(range)) return false;
         return (
-            PartialDateUtils.hasCompleteDate(range.start) &&
-            PartialDateUtils.hasCompleteDate(range.end) &&
-            (PartialDateUtils.getDateString(range.start) === PartialDateUtils.getDateString(range.end))
+            UtilPartialDate.hasCompleteDate(range.start) &&
+            UtilPartialDate.hasCompleteDate(range.end) &&
+            (UtilPartialDate.getDateString(range.start) === UtilPartialDate.getDateString(range.end))
         );
     }
 
     static isNextDay(range: PartialDateRange): boolean {
         if (!this.isRange(range)) return false;
         const ONE_DAY = 86400000; // milliseconds in a day
-        return PartialDateUtils.hasCompleteDate(range.start) &&
-            PartialDateUtils.hasCompleteDate(range.end) &&
-            PartialDateUtils.toDate(range.start).getTime() + ONE_DAY === PartialDateUtils.toDate(range.end).getTime();
+        return UtilPartialDate.hasCompleteDate(range.start) &&
+            UtilPartialDate.hasCompleteDate(range.end) &&
+            UtilPartialDate.toDate(range.start).getTime() + ONE_DAY === UtilPartialDate.toDate(range.end).getTime();
     }
 
     static getIncludedDates(range: PartialDateRange): PartialDate[] {
@@ -38,8 +38,8 @@ export class PartialDateRangeUtils {
             if (range.end) dates.push(range.end);
             return dates;
         }
-        let currentDate = PartialDateUtils.toDate(range.start);
-        const endDate = PartialDateUtils.toDate(range.end);
+        let currentDate = UtilPartialDate.toDate(range.start);
+        const endDate = UtilPartialDate.toDate(range.end);
         // me: hey copilot is this while function safe?
         // copilot: yes, because we check isRange above
         // me: thanks copilot <3

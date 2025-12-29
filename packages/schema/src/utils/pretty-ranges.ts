@@ -1,4 +1,4 @@
-import { PartialDateRange, PartialDateRangeUtils } from "./partial-date-range";
+import { PartialDateRange, UtilPartialDateRange } from "./partial-date-range";
 
 export type PrettyRange = {
     // incomplete range, no start or end
@@ -24,12 +24,12 @@ export const prettyRanges = (ranges: PartialDateRange[]): PrettyRange[] => {
     const result: PrettyRange[] = [];
 
     for (let range of ranges) {
-        if (!PartialDateRangeUtils.isRange(range)) {
+        if (!UtilPartialDateRange.isRange(range)) {
             result.push({ type: "none", range });
             continue;
         }
 
-        if (PartialDateRangeUtils.isSingleDay(range)) {
+        if (UtilPartialDateRange.isSingleDay(range)) {
             result.push({ type: "single", range });
             continue;
         }
