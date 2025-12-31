@@ -22,5 +22,5 @@ export const EventDataSchema = z.object({
     id: "EventData",
     title: "Event Data",
     description: "An event",
-    $id: $ID,
+    // $id: $ID,
 });

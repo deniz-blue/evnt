@@ -3,7 +3,7 @@ import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { IconDotsVertical, IconPinned, IconPinnedOff, IconTrash } from "@tabler/icons-react";
 import { useEventStore } from "../../../lib/stores/useEventStore";
-import type { EventData } from "@repo/model";
+import type { EventData } from "@evnt/format";
 import { useHomeStore } from "../../../lib/stores/useHomeStore";
 
 export const EventContextMenu = ({ value, id }: { value: EventData; id?: number }) => {

@@ -1,4 +1,4 @@
-import { EventDataSchema } from "@repo/model";
+import { EventDataSchema } from "@evnt/format";
 import { z } from "zod";
 
 export type Source = z.infer<typeof SourceSchema>;

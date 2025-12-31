@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import type { AppEvent } from "../../models/AppEvent";
-import type { EventData } from "@repo/model";
+import type { EventData } from "@evnt/format";
 import { openDB, type IDBPDatabase } from "idb";
 
 interface EventStore {

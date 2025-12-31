@@ -1,4 +1,4 @@
-import type { Translations } from "@repo/model";
+import type { Translations } from "@evnt/format";
 import type { ChatInputCommandInteraction } from "discord.js";
 
 export interface Command {

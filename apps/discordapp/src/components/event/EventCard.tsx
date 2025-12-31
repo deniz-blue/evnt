@@ -1,4 +1,4 @@
-import type { EventData } from '@repo/model';
+import type { EventData } from '@evnt/format';
 import { useTranslations } from "../../hooks/useTranslations";
 
 export const EventCard = ({

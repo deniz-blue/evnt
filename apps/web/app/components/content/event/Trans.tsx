@@ -1,4 +1,4 @@
-import type { Translations } from "@repo/model";
+import type { Translations } from "@evnt/format";
 
 export const Trans = ({
     t,

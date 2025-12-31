@@ -1,5 +1,5 @@
 {
-  "name": "@repo/redirector",
+  "name": "@evnt/redirector",
   "private": true,
   "version": "0.0.0",
   "type": "module",

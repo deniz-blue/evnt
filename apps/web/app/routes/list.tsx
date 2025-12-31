@@ -1,8 +1,8 @@
 import { ActionIcon, Group, Menu, SimpleGrid, Stack, TextInput } from "@mantine/core";
 import { useEventStore } from "../lib/stores/useEventStore";
 import { useState } from "react";
-import { EventDataSchema } from "@repo/model";
-import { UtilTranslations } from "@repo/model/utils";
+import { EventDataSchema } from "@evnt/format";
+import { UtilTranslations } from "@evnt/format/utils";
 import { openImportJSONModal } from "../components/app/modal/ImportJSONModal";
 import { IconPlus } from "@tabler/icons-react";
 import { EventCard } from "../components/content/event/EventCard";

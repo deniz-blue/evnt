@@ -1,6 +1,6 @@
 {
-    "name": "@repo/model",
-    "version": "0.0.0",
+    "name": "@evnt/format",
+    "version": "0.0.1-alpha.0",
     "private": true,
     "type": "module",
     "files": [
