@@ -1,35 +1,74 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { App } from './App.tsx'
+import { Page } from './ui/Page.tsx'
 import './index.css';
 
-const key = "event-redirector:instance-url";
+const LocalStorageKey = "event-redirector:instance-url";
+const getInstanceUrl = () => localStorage.getItem(LocalStorageKey);
+const setInstanceUrl = (url: string) => localStorage.setItem(LocalStorageKey, url);
+const clearInstanceUrl = () => localStorage.removeItem(LocalStorageKey);
 
-const params = new URLSearchParams(window.location.search);
-if (params.has("setInstanceUrl")) {
-  const url = params.get("setInstanceUrl")!;
-  localStorage.setItem(key, url);
+function showUserInterface(failed: boolean) {
+	createRoot(document.getElementById('root')!).render(<Page failed={failed} />);
 };
 
-if (params.has("clearInstanceUrl")) {
-  localStorage.removeItem(key);
+const BroadcastChannelKey = "instance-changed";
+
+function main() {
+	const params = new URLSearchParams(window.location.search);
+
+	if (params.has("setInstanceUrl")) {
+		const url = params.get("setInstanceUrl")!;
+		setInstanceUrl(url);
+		new BroadcastChannel(BroadcastChannelKey).postMessage(BroadcastChannelKey);
+	};
+
+	if (params.has("clearInstanceUrl")) {
+		clearInstanceUrl();
+	};
+
+	if (params.has("iframe")) {
+		type IFrameInput = {
+			type: "isSelectedInstance";
+		};
+
+		type IFrameOutput = {
+			type: "instanceChanged";
+		} | {
+			type: "state";
+			isSelectedInstance: boolean;
+		};
+
+		const broadcast = new BroadcastChannel(BroadcastChannelKey);
+		broadcast.onmessage = (message) => {
+			if (message.data === BroadcastChannelKey) {
+				(window.parent as WindowProxy).postMessage({
+					type: "instanceChanged",
+				} as IFrameOutput, "*");
+			}
+		};
+
+		window.onmessage = (event: MessageEvent<IFrameInput>) => {
+			if (event.data.type === "isSelectedInstance") {
+				const isSelectedInstance = event.origin === getInstanceUrl();
+				(event.source as WindowProxy).postMessage({
+					type: "state",
+					isSelectedInstance,
+				} as IFrameOutput, event.origin);
+			}
+		};
+
+		return;
+	}
+
+	const shouldRedirect = !!params.has("action");
+	if (shouldRedirect && !!getInstanceUrl()) {
+		window.location.replace(`${getInstanceUrl()}?${params.toString()}`);
+	} else {
+		showUserInterface(shouldRedirect);
+	};
 };
 
-const showUserInterface = (failed: boolean) => {
-  createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-      <App failed={failed} />
-    </StrictMode>,
-  );
-};
+main();
 
-if (params.has("action")) {
-  if (localStorage.getItem(key)) {
-    const url = localStorage.getItem(key);
-    window.location.replace(`${url}?${params.toString()}`);
-  } else {
-    showUserInterface(true);
-  }
-} else {
-  showUserInterface(false);
-};
+
+
