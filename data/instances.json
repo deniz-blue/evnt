@@ -1,0 +1,9 @@
+{
+    "instances": [
+        {
+            "name": "devent.pages.dev",
+            "description": "'official' web app",
+            "url": "https://devent.pages.dev"
+        }
+    ]
+}
