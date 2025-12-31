@@ -10,8 +10,10 @@ interface EventStore {
     initialize: () => Promise<void>;
     sync: () => Promise<void>;
     createLocalEvent: (data: EventData) => void;
+    deleteLocalEvent: (id: number) => void;
 }
 
+const DatabaseName = "event-app:events-db";
 const StoreName = "events";
 
 export const useEventStore = create<EventStore>((set, get) => ({
@@ -19,7 +21,7 @@ export const useEventStore = create<EventStore>((set, get) => ({
     db: null,
     channel: new BroadcastChannel("event-store"),
     initialize: async () => {
-        const db = await openDB("event-store", 4, {
+        const db = await openDB(DatabaseName, 4, {
             upgrade(db) {
                 db.createObjectStore(StoreName, {
                     keyPath: "id",
@@ -46,4 +48,11 @@ export const useEventStore = create<EventStore>((set, get) => ({
         get().channel?.postMessage("update");
         await get().sync();
     },
+    deleteLocalEvent: async (id: number) => {
+        await get().db?.delete(StoreName, id);
+        get().channel?.postMessage("update");
+        await get().sync();
+    },
 }));
+
+useEventStore.getState().initialize();

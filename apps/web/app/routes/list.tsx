@@ -1,6 +1,5 @@
-import { ActionIcon, Button, Group, JsonInput, Menu, SimpleGrid, Stack, TextInput } from "@mantine/core";
-import { modals } from "@mantine/modals";
-import { useEventStore } from "../lib/database/useEventStore";
+import { ActionIcon, Group, Menu, SimpleGrid, Stack, TextInput } from "@mantine/core";
+import { useEventStore } from "../lib/stores/useEventStore";
 import { EventCard } from "../components/event/EventCard";
 import { useState } from "react";
 import { EventDataSchema } from "@repo/model";
@@ -71,7 +70,12 @@ export default function List() {
                 cols={{ base: 1, '300px': 2, '500px': 4 }}
             >
                 {filtered.map((event, index) => (
-                    <EventCard key={index} value={event.data} variant="card" />
+                    <EventCard
+                        key={index}
+                        value={event.data}
+                        variant="card"
+                        id={event.id}
+                    />
                 ))}
             </SimpleGrid>
         </Stack>

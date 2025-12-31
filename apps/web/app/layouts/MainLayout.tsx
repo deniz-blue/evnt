@@ -1,7 +1,7 @@
 import { AppShell, Button, Group } from "@mantine/core";
 import { useEffect } from "react";
 import { Link, Outlet } from "react-router";
-import { useEventStore } from "../lib/database/useEventStore";
+import { useEventStore } from "../lib/stores/useEventStore";
 
 export default function MainLayout() {
     useEffect(() => {

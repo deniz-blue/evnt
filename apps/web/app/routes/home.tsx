@@ -1,5 +1,6 @@
 import { EventCard } from "../components/event/EventCard";
-import { useEventStore } from "../lib/database/useEventStore";
+import { useEventStore } from "../lib/stores/useEventStore";
+import { useHomeStore } from "../lib/stores/useHomeStore";
 import type { Route } from "./+types/home";
 import { Button, Container, Stack, Title } from "@mantine/core";
 
@@ -10,7 +11,10 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function Home() {
+	const pinnedEventIds = useHomeStore((state) => state.pinnedEventIds);
 	const events = useEventStore((state) => state.events);
+
+	const pinnedEvents = events.filter(event => pinnedEventIds.includes(event.id!));
 
 	return (
 		<Container size="md">
@@ -18,24 +22,11 @@ export default function Home() {
 				<Title>
 					Home
 				</Title>
-
-				{events.map((event, index) => (
-					<EventCard key={index} value={event.data} variant="horizontal" />
+			</Stack>
+			<Stack>
+				{pinnedEvents.map(event => (
+					<EventCard key={event.id} value={event.data} id={event.id} />
 				))}
-
-				<Button
-					onClick={() => {
-						useEventStore.getState().createLocalEvent({
-							instances: [],
-							name: { en: "Random Event " + Math.floor(Math.random() * 1000) },
-							description: { en: "This is a randomly generated event." },
-							venues: [],
-							v: 0,
-						});
-					}}
-				>
-					Add Random Data
-				</Button>
 			</Stack>
 		</Container>
 	);
