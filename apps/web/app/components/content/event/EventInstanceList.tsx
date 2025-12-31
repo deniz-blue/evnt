@@ -2,7 +2,7 @@ import { Group, Stack, Text } from "@mantine/core";
 import { IconCalendar, IconClock, IconGlobe, IconMapPin } from "@tabler/icons-react";
 import type { EventData } from "@repo/model";
 import { Trans } from "./Trans";
-import { CountryFlag } from "../address/CountryFlag";
+import { CountryFlag } from "../../content/address/CountryFlag";
 import { UtilPartialDate } from "@repo/model/utils";
 
 export const EventInstanceList = ({ value }: { value: EventData }) => {

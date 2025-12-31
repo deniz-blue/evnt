@@ -1,11 +1,11 @@
 import { ActionIcon, Group, Menu, SimpleGrid, Stack, TextInput } from "@mantine/core";
 import { useEventStore } from "../lib/stores/useEventStore";
-import { EventCard } from "../components/event/EventCard";
 import { useState } from "react";
 import { EventDataSchema } from "@repo/model";
 import { UtilTranslations } from "@repo/model/utils";
-import { openImportJSONModal } from "../components/modal/ImportJSONModal";
+import { openImportJSONModal } from "../components/app/modal/ImportJSONModal";
 import { IconPlus } from "@tabler/icons-react";
+import { EventCard } from "../components/content/event/EventCard";
 
 export default function List() {
     const events = useEventStore((state) => state.events);

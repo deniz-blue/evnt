@@ -1,11 +1,7 @@
-import { ActionIcon, Code, Group, Menu, Paper, Stack, Text, Title } from "@mantine/core";
+import { Group, Paper, Stack, Text } from "@mantine/core";
 import { Trans } from "./Trans";
 import type { EventData } from "@repo/model";
 import { EventInstanceList } from "./EventInstanceList";
-import { IconDotsVertical, IconTrash } from "@tabler/icons-react";
-import { modals } from "@mantine/modals";
-import { useEventStore } from "../../lib/stores/useEventStore";
-import { notifications } from "@mantine/notifications";
 import { EventContextMenu } from "./EventContextMenu";
 
 export const EventCard = ({

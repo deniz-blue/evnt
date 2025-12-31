@@ -1,4 +1,5 @@
-import { EventCard } from "../components/event/EventCard";
+import { InstanceInfoSection } from "../components/app/instance/InstanceInfoSection";
+import { EventCard } from "../components/content/event/EventCard";
 import { useEventStore } from "../lib/stores/useEventStore";
 import { useHomeStore } from "../lib/stores/useHomeStore";
 import type { Route } from "./+types/home";
@@ -27,6 +28,9 @@ export default function Home() {
 				{pinnedEvents.map(event => (
 					<EventCard key={event.id} value={event.data} id={event.id} />
 				))}
+			</Stack>
+			<Stack>
+				<InstanceInfoSection />
 			</Stack>
 		</Container>
 	);

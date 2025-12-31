@@ -14,24 +14,33 @@ function showUserInterface(failed: boolean) {
 const BroadcastChannelKey = "instance-changed";
 
 function main() {
+	const isIframe = window.self !== window.top;
 	const params = new URLSearchParams(window.location.search);
 
-	if (params.has("setInstanceUrl")) {
+	if (params.has("setInstanceUrl") && !isIframe) {
 		const url = params.get("setInstanceUrl")!;
 		setInstanceUrl(url);
 		new BroadcastChannel(BroadcastChannelKey).postMessage(BroadcastChannelKey);
+		console.log("[event.nya.pub] Set instance URL to", url);
 	};
 
-	if (params.has("clearInstanceUrl")) {
+	if (params.has("clearInstanceUrl") && !isIframe) {
 		clearInstanceUrl();
 	};
 
 	if (params.has("iframe")) {
+		if (!isIframe) {
+			console.error("[event.nya.pub] Attempted to load iframe script outside of an iframe.");
+			return;
+		};
+
 		type IFrameInput = {
 			type: "isSelectedInstance";
 		};
 
 		type IFrameOutput = {
+			type: "ready";
+		} | {
 			type: "instanceChanged";
 		} | {
 			type: "state";
@@ -49,13 +58,16 @@ function main() {
 
 		window.onmessage = (event: MessageEvent<IFrameInput>) => {
 			if (event.data.type === "isSelectedInstance") {
-				const isSelectedInstance = event.origin === getInstanceUrl();
-				(event.source as WindowProxy).postMessage({
+				window.parent.postMessage({
 					type: "state",
-					isSelectedInstance,
-				} as IFrameOutput, event.origin);
+					isSelectedInstance: event.origin === getInstanceUrl(),
+				} as IFrameOutput, "*");
 			}
 		};
+
+		window.parent.postMessage({
+			type: "ready",
+		} as IFrameOutput, "*");
 
 		return;
 	}

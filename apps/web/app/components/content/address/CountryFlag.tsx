@@ -1,5 +1,5 @@
 import { Tooltip } from "@mantine/core";
-import { useLocale } from "../../hooks/useLocale";
+import { useLocale } from "../../../hooks/useLocale";
 
 export const CountryFlag = ({ countryCode }: { countryCode: string }) => {
     const locale = useLocale();

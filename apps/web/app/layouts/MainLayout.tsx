@@ -2,10 +2,12 @@ import { AppShell, Button, Group } from "@mantine/core";
 import { useEffect } from "react";
 import { Link, Outlet } from "react-router";
 import { useEventStore } from "../lib/stores/useEventStore";
+import { useEventRedirectorStore } from "../hooks/useEventRedirector";
 
 export default function MainLayout() {
     useEffect(() => {
         useEventStore.getState().initialize();
+        useEventRedirectorStore.getState().initialize();
     }, []);
 
     return (
