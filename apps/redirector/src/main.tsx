@@ -1,31 +1,38 @@
 import { createRoot } from 'react-dom/client'
-import { Page } from './ui/Page.tsx'
+import { Page, type PageProps } from './ui/Page.tsx'
 import './index.css';
 
 const LocalStorageKey = "event-redirector:instance-url";
-const getInstanceUrl = () => localStorage.getItem(LocalStorageKey);
-const setInstanceUrl = (url: string) => localStorage.setItem(LocalStorageKey, url);
-const clearInstanceUrl = () => localStorage.removeItem(LocalStorageKey);
+export const getInstanceUrl = () => localStorage.getItem(LocalStorageKey);
+export const setInstanceUrl = (url: string) => localStorage.setItem(LocalStorageKey, url);
+export const clearInstanceUrl = () => localStorage.removeItem(LocalStorageKey);
 
-function showUserInterface(failed: boolean) {
-	createRoot(document.getElementById('root')!).render(<Page failed={failed} />);
+function showUserInterface(props: PageProps) {
+	createRoot(document.getElementById('root')!).render(<Page {...props} />);
 };
 
-const BroadcastChannelKey = "instance-changed";
+export const BroadcastChannelKey = "instance-changed";
 
 function main() {
 	const isIframe = window.self !== window.top;
 	const params = new URLSearchParams(window.location.search);
+	let uiMessage = "";
 
 	if (params.has("setInstanceUrl") && !isIframe) {
 		const url = params.get("setInstanceUrl")!;
 		setInstanceUrl(url);
 		new BroadcastChannel(BroadcastChannelKey).postMessage(BroadcastChannelKey);
 		console.log("[event.nya.pub] Set instance URL to", url);
+		window.history.replaceState({}, document.title, window.location.pathname);
+		uiMessage = "Instance URL set successfully.";
+		// No return - show UI
 	};
 
 	if (params.has("clearInstanceUrl") && !isIframe) {
 		clearInstanceUrl();
+		window.history.replaceState({}, document.title, window.location.pathname);
+		uiMessage = "Instance URL cleared successfully.";
+		// No return - show UI
 	};
 
 	if (params.has("iframe")) {
@@ -35,7 +42,7 @@ function main() {
 		};
 
 		type IFrameInput = {
-			type: "isSelectedInstance";
+			type: "isDefaultInstance";
 		};
 
 		type IFrameOutput = {
@@ -44,7 +51,7 @@ function main() {
 			type: "instanceChanged";
 		} | {
 			type: "state";
-			isSelectedInstance: boolean;
+			isDefaultInstance: boolean;
 		};
 
 		const broadcast = new BroadcastChannel(BroadcastChannelKey);
@@ -57,10 +64,10 @@ function main() {
 		};
 
 		window.onmessage = (event: MessageEvent<IFrameInput>) => {
-			if (event.data.type === "isSelectedInstance") {
+			if (event.data.type === "isDefaultInstance") {
 				window.parent.postMessage({
 					type: "state",
-					isSelectedInstance: event.origin === getInstanceUrl(),
+					isDefaultInstance: event.origin === getInstanceUrl(),
 				} as IFrameOutput, "*");
 			}
 		};
@@ -72,12 +79,24 @@ function main() {
 		return;
 	}
 
-	const shouldRedirect = !!params.has("action");
-	if (shouldRedirect && !!getInstanceUrl()) {
-		window.location.replace(`${getInstanceUrl()}?${params.toString()}`);
-	} else {
-		showUserInterface(shouldRedirect);
+	if(params.has("popup")) {
+		window.close();
+		return;
 	};
+
+	const shouldRedirect = !!params.has("action");
+	if (shouldRedirect) {
+		if (getInstanceUrl()) {
+			window.location.replace(`${getInstanceUrl()}?${params.toString()}`);
+			return;
+		};
+
+		uiMessage = "No instance URL set, please select an instance to continue.";
+	};
+
+	showUserInterface({
+		message: uiMessage || "Select an instance to redirect to.",
+	});
 };
 
 main();

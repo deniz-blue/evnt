@@ -39,6 +39,9 @@ export const useEventRedirectorStore = create<{
         set({ iframe });
     },
     setAsActiveInstance: () => {
-        window.open(`${EVENT_REDIRECTOR_URL}/?setInstanceUrl=${window.location.origin}`, "_blank", "popup=true");
+        window.open(`${EVENT_REDIRECTOR_URL}/?${new URLSearchParams({
+            setInstanceUrl: window.location.origin,
+            popup: "true",
+        }).toString()}`, "_blank", "popup=true");
     },
 }));
