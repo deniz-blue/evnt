@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
-// export const EVENT_REDIRECTOR_URL = "https://event.nya.pub";
-export const EVENT_REDIRECTOR_URL = "http://localhost:5174";
+export const EVENT_REDIRECTOR_URL = "https://event.nya.pub";
+// export const EVENT_REDIRECTOR_URL = "http://localhost:5174";
 
 export const useEventRedirectorStore = create<{
     iframe: HTMLIFrameElement | null;
