@@ -1,5 +1,5 @@
-import { EventData } from "../schemas/EventData";
-import { Translations } from "../types/Translations";
+import type { EventData } from "../schemas/EventData";
+import type { Translations } from "../types/Translations";
 
 export interface StringifyOptions {
     locale?: string;

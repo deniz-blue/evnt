@@ -1,4 +1,4 @@
-import { PartialDateRange, UtilPartialDateRange } from "./partial-date-range";
+import { type PartialDateRange, UtilPartialDateRange } from "./partial-date-range";
 
 export type PrettyRange = {
     // incomplete range, no start or end

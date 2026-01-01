@@ -1,4 +1,4 @@
-import { PartialDate } from "../types/PartialDate";
+import type { PartialDate } from "../types/PartialDate";
 import { UtilPartialDate } from "./partial-date";
 
 export interface PartialDateRange {
@@ -19,7 +19,7 @@ export class UtilPartialDateRange {
         return (
             UtilPartialDate.hasCompleteDate(range.start) &&
             UtilPartialDate.hasCompleteDate(range.end) &&
-            (UtilPartialDate.getDateString(range.start) === UtilPartialDate.getDateString(range.end))
+            (UtilPartialDate.getDatePart(range.start) === UtilPartialDate.getDatePart(range.end))
         );
     }
 
