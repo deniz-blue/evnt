@@ -1,4 +1,4 @@
-import type { Translations } from "@evnt/format";
+import type { Translations } from "@evnt/schema";
 
 export const Trans = ({
     t,

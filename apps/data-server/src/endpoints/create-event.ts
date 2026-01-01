@@ -1,4 +1,4 @@
-import { EventDataSchema } from "@evnt/format";
+import { EventDataSchema } from "@evnt/schema";
 import { app } from "../app";
 import { APISuccess } from "../result";
 import { describeRoute } from "hono-openapi";

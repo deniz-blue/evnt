@@ -1,4 +1,4 @@
-import type { EventData } from "@evnt/format";
+import type { EventData } from "@evnt/schema";
 
 export interface EventRecord {
     id: string;

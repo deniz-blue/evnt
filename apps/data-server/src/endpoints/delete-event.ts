@@ -1,7 +1,7 @@
 import { describeRoute } from "hono-openapi";
 import { app } from "../app";
 import { APISuccess } from "../result";
-import { EventDataSchema } from "@evnt/format";
+import { EventDataSchema } from "@evnt/schema";
 
 // Delete
 app.delete(

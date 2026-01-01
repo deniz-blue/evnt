@@ -10,8 +10,9 @@
     "./hc": "./src/hc.js"
   },
   "dependencies": {
-    "@evnt/format": "workspace:*",
+    "@evnt/schema": "workspace:*",
     "@hono/node-server": "^1.19.6",
+    "@hono/oauth-providers": "^0.8.5",
     "@hono/standard-validator": "^0.2.1",
     "hono": "^4.11.3",
     "hono-openapi": "^1.1.2",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@types/node": "^20.11.17",
     "tsx": "^4.7.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "zod-openapi": "^5.4.5"
   }
 }

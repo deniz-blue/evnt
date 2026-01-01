@@ -5,7 +5,7 @@ import { EventInstanceSchema } from "./EventInstance";
 import { EventComponentSchema } from "./components/EventComponent";
 import { EventStatusSchema } from "./enums/EventStatus";
 
-const $ID = "https://raw.githubusercontent.com/deniz-blue/events-format/refs/heads/main/event-data.schema.json";
+export const $ID = "https://raw.githubusercontent.com/deniz-blue/events-format/refs/heads/main/event-data.schema.json";
 
 export type EventData = z.infer<typeof EventDataSchema>;
 export const EventDataSchema = z.object({
@@ -22,5 +22,5 @@ export const EventDataSchema = z.object({
     id: "EventData",
     title: "Event Data",
     description: "An event",
-    // $id: $ID,
+    $id: $ID,
 });

@@ -1,7 +1,7 @@
 import { openAPIRouteHandler } from "hono-openapi";
 import { app } from "../app";
 
-// import * as Schemas from "@evnt/format";
+// import * as Schemas from "@evnt/schema";
 // const workaround = Object.fromEntries(Object.entries(
 //     Schemas
 // ).map(([key, schema]) => {

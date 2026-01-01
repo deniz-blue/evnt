@@ -1,7 +1,7 @@
 import { describeResponse } from "hono-openapi";
 import { app } from "../app";
 import z from "zod";
-import { EventDataSchema } from "@evnt/format";
+import { EventDataSchema } from "@evnt/schema";
 
 // List
 // app.get(

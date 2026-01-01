@@ -1,7 +1,7 @@
 import { describeRoute, validator } from "hono-openapi";
 import { app } from "../app";
 import { APINotFound, APISuccess, APIZodValidationError, zodValidationError } from "../result";
-import { EventDataSchema } from "@evnt/format";
+import { EventDataSchema } from "@evnt/schema";
 import z from "zod";
 import { db } from "../database/db";
 import { applyOperations } from "json-patch-rfc";

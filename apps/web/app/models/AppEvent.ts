@@ -1,4 +1,4 @@
-import { EventDataSchema } from "@evnt/format";
+import { EventDataSchema } from "@evnt/schema";
 import { z } from "zod";
 
 export type Source = z.infer<typeof SourceSchema>;

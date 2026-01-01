@@ -1,4 +1,4 @@
-import type { EventData, Translations } from "@evnt/format";
+import type { EventData, Translations } from "@evnt/schema";
 import { command } from "../core/command";
 import { djsx } from "discord-jsx-renderer";
 import { EventCard } from "../components/event/EventCard";

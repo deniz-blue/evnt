@@ -1,6 +1,6 @@
 import { Group, Paper, Stack, Text } from "@mantine/core";
 import { Trans } from "./Trans";
-import type { EventData } from "@evnt/format";
+import type { EventData } from "@evnt/schema";
 import { EventInstanceList } from "./EventInstanceList";
 import { EventContextMenu } from "./EventContextMenu";
 

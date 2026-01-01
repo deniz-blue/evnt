@@ -1,6 +1,6 @@
 import type { Route } from "./+types/home";
 import { Container, JsonInput } from "@mantine/core";
-import { EventDataSchema, type EventData, type Translations } from "@evnt/format";
+import { EventDataSchema, type EventData, type Translations } from "@evnt/schema";
 import { ZodFormEditor } from "@denizblue/mantine-zod-form";
 import { useState } from "react";
 

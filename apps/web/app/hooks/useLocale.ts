@@ -1,3 +1,3 @@
-import type { LanguageKey } from "@evnt/format";
+import type { LanguageKey } from "@evnt/schema";
 
 export const useLocale = (): LanguageKey => "en" as LanguageKey;

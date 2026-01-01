@@ -14,7 +14,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.18.2",
   "devDependencies": {
-    "@evnt/format": "workspace:*",
+    "@evnt/schema": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^25.0.3",
     "@types/react": "npm:pure-react-types@^0.1.4",

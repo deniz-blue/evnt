@@ -1,4 +1,4 @@
-import type { EventData } from '@evnt/format';
+import type { EventData } from '@evnt/schema';
 import { useTranslations } from "../../hooks/useTranslations";
 
 export const EventCard = ({
