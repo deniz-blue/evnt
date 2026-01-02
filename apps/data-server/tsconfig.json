@@ -1,16 +1,13 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "esnext",
-    "strict": true,
-    "verbatimModuleSyntax": true,
-    "skipLibCheck": true,
-    "types": [
-      "node"
+    "extends": "@repo/typescript-config/base.json",
+    "compilerOptions": {
+        "outDir": "dist"
+    },
+    "include": [
+        "src"
     ],
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
-    "outDir": "./dist"
-  },
-  "exclude": ["node_modules"]
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
 }
