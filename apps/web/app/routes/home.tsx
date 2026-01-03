@@ -13,7 +13,7 @@ export function meta({ }: Route.MetaArgs) {
 
 export default function Home() {
 	const pinnedEventIds = useHomeStore((state) => state.pinnedEventIds);
-	const events = useEventStore((state) => state.events);
+	const events = useEventStore((state) => state.getEvents());
 
 	const pinnedEvents = events.filter(event => pinnedEventIds.includes(event.id!));
 

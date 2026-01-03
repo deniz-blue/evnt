@@ -1,35 +1,40 @@
 import { create } from "zustand";
 
 export const EVENT_REDIRECTOR_URL = "https://event.nya.pub";
-// export const EVENT_REDIRECTOR_URL = "http://localhost:5174";
 
 export const useEventRedirectorStore = create<{
     iframe: HTMLIFrameElement | null;
     initialize: () => void;
     isActiveInstance: boolean | null;
     setAsActiveInstance: () => void;
-}>((set) => ({
+    unsetAsActiveInstance: () => void;
+}>((set, get) => ({
     iframe: null,
     isActiveInstance: null,
     initialize: () => {
+        if(get().iframe) return;
+
         const iframe = document.createElement("iframe");
         iframe.style.visibility = "hidden";
-        iframe.src = `${EVENT_REDIRECTOR_URL}/?iframe`;
+        iframe.src = `${EVENT_REDIRECTOR_URL}/?${new URLSearchParams({
+            iframe: "true",
+            debug: "true",
+        }).toString()}`;
         iframe.id = "redirector-iframe";
         iframe.ariaHidden = "true";
         iframe.sandbox.add("allow-scripts", "allow-same-origin");
 
         const request = () => {
-            iframe.contentWindow?.postMessage({ type: "isSelectedInstance" }, EVENT_REDIRECTOR_URL);
+            if(!iframe.contentWindow) console.error("Iframe contentWindow is not available");
+            iframe.contentWindow?.postMessage({ type: "isDefaultInstance" }, EVENT_REDIRECTOR_URL);
         };
 
         window.addEventListener("message", (event) => {
-            console.log("Received message event", event);
             if (event.origin !== EVENT_REDIRECTOR_URL) return;
-            console.log("Received message from redirector iframe", event.data);
-            if (event.data.type === "instanceChanged") return request();
+            console.debug("Received message from event redirector:", event.data);
+            if (event.data.type === "instanceChanged" || event.data.type === "ready") return request();
             if (event.data.type === "state") {
-                set({ isActiveInstance: event.data.isSelectedInstance });
+                set({ isActiveInstance: event.data.isDefaultInstance });
             }
         });
 
@@ -43,5 +48,8 @@ export const useEventRedirectorStore = create<{
             setInstanceUrl: window.location.origin,
             popup: "true",
         }).toString()}`, "_blank", "popup=true");
+    },
+    unsetAsActiveInstance: () => {
+        get().iframe?.contentWindow?.postMessage({ type: "unsetDefaultInstance" }, EVENT_REDIRECTOR_URL);
     },
 }));

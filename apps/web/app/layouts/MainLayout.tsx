@@ -1,12 +1,12 @@
-import { AppShell, Button, Group } from "@mantine/core";
+import { AppShell, Box, Button, Group, Loader } from "@mantine/core";
 import { useEffect } from "react";
 import { Link, Outlet } from "react-router";
-import { useEventStore } from "../lib/stores/useEventStore";
+import { useEventDatabase } from "../lib/stores/useEventStore";
 import { useEventRedirectorStore } from "../hooks/useEventRedirector";
 
 export default function MainLayout() {
     useEffect(() => {
-        useEventStore.getState().initialize();
+        useEventDatabase.getState().init();
         useEventRedirectorStore.getState().initialize();
     }, []);
 
@@ -25,11 +25,22 @@ export default function MainLayout() {
                     <Button component={Link} to="/list">
                         List
                     </Button>
+                    <DatabaseStateView />
                 </Group>
             </AppShell.Header>
             <AppShell.Main>
                 <Outlet />
             </AppShell.Main>
         </AppShell>
+    );
+};
+
+export const DatabaseStateView = () => {
+    const idle = useEventDatabase((state) => state.idle);
+
+    return (
+        <Box>
+            {!idle && <Loader size="xs" />}
+        </Box>
     );
 };

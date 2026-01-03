@@ -1,14 +1,10 @@
 import { create } from "zustand";
 import type { AppEvent } from "../../models/AppEvent";
 import type { EventData } from "@evnt/schema";
-import { openDB, type IDBPDatabase } from "idb";
+import { createIDBStore } from "./createIDBStore";
 
 interface EventStore {
-    db: IDBPDatabase | null;
-    channel: BroadcastChannel | null;
-    events: AppEvent[];
-    initialize: () => Promise<void>;
-    sync: () => Promise<void>;
+    getEvents: () => AppEvent[];
     createLocalEvent: (data: EventData) => void;
     deleteLocalEvent: (id: number) => void;
 }
@@ -16,43 +12,23 @@ interface EventStore {
 const DatabaseName = "event-app:events-db";
 const StoreName = "events";
 
-export const useEventStore = create<EventStore>((set, get) => ({
-    events: [],
-    db: null,
-    channel: new BroadcastChannel("event-store"),
-    initialize: async () => {
-        const db = await openDB(DatabaseName, 4, {
-            upgrade(db) {
-                db.createObjectStore(StoreName, {
-                    keyPath: "id",
-                    autoIncrement: true,
-                });
-            },
-        });
-        set({ db });
+export const useEventDatabase = createIDBStore<AppEvent>({
+    databaseName: DatabaseName,
+    storeName: StoreName,
+});
 
-        get().channel?.addEventListener("message", async (msg) => {
-            if (msg.data === "update") {
-                await get().sync();
-            }
-        });
-        
-        await get().sync();
-    },
-    sync: async () => {
-        const allEvents = await get().db?.getAll(StoreName) || [];
-        set({ events: allEvents });
+export const useEventStore = create<EventStore>((set, get) => ({
+    getEvents: () => {
+        return useEventDatabase.getState().data;
     },
     createLocalEvent: async (data: EventData) => {
-        await get().db?.add(StoreName, { source: { type: "local" }, data, timestamp: Date.now() });
-        get().channel?.postMessage("update");
-        await get().sync();
+        useEventDatabase.getState().mutate(async (db) => {
+            await db.add(StoreName, { source: { type: "local" }, data, timestamp: Date.now() });
+        });
     },
     deleteLocalEvent: async (id: number) => {
-        await get().db?.delete(StoreName, id);
-        get().channel?.postMessage("update");
-        await get().sync();
+        await useEventDatabase.getState().mutate(async (db) => {
+            await db.delete(StoreName, id);
+        });
     },
 }));
-
-useEventStore.getState().initialize();

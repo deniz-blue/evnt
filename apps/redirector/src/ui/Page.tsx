@@ -3,10 +3,12 @@ import { BroadcastChannelKey, getInstanceUrl } from "../main";
 
 export interface PageProps {
 	message?: string;
+	params?: URLSearchParams;
 };
 
 export const Page = ({
 	message,
+	params,
 }: PageProps) => {
 	const [instanceUrl, setInstance] = useState<string | null>(getInstanceUrl());
 
@@ -35,7 +37,7 @@ export const Page = ({
 				</p>
 			)}
 
-			<InstanceList />
+			<InstanceList params={params} />
 
 			<p style={{ marginTop: "2em", fontSize: "0.9em", color: "gray" }}>
 				<a style={{ fontSize: "0.8em" }} href="https://github.com/deniz-blue/events-format/blob/main/docs/APPS.md">
@@ -46,7 +48,7 @@ export const Page = ({
 	)
 }
 
-export const InstanceList = () => {
+export const InstanceList = ({ params }: { params?: URLSearchParams }) => {
 	const INSTANCES_URL = "https://raw.githubusercontent.com/deniz-blue/events-format/refs/heads/main/data/instances.json";
 	const [data, setData] = useState<{
 		instances: { url: string }[];
@@ -75,7 +77,9 @@ export const InstanceList = () => {
 						<a href={`${url.origin}/${window.location.search}`}>
 							{url.host}
 						</a>
-						<a style={{ marginLeft: "1em", fontSize: "0.8em" }} href={`/?setInstanceUrl=${encodeURIComponent(url.origin)}`}>
+						<a style={{ marginLeft: "1em", fontSize: "0.8em" }} href={`/?${new URLSearchParams({
+							setInstanceUrl: instance.url,
+						}).toString() + (params ? `&${params.toString()}` : "")}`}>
 							set default
 						</a>
 					</li>

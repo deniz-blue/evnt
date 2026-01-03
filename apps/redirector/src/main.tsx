@@ -17,6 +17,11 @@ function main() {
 	const isIframe = window.self !== window.top;
 	const params = new URLSearchParams(window.location.search);
 	let uiMessage = "";
+	const debug = params.has("debug")
+		? (...a: any[]) => console.debug("%c[event.nya.pub]", "color: blue; font-weight: bold;", ...a)
+		: null;
+
+	if(debug) debug?.("Current instance URL:", getInstanceUrl());
 
 	if (params.has("setInstanceUrl") && !isIframe) {
 		const url = params.get("setInstanceUrl")!;
@@ -30,12 +35,14 @@ function main() {
 
 	if (params.has("clearInstanceUrl") && !isIframe) {
 		clearInstanceUrl();
-		window.history.replaceState({}, document.title, window.location.pathname);
+		debug?.("Instance URL cleared");
 		uiMessage = "Instance URL cleared successfully.";
+		window.history.replaceState({}, document.title, window.location.pathname);
 		// No return - show UI
 	};
 
 	if (params.has("iframe")) {
+		debug?.("?iframe mode");
 		if (!isIframe) {
 			console.error("[event.nya.pub] Attempted to load iframe script outside of an iframe.");
 			return;
@@ -43,6 +50,8 @@ function main() {
 
 		type IFrameInput = {
 			type: "isDefaultInstance";
+		} | {
+			type: "unsetDefaultInstance";
 		};
 
 		type IFrameOutput = {
@@ -54,32 +63,49 @@ function main() {
 			isDefaultInstance: boolean;
 		};
 
+		const send = (message: IFrameOutput, targetOrigin: string) => {
+			const target = (window.parent as WindowProxy);
+			if (!target) return debug?.("window.parent not present!", target);
+			debug?.("Sending message", message, "to origin", targetOrigin);
+			target.postMessage(message, targetOrigin);
+		};
+
 		const broadcast = new BroadcastChannel(BroadcastChannelKey);
 		broadcast.onmessage = (message) => {
 			if (message.data === BroadcastChannelKey) {
-				(window.parent as WindowProxy).postMessage({
+				debug?.("Instance changed by another browsing context");
+				debug?.("Instance URL is now", getInstanceUrl());
+				send({
 					type: "instanceChanged",
-				} as IFrameOutput, "*");
+				}, "*");
 			}
 		};
 
 		window.onmessage = (event: MessageEvent<IFrameInput>) => {
+			debug?.("Message received from", event.origin, "; data:", event.data);
 			if (event.data.type === "isDefaultInstance") {
-				window.parent.postMessage({
+				send({
 					type: "state",
 					isDefaultInstance: event.origin === getInstanceUrl(),
-				} as IFrameOutput, "*");
+				}, "*");
+			} else if (event.data.type === "unsetDefaultInstance") {
+				clearInstanceUrl();
+				broadcast.postMessage(BroadcastChannelKey);
+				send({
+					type: "state",
+					isDefaultInstance: false,
+				}, "*");
+			} else {
+				debug?.("Invalid message:", event.data);
 			}
 		};
 
-		window.parent.postMessage({
-			type: "ready",
-		} as IFrameOutput, "*");
+		send({ type: "ready" }, "*");
 
 		return;
 	}
 
-	if(params.has("popup")) {
+	if (params.has("popup")) {
 		window.close();
 		return;
 	};
