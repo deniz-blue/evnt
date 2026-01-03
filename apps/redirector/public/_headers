@@ -1,0 +1,3 @@
+/*
+  Permissions-Policy: storage-access=*;
+  Activate-Storage-Access: load

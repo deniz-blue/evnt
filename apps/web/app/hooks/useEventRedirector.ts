@@ -22,7 +22,7 @@ export const useEventRedirectorStore = create<{
         }).toString()}`;
         iframe.id = "redirector-iframe";
         iframe.ariaHidden = "true";
-        iframe.sandbox.add("allow-scripts", "allow-same-origin");
+        // iframe.sandbox.add("allow-scripts", "allow-same-origin");
 
         const request = () => {
             if(!iframe.contentWindow) console.error("Iframe contentWindow is not available");

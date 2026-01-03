@@ -13,7 +13,7 @@ function showUserInterface(props: PageProps) {
 
 export const BroadcastChannelKey = "instance-changed";
 
-function main() {
+async function main() {
 	const isIframe = window.self !== window.top;
 	const params = new URLSearchParams(window.location.search);
 	let uiMessage = "";
@@ -47,6 +47,16 @@ function main() {
 			console.error("[event.nya.pub] Attempted to load iframe script outside of an iframe.");
 			return;
 		};
+
+		if(!await document.hasStorageAccess()) {
+			debug?.("Requesting storage access...");
+			try {
+				await document.requestStorageAccess();
+				debug?.("Storage access granted");
+			} catch(e) {
+				console.warn("[event.nya.pub] Storage access denied", e);
+			}
+		}
 
 		type IFrameInput = {
 			type: "isDefaultInstance";
