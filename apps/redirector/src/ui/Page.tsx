@@ -44,9 +44,42 @@ export const Page = ({
 					what is this?
 				</a>
 			</p>
+
+			{/* <StorageAccessGranter /> */}
 		</main>
 	)
 }
+
+export const StorageAccessGranter = () => {
+	const [state, setState] = useState<PermissionState | null>(null);
+
+	useEffect(() => {
+		(async () => {
+			const perm = await navigator.permissions.query({ name: "storage-access" });
+			setState(perm.state);
+			perm.onchange = () => {
+				setState(perm.state);
+			};
+		})();
+	}, []);
+
+	const requestStorageAccess = async () => {
+		try {
+			await document.requestStorageAccess();
+		} catch(e) {
+			console.error("Storage access request failed:", e);
+			alert("Storage access request failed. See console for details.");
+		}
+	};
+
+	if(state !== "prompt") return null;
+
+	return (
+		<p style={{ color: "gray" }}>
+			<button onClick={requestStorageAccess}>Grant Storage Access</button> to enable changing default instance on other sites.
+		</p>
+	);
+};
 
 export const InstanceList = ({ params }: { params?: URLSearchParams }) => {
 	const INSTANCES_URL = "https://raw.githubusercontent.com/deniz-blue/events-format/refs/heads/main/data/instances.json";

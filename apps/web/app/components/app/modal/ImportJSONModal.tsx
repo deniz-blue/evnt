@@ -13,7 +13,7 @@ export const openImportJSONModal = <T extends z.ZodType>(props: ImportJSONModalP
     const modalId = randomId();
     modals.open({
         title: "Add Event JSON",
-        size: "lg",
+        size: "xl",
         modalId,
         children: (
             <ImportJSONModal
@@ -51,7 +51,8 @@ export const ImportJSONModal = <T extends z.ZodType>({
             <JsonInput
                 value={json}
                 onChange={setJson}
-                minRows={10}
+                minRows={5}
+                autosize
                 placeholder="Paste event JSON here..."
                 error={error}
                 styles={{

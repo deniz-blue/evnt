@@ -6,9 +6,11 @@ import { UtilTranslations } from "@evnt/schema/utils";
 import { openImportJSONModal } from "../components/app/modal/ImportJSONModal";
 import { IconPlus } from "@tabler/icons-react";
 import { EventCard } from "../components/content/event/EventCard";
+import { openImportURLModal } from "../components/app/modal/ImportURLModal";
+import { EventContextMenu } from "../components/content/event/EventContextMenu";
 
 export default function List() {
-    const events = useEventStore((state) => state.events);
+    const events = useEventStore((state) => state.data);
 
     const [search, setSearch] = useState("");
 
@@ -23,7 +25,7 @@ export default function List() {
         });
     };
 
-    console.log({ filtered });
+    console.log({ events, filtered });
 
     return (
         <Stack>
@@ -56,7 +58,16 @@ export default function List() {
                                 >
                                     Add JSON
                                 </Menu.Item>
-                                <Menu.Item>
+                                <Menu.Item
+                                    onClick={() => {
+                                        openImportURLModal({
+                                            schema: EventDataSchema,
+                                            onSubmit: (url, data) => {
+                                                useEventStore.getState().createRemoteEvent(url, data);
+                                            },
+                                        });
+                                    }}
+                                >
                                     Add URL
                                 </Menu.Item>
                             </Menu.Dropdown>
@@ -75,6 +86,7 @@ export default function List() {
                         value={event.data}
                         variant="card"
                         id={event.id}
+                        menu={<EventContextMenu event={event} />}
                     />
                 ))}
             </SimpleGrid>

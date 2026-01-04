@@ -12,8 +12,8 @@ export const SourceSchema = z.discriminatedUnion('type', [
     }),
 ]);
 
-export type AppEvent = z.infer<typeof AppEventSchema>;
-export const AppEventSchema = z.object({
+export type StoredEvent = z.infer<typeof StoredEventSchema>;
+export const StoredEventSchema = z.object({
     id: z.number().int().nonnegative().optional(),
     source: SourceSchema,
     timestamp: z.number().int().nonnegative(),

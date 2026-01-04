@@ -24,3 +24,8 @@ This monorepo aims to fix these issues with the other related projects:
 - A way to [share and open](./apps/redirector#readme) event information in your preferred application
 - A default [web app](./apps/web#readme) to view events from many sources
 - A [server](./apps/data-server#readme) that allows users to collaboratively store and update event data
+
+## Demo Links
+
+- [FOSDEM26](https://event.nya.pub/?action=import&url=https%3A%2F%2Fraw.githubusercontent.com%2Fdeniz-blue%2Fevents-data%2Frefs%2Fheads%2Fmain%2Fdata%2F2026%2Ffosdem26.json) (import url)
+- [FOSDEM26](https://event.nya.pub/?action=view&url=https%3A%2F%2Fraw.githubusercontent.com%2Fdeniz-blue%2Fevents-data%2Frefs%2Fheads%2Fmain%2Fdata%2F2026%2Ffosdem26.json) (view url - unimplemented)

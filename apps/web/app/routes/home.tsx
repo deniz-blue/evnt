@@ -13,7 +13,7 @@ export function meta({ }: Route.MetaArgs) {
 
 export default function Home() {
 	const pinnedEventIds = useHomeStore((state) => state.pinnedEventIds);
-	const events = useEventStore((state) => state.getEvents());
+	const events = useEventStore((state) => state.data);
 
 	const pinnedEvents = events.filter(event => pinnedEventIds.includes(event.id!));
 
@@ -28,9 +28,6 @@ export default function Home() {
 				{pinnedEvents.map(event => (
 					<EventCard key={event.id} value={event.data} id={event.id} />
 				))}
-			</Stack>
-			<Stack>
-				<InstanceInfoSection />
 			</Stack>
 		</Container>
 	);

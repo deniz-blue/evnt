@@ -1,5 +1,5 @@
 import { Group, Stack, Text } from "@mantine/core";
-import { IconCalendar, IconClock, IconGlobe, IconMapPin } from "@tabler/icons-react";
+import { IconCalendar, IconClock, IconMapPin, IconWorld } from "@tabler/icons-react";
 import type { EventData } from "@evnt/schema";
 import { Trans } from "./Trans";
 import { CountryFlag } from "../../content/address/CountryFlag";
@@ -11,7 +11,7 @@ export const EventInstanceList = ({ value }: { value: EventData }) => {
             {value.venues.map((venue, venueIndex) => (
                 <Group key={venueIndex} gap={4}>
                     {venue.venueType === "physical" && <IconMapPin />}
-                    {venue.venueType === "online" && <IconGlobe />}
+                    {venue.venueType === "online" && <IconWorld />}
                     <Stack gap={0}>
                         <Text inline span>
                             <Trans t={venue.venueName} />

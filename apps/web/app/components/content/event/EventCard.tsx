@@ -8,10 +8,12 @@ export const EventCard = ({
     variant = "card",
     value,
     id,
+    menu,
 }: {
     variant?: "horizontal" | "card";
     value: EventData;
     id?: number;
+    menu?: React.ReactNode;
 }) => {
     return (
         <Paper
@@ -28,7 +30,7 @@ export const EventCard = ({
                             <Trans t={value.description} />
                         </Text>
                     </Stack>
-                    <EventContextMenu value={value} id={id} />
+                    {menu}
                 </Group>
 
                 {variant === "card" && (

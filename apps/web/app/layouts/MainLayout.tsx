@@ -1,14 +1,15 @@
 import { AppShell, Box, Button, Group, Loader } from "@mantine/core";
 import { useEffect } from "react";
 import { Link, Outlet } from "react-router";
-import { useEventDatabase } from "../lib/stores/useEventStore";
+import { useEventStore } from "../lib/stores/useEventStore";
 import { useEventRedirectorStore } from "../hooks/useEventRedirector";
+import { LinkOpenHandler } from "../components/app/handlers/LinkOpenHandler";
 
 export default function MainLayout() {
     useEffect(() => {
-        useEventDatabase.getState().init();
-        useEventRedirectorStore.getState().initialize();
-    }, []);
+        useEventStore.getState().dbInitialize();
+        return () => void useEventStore.getState().dbUninitialize();
+    }, [useEventStore]);
 
     return (
         <AppShell
@@ -31,12 +32,14 @@ export default function MainLayout() {
             <AppShell.Main>
                 <Outlet />
             </AppShell.Main>
+
+            <LinkOpenHandler />
         </AppShell>
     );
 };
 
 export const DatabaseStateView = () => {
-    const idle = useEventDatabase((state) => state.idle);
+    const idle = useEventStore((state) => state.dbIdle);
 
     return (
         <Box>

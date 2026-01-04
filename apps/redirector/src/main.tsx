@@ -48,15 +48,8 @@ async function main() {
 			return;
 		};
 
-		if(!await document.hasStorageAccess()) {
-			debug?.("Requesting storage access...");
-			try {
-				await document.requestStorageAccess();
-				debug?.("Storage access granted");
-			} catch(e) {
-				console.warn("[event.nya.pub] Storage access denied", e);
-			}
-		}
+		let hasStorageAccess = await document.hasStorageAccess().catch(() => false);
+		if(!hasStorageAccess) console.warn("[event.nya.pub] No storage access in iframe!");
 
 		type IFrameInput = {
 			type: "isDefaultInstance";
@@ -66,6 +59,8 @@ async function main() {
 
 		type IFrameOutput = {
 			type: "ready";
+		} | {
+			type: "storageAccessDenied";
 		} | {
 			type: "instanceChanged";
 		} | {
@@ -110,6 +105,7 @@ async function main() {
 			}
 		};
 
+		if(!hasStorageAccess) send({ type: "storageAccessDenied" }, "*");
 		send({ type: "ready" }, "*");
 
 		return;
