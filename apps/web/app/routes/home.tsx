@@ -1,7 +1,7 @@
 import { InstanceInfoSection } from "../components/app/instance/InstanceInfoSection";
 import { EventCard } from "../components/content/event/EventCard";
-import { useEventStore } from "../lib/stores/useEventStore";
-import { useHomeStore } from "../lib/stores/useHomeStore";
+import { useEventStore } from "../stores/useEventStore";
+import { useHomeStore } from "../stores/useHomeStore";
 import type { Route } from "./+types/home";
 import { Button, Container, Stack, Title } from "@mantine/core";
 

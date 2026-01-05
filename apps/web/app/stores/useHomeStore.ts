@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { persist } from "zustand/middleware";
+import { LOCALSTORAGE_HOME_KEY } from "../constants";
 
 interface HomeState {
     pinnedEventIds: number[];
@@ -25,7 +26,8 @@ export const useHomeStore = create<HomeState & HomeActions>()(
             }),
         })),
         {
-            name: "events-app:home",
+            name: LOCALSTORAGE_HOME_KEY,
+            version: 1,
         }
     ),
 );

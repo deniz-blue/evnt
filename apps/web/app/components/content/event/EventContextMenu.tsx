@@ -2,10 +2,10 @@ import { ActionIcon, Code, Menu } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { IconDotsVertical, IconPinned, IconPinnedOff, IconTrash } from "@tabler/icons-react";
-import { useEventStore } from "../../../lib/stores/useEventStore";
-import { useHomeStore } from "../../../lib/stores/useHomeStore";
+import { useEventStore } from "../../../stores/useEventStore";
+import { useHomeStore } from "../../../stores/useHomeStore";
 import type { StoredEvent } from "../../../models/StoredEvent";
-import { EVENT_REDIRECTOR_URL } from "../../../hooks/useEventRedirector";
+import { EVENT_REDIRECTOR_URL } from "../../../constants";
 
 export const EventContextMenu = ({ event }: { event: StoredEvent }) => {
     const isPinned = useHomeStore((state) => state.pinnedEventIds.includes(event.id!));

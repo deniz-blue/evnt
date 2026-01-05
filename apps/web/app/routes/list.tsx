@@ -1,5 +1,5 @@
 import { ActionIcon, Group, Menu, SimpleGrid, Stack, TextInput } from "@mantine/core";
-import { useEventStore } from "../lib/stores/useEventStore";
+import { useEventStore } from "../stores/useEventStore";
 import { useState } from "react";
 import { EventDataSchema } from "@evnt/schema";
 import { UtilTranslations } from "@evnt/schema/utils";

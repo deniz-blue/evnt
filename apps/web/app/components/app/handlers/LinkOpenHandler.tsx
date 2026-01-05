@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router";
 import { fetchValidate } from "../../../lib/util/fetchValidate";
 import { EventDataSchema } from "@evnt/schema";
 import { notifications } from "@mantine/notifications";
-import { useEventStore } from "../../../lib/stores/useEventStore";
+import { useEventStore } from "../../../stores/useEventStore";
 
 export const LinkOpenHandler = () => {
     const [searchParams, setSearchParams] = useSearchParams();

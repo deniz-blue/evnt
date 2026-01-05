@@ -1,7 +1,9 @@
 import { create } from "zustand";
-import type { StoredEvent } from "../../models/StoredEvent";
+import type { StoredEvent } from "../models/StoredEvent";
 import { EventDataSchema, type EventData } from "@evnt/schema";
-import { createIDBSlice, type IDBStore } from "./createIDBSlice";
+import { createIDBSlice, type IDBStore } from "./slices/createIDBSlice";
+import { createTasksSlice, type TasksStore } from "./slices/createTasksSlice";
+import { DATABASE_NAME, STORE_NAME } from "../constants";
 
 interface EventStore {
     createLocalEvent: (data: EventData) => Promise<void>;
@@ -11,30 +13,37 @@ interface EventStore {
     updateEventData: (id: number, data: EventData) => Promise<void>;
 }
 
-const DatabaseName = "event-app:events-db";
-const StoreName = "events";
-
-export const useEventStore = create<EventStore & IDBStore<StoredEvent>>((set, get, s) => ({
+export const useEventStore = create<EventStore & IDBStore<StoredEvent> & TasksStore>((set, get, s) => ({
+    ...createTasksSlice()(set, get, s),
     ...createIDBSlice<StoredEvent>({
-        databaseName: DatabaseName,
-        storeName: StoreName,
+        databaseName: DATABASE_NAME,
+        storeName: STORE_NAME,
     })(set, get, s),
     
     createLocalEvent: async (data: EventData) => {
         get().dbMutate(async (db) => {
-            await db.add(StoreName, { source: { type: "local" }, data, timestamp: Date.now() });
+            await db.add(STORE_NAME, { source: { type: "local" }, data, timestamp: Date.now() });
+        }, {
+            title: "Creating local event",
+            notify: true,
         });
     },
 
     createRemoteEvent: async (url: string, data: EventData) => {
         get().dbMutate(async (db) => {
-            await db.add(StoreName, { source: { type: "url", data: url }, data, timestamp: Date.now() });
+            await db.add(STORE_NAME, { source: { type: "url", data: url }, data, timestamp: Date.now() });
+        }, {
+            title: "Creating remote event",
+            notify: true,
         });
     },
 
     deleteLocalEvent: async (id: number) => {
         await get().dbMutate(async (db) => {
-            await db.delete(StoreName, id);
+            await db.delete(STORE_NAME, id);
+        }, {
+            title: "Deleting local event",
+            notify: true,
         });
     },
 
@@ -58,7 +67,7 @@ export const useEventStore = create<EventStore & IDBStore<StoredEvent>>((set, ge
         await get().dbMutate(async (db) => {
             const storedEvent = get().data.find(e => e.id === id);
             if (!storedEvent) return;
-            await db.put(StoreName, { ...storedEvent, data });
+            await db.put(STORE_NAME, { ...storedEvent, data });
         });
     },
 }));
