@@ -1,18 +1,21 @@
-import type { EventData } from "@evnt/schema";
+import type { IDatabase } from "./interface";
+import { config } from "../config/env";
+import MemoryDatabaseImpl from "./adapters/memory";
+import PostgresDatabaseImpl from "./adapters/postgres";
 
-export interface EventRecord {
-    id: string;
-    data: EventData;
-    // ... any other metadata fields later
+const createDatabaseImpl = (): IDatabase => {
+    const klass = ({
+        memory: MemoryDatabaseImpl,
+        postgres: PostgresDatabaseImpl,
+    } as Partial<Record<typeof config["DB_TYPE"], new () => IDatabase>>)[config.DB_TYPE];
+
+    if(!klass) {
+        console.log(`Unsupported DB_TYPE: ${config.DB_TYPE}`);
+        console.log(`Falling back to in-memory database.`);
+        return new MemoryDatabaseImpl();
+    }
+
+    return new klass();
 };
 
-export interface IDatabase {
-    init?: () => Promise<void>;
-
-    // Event Data
-    getEvent: (id: string) => Promise<EventRecord | null>;
-    deleteEvent: (id: string) => Promise<void>;
-    setEventData: (id: string, data: EventData) => Promise<void>;
-};
-
-export const db = {} as IDatabase;
+export const db = createDatabaseImpl();

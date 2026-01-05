@@ -31,7 +31,7 @@ app.patch(
         if (!validated.success)
             return c.json(zodValidationError(validated.error), 400);
 
-        await db.setEventData(id, validated.data);
+        await db.updateEventData(id, validated.data);
 
         return c.json(validated.data);
     },

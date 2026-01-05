@@ -10,6 +10,7 @@
     "./hc": "./src/hc.js"
   },
   "dependencies": {
+    "@evnt/json-patch-schema": "workspace:0.0.1-alpha.0",
     "@evnt/schema": "workspace:*",
     "@hono/node-server": "^1.19.6",
     "@hono/oauth-providers": "^0.8.5",
@@ -17,11 +18,13 @@
     "hono": "^4.11.3",
     "hono-openapi": "^1.1.2",
     "json-patch-rfc": "^1.0.2",
+    "pg": "^8.16.3",
     "zod": "^4.2.1"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:^",
     "@types/node": "^20.11.17",
+    "@types/pg": "^8.16.0",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3",
     "zod-openapi": "^5.4.5"
