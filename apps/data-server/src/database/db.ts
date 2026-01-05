@@ -19,3 +19,10 @@ const createDatabaseImpl = (): IDatabase => {
 };
 
 export const db = createDatabaseImpl();
+
+db.init?.()
+    .then(() => console.log("Database initialized"))
+    .catch((err) => {
+        console.error("Failed to initialize database:", err);
+        process.exit(1);
+    });

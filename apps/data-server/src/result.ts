@@ -1,14 +1,14 @@
 import { resolver } from "hono-openapi";
 import z, { ZodError, ZodType } from "zod";
 
-export const APISuccess = <T extends ZodType>(schema: T) => ({
-    description: "Success",
+export const APISuccess = <T extends ZodType>(schema: T, description = "Success") => ({
+    description,
     content: {
         "application/json": {
             schema: resolver(schema),
         },
     },
-} as const);
+});
 
 export const APIErrorCodeSchema = z.enum([
     "NOT_FOUND",

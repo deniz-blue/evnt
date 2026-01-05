@@ -16,4 +16,10 @@ export const config = z.object({
     // MongoDB settings
     MONGODB_URI: z.string().default("mongodb://localhost:27017/events"),
     MONGODB_DB_NAME: z.string().default("events"),
+
+    // OAuth settings
+    GITHUB_CLIENT_ID: z.string().optional(),
+    GITHUB_CLIENT_SECRET: z.string().optional(),
+    DISCORD_CLIENT_ID: z.string().optional(),
+    DISCORD_CLIENT_SECRET: z.string().optional(),
 }).parse(process.env);
