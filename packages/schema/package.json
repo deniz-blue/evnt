@@ -1,6 +1,6 @@
 {
     "name": "@evnt/schema",
-    "version": "0.0.1-alpha.2",
+    "version": "0.0.1-alpha.3",
     "type": "module",
     "author": "deniz.blue",
     "keywords": [],
@@ -12,11 +12,11 @@
         "./utils": "./src/utils.ts"
     },
     "publishConfig": {
-        "main": "dist/index.js",
-        "types": "dist/index.d.ts",
+        "main": "./dist/index.js",
+        "types": "./dist/index.d.ts",
         "exports": {
-            ".": "dist/index.js",
-            "./utils": "dist/utils.js"
+            ".": "./dist/index.js",
+            "./utils": "./dist/utils.js"
         }
     },
     "homepage": "https://github.com/deniz-blue/events-format/tree/main/packages/schema#readme",
