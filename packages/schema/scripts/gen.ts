@@ -1,4 +1,4 @@
-import * as schemas from "../src/index.js";
+import * as module from "../src/index.js";
 import { convertSchemas, formatModelsAsMarkdown } from 'zod2md';
 //@ts-ignore
 import { writeFileSync } from "node:fs";
@@ -8,7 +8,7 @@ const MD_PATH = new URL("../../../docs/SCHEMA.md", import.meta.url);
 
 // Generate JSON Schema
 
-const eventDataSchema = schemas.EventDataSchema.toJSONSchema({
+const eventDataSchema = module.EventDataSchema.toJSONSchema({
     override(ctx) {
         // Remove examples/defaultSnippets/default from TranslationsSchema to reduce size
         if (!!ctx.jsonSchema.$ref) {
@@ -26,14 +26,16 @@ console.log("Exported json schema");
 
 // Generate MD documentation
 
-const list = convertSchemas(
-    Object.entries(schemas).map(([name, schema]) => ({
+const { $ID, ...schemas } = module;
+const namedModels = Object.entries(schemas)
+    .map(([name, schema]) => ({
         name,
         schema,
         path: `schemas/${name}`,
-    })),
-);
-list.sort((a, b) => (a.name||"").localeCompare(b.name||""));
+    }));
+
+const list = convertSchemas(namedModels);
+list.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
 // Put EventDataSchema first
 const eventDataIndex = list.findIndex((m) => m.name === "EventDataSchema");
 if (eventDataIndex !== -1) {

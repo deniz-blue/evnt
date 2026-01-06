@@ -8,6 +8,13 @@ export const PartialDateSchema = z.string()
     .meta({
         id: "PartialDate",
         description: "An ISO 8601 date and time string that may be incomplete (e.g. '2023', '2023-05') and does not include timezone information (forced UTC)",
+        regex: "^\\d{4}(-\\d{2}(-\\d{2}(T\\d{2}:\\d{2})?)?)?$",
+        examples: [
+            "2023",
+            "2023-05",
+            "2023-05-15",
+            "2023-05-15T13:45",
+        ],
         // vscode snippet support
         defaultSnippets: [
             {
