@@ -6,7 +6,7 @@ import {
 	Scripts,
 	ScrollRestoration,
 } from "react-router";
-import { ActionIcon, createTheme, MantineProvider } from "@mantine/core";
+import { createTheme, MantineProvider, type ActionIconProps, type ButtonProps, type TooltipProps } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
 import type { Route } from "./+types/root";
@@ -32,12 +32,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
 							ActionIcon: {
 								defaultProps: {
 									variant: "light",
-								},
+								} as ActionIconProps,
 							},
 							Button: {
 								defaultProps: {
 									variant: "light",
-								},
+								} as ButtonProps,
+							},
+							Tooltip: {
+								defaultProps: {
+									withArrow: true,
+									arrowOffset: 4,
+									arrowSize: 6,
+									color: "gray",
+									opacity: 0.9,
+								} as TooltipProps,
 							},
 						},
 					})}

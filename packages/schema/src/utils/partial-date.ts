@@ -48,8 +48,8 @@ export class UtilPartialDate {
         return value.slice(-5);
     }
 
-    static getDatePart(value: PartialDate): string {
-        return value.slice(0, 10);
+    static getDatePart(value: PartialDate): PartialDate {
+        return value.slice(0, 10) as PartialDate;
     }
 
     static toIntlString(value: PartialDate, {

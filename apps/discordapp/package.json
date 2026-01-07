@@ -21,6 +21,7 @@
     "tsx": "^4.21.0"
   },
   "dependencies": {
+    "@evnt/pretty": "workspace:^",
     "discord-jsx-renderer": "^0.0.13",
     "discord.js": "^14.25.1",
     "dotenv": "^17.2.3",

@@ -23,6 +23,15 @@ export class UtilPartialDateRange {
         );
     }
 
+    static isSameTime(range: PartialDateRange): boolean {
+        if (!this.isRange(range)) return false;
+        return (
+            UtilPartialDate.hasTime(range.start) &&
+            UtilPartialDate.hasTime(range.end) &&
+            (UtilPartialDate.getTimePart(range.start) === UtilPartialDate.getTimePart(range.end))
+        );
+    }
+
     static isNextDay(range: PartialDateRange): boolean {
         if (!this.isRange(range)) return false;
         const ONE_DAY = 86400000; // milliseconds in a day

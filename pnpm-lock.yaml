@@ -34,7 +34,7 @@ importers:
         version: 4.11.3
       hono-openapi:
         specifier: ^1.1.2
-        version: 1.1.2(@hono/standard-validator@0.2.1(@standard-schema/spec@1.1.0)(hono@4.11.3))(@standard-community/standard-json@0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1))(@standard-community/standard-openapi@0.2.9(@standard-community/standard-json@0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1))(@standard-schema/spec@1.1.0)(openapi-types@12.1.3)(valibot@1.2.0(typescript@5.9.3))(zod-openapi@5.4.5(zod@4.2.1))(zod@4.2.1))(@types/json-schema@7.0.15)(hono@4.11.3)(openapi-types@12.1.3)
+        version: 1.1.2(@hono/standard-validator@0.2.1(@standard-schema/spec@1.1.0)(hono@4.11.3))(@standard-community/standard-json@0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1))(@standard-community/standard-openapi@0.2.9(@standard-community/standard-json@0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1))(@standard-schema/spec@1.1.0)(openapi-types@12.1.3)(valibot@1.2.0(typescript@5.9.3))(zod-openapi@5.4.6(zod@4.2.1))(zod@4.2.1))(@types/json-schema@7.0.15)(hono@4.11.3)(openapi-types@12.1.3)
       json-patch-rfc:
         specifier: ^1.0.2
         version: 1.0.2
@@ -61,11 +61,14 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
       zod-openapi:
-        specifier: ^5.4.5
-        version: 5.4.5(zod@4.2.1)
+        specifier: ^5.4.6
+        version: 5.4.6(zod@4.2.1)
 
   apps/discordapp:
     dependencies:
+      '@evnt/pretty':
+        specifier: workspace:^
+        version: link:../../packages/event-pretty
       discord-jsx-renderer:
         specifier: ^0.0.13
         version: 0.0.13(discord.js@14.25.1)(react@19.2.1)
@@ -146,24 +149,27 @@ importers:
       '@denizblue/mantine-zod-form':
         specifier: workspace:*
         version: link:../../packages/mantine-zod-form
+      '@evnt/pretty':
+        specifier: workspace:^
+        version: link:../../packages/event-pretty
       '@evnt/schema':
         specifier: workspace:*
         version: link:../../packages/schema
       '@mantine/core':
-        specifier: ^8.3.9
-        version: 8.3.9(@mantine/hooks@8.3.9(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+        specifier: ^8.3.11
+        version: 8.3.11(@mantine/hooks@8.3.11(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       '@mantine/dates':
-        specifier: ^8.3.9
-        version: 8.3.9(@mantine/core@8.3.9(@mantine/hooks@8.3.9(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@mantine/hooks@8.3.9(react@19.2.1))(dayjs@1.11.19)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+        specifier: ^8.3.11
+        version: 8.3.11(@mantine/core@8.3.11(@mantine/hooks@8.3.11(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@mantine/hooks@8.3.11(react@19.2.1))(dayjs@1.11.19)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       '@mantine/hooks':
-        specifier: ^8.3.9
-        version: 8.3.9(react@19.2.1)
+        specifier: ^8.3.11
+        version: 8.3.11(react@19.2.1)
       '@mantine/modals':
-        specifier: ^8.3.10
-        version: 8.3.10(@mantine/core@8.3.9(@mantine/hooks@8.3.9(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@mantine/hooks@8.3.9(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+        specifier: ^8.3.11
+        version: 8.3.11(@mantine/core@8.3.11(@mantine/hooks@8.3.11(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@mantine/hooks@8.3.11(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       '@mantine/notifications':
-        specifier: ^8.3.9
-        version: 8.3.9(@mantine/core@8.3.9(@mantine/hooks@8.3.9(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@mantine/hooks@8.3.9(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+        specifier: ^8.3.11
+        version: 8.3.11(@mantine/core@8.3.11(@mantine/hooks@8.3.11(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@mantine/hooks@8.3.11(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       '@react-router/node':
         specifier: ^7.10.1
         version: 7.10.1(react-router@7.10.1(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(typescript@5.9.3)
@@ -226,6 +232,22 @@ importers:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.9.3)(vite@7.2.6(@types/node@22.19.1)(lightningcss@1.30.2)(tsx@4.21.0))
 
+  packages/event-pretty:
+    dependencies:
+      '@evnt/schema':
+        specifier: workspace:0.0.1-alpha.3
+        version: link:../schema
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
   packages/json-patch-schema:
     dependencies:
       zod:
@@ -242,17 +264,17 @@ importers:
   packages/mantine-zod-form:
     dependencies:
       '@mantine/core':
-        specifier: ^8.3.9
-        version: 8.3.9(@mantine/hooks@8.3.9(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+        specifier: ^8.3.11
+        version: 8.3.11(@mantine/hooks@8.3.11(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       '@mantine/form':
-        specifier: ^8.3.10
-        version: 8.3.10(react@19.2.1)
+        specifier: ^8.3.11
+        version: 8.3.11(react@19.2.1)
       '@tabler/icons-react':
         specifier: ^3.35.0
         version: 3.35.0(react@19.2.1)
       mantine-form-zod-resolver:
         specifier: ^1.3.0
-        version: 1.3.0(@mantine/form@8.3.10(react@19.2.1))(zod@4.2.1)
+        version: 1.3.0(@mantine/form@8.3.11(react@19.2.1))(zod@4.2.1)
       react:
         specifier: ^19.2.1
         version: 19.2.1
@@ -892,50 +914,50 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@mantine/core@8.3.9':
-    resolution: {integrity: sha512-ivj0Crn5N521cI2eWZBsBGckg0ZYRqfOJz5vbbvYmfj65bp0EdsyqZuOxXzIcn2aUScQhskfvzyhV5XIUv81PQ==}
+  '@mantine/core@8.3.11':
+    resolution: {integrity: sha512-FWXp94tiTFdh8BKc7UTNdIuumD96JFxLF/VvUWGRzf5i563Ye0Ma/aZtOBwpdEtdIQkojOhoMMV76k5toOQgEQ==}
     peerDependencies:
-      '@mantine/hooks': 8.3.9
+      '@mantine/hooks': 8.3.11
       react: ^18.x || ^19.x
       react-dom: ^18.x || ^19.x
 
-  '@mantine/dates@8.3.9':
-    resolution: {integrity: sha512-XOoGrY2hydqVrn/eBmhmJnZW6fAIOTOv0TLlN/a+C/sMxAgwNLqk+hqU6Rd3WE4Hm00J1BmbJJt/g/KrvnEpNg==}
+  '@mantine/dates@8.3.11':
+    resolution: {integrity: sha512-e5QBHMpTjKDkYHFEYkD3bho4Kk/M04jmXLu9Txb/XkWVDb5A0CNGg6+A8TinXING4B7kn2dMOLmL3s7r6vnJJA==}
     peerDependencies:
-      '@mantine/core': 8.3.9
-      '@mantine/hooks': 8.3.9
+      '@mantine/core': 8.3.11
+      '@mantine/hooks': 8.3.11
       dayjs: '>=1.0.0'
       react: ^18.x || ^19.x
       react-dom: ^18.x || ^19.x
 
-  '@mantine/form@8.3.10':
-    resolution: {integrity: sha512-TuBmCUIH0qHUig+y9My3bLL9CRoW4g9bijIF6743gqVh0o/daSwplc2TTVMj6sl+F1MR+SJiHtAC8FoR7fdhNw==}
+  '@mantine/form@8.3.11':
+    resolution: {integrity: sha512-546npW8gHCXUShVL/OOnKBJ1So5bcKTdmiNxzXn8q2eGhMIB+zdj7/v4QUz2j55OjDRPq0dAVJhzDjLfzeibTg==}
     peerDependencies:
       react: ^18.x || ^19.x
 
-  '@mantine/hooks@8.3.9':
-    resolution: {integrity: sha512-Dfz7W0+K1cq4Gb1WFQCZn8tsMXkLH6MV409wZR/ToqsxdNDUMJ/xxbfnwEXWEZjXNJd1wDETHgc+cZG2lTe3Xw==}
+  '@mantine/hooks@8.3.11':
+    resolution: {integrity: sha512-WJFKDnJJM2fAOCkrO8qRsi3wDdicSFqElruPj5TEYWDL93vl0pITOyN0oRF93bUtx190waqela3edfGH3r5/1g==}
     peerDependencies:
       react: ^18.x || ^19.x
 
-  '@mantine/modals@8.3.10':
-    resolution: {integrity: sha512-XopCrP8dindhzSDazU47BgU8TVsiOyEG0u1UMJJ4u8TdvBctP7QVeJmGKj+B4MRHk2cHrjIF38dEGJhDgTITEg==}
+  '@mantine/modals@8.3.11':
+    resolution: {integrity: sha512-LFLpIanPWBMmz3OTunYKzdL+t2p3iu2LiEPlvfVEW9bD45dsMcuUPX4cinCW/E1/qT7X1rhTIdbQuOTUtdw4BQ==}
     peerDependencies:
-      '@mantine/core': 8.3.10
-      '@mantine/hooks': 8.3.10
-      react: ^18.x || ^19.x
-      react-dom: ^18.x || ^19.x
-
-  '@mantine/notifications@8.3.9':
-    resolution: {integrity: sha512-emUdoCyaccf/NuNmJ4fQgloJ7hEod0Pde7XIoD9xUUztVchL143oWRU2gYm6cwqzSyjpjTaqPXfz5UvEBRYjZw==}
-    peerDependencies:
-      '@mantine/core': 8.3.9
-      '@mantine/hooks': 8.3.9
+      '@mantine/core': 8.3.11
+      '@mantine/hooks': 8.3.11
       react: ^18.x || ^19.x
       react-dom: ^18.x || ^19.x
 
-  '@mantine/store@8.3.9':
-    resolution: {integrity: sha512-Z4tYW597mD3NxHLlJ3OJ1aKucmwrD9nhqobz+142JNw01aHqzKjxVXlu3L5GGa7F3u3OjXJk/qb1QmUs4sU+Jw==}
+  '@mantine/notifications@8.3.11':
+    resolution: {integrity: sha512-bcFzw9m4uzxHMflNeWqa9imCy8T5mHCAV8WRqzAwK/Yls8GL9uJoQH/e1v6Pl4g4yvBmaF9yUHu7Zq3iyKhHhQ==}
+    peerDependencies:
+      '@mantine/core': 8.3.11
+      '@mantine/hooks': 8.3.11
+      react: ^18.x || ^19.x
+      react-dom: ^18.x || ^19.x
+
+  '@mantine/store@8.3.11':
+    resolution: {integrity: sha512-ku48CzN9HobVUjd7o41voaaHKz2CMrtkk454vwXWAspfbpqR4hklL5zq/MzctETFCG6HBDiPRfZAvNm8WaM3Tw==}
     peerDependencies:
       react: ^18.x || ^19.x
 
@@ -2564,8 +2586,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  zod-openapi@5.4.5:
-    resolution: {integrity: sha512-DVLBNsnggh8k/Yq7qp+NeQCH6JuLIyGzUQWA1wN5+7DpQJSwC7WYR/2lE6uQDmGcS/X6l4tUyYFpeG4nk3nOpA==}
+  zod-openapi@5.4.6:
+    resolution: {integrity: sha512-P2jsOOBAq/6hCwUsMCjUATZ8szkMsV5VAwZENfyxp2Hc/XPJQpVwAgevWZc65xZauCwWB9LAn7zYeiCJFAEL+A==}
     engines: {node: '>=20'}
     peerDependencies:
       zod: ^3.25.74 || ^4.0.0
@@ -3132,10 +3154,10 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@mantine/core@8.3.9(@mantine/hooks@8.3.9(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)':
+  '@mantine/core@8.3.11(@mantine/hooks@8.3.11(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)':
     dependencies:
       '@floating-ui/react': 0.27.16(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
-      '@mantine/hooks': 8.3.9(react@19.2.1)
+      '@mantine/hooks': 8.3.11(react@19.2.1)
       clsx: 2.1.1
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
@@ -3146,42 +3168,42 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@mantine/dates@8.3.9(@mantine/core@8.3.9(@mantine/hooks@8.3.9(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@mantine/hooks@8.3.9(react@19.2.1))(dayjs@1.11.19)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)':
+  '@mantine/dates@8.3.11(@mantine/core@8.3.11(@mantine/hooks@8.3.11(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@mantine/hooks@8.3.11(react@19.2.1))(dayjs@1.11.19)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)':
     dependencies:
-      '@mantine/core': 8.3.9(@mantine/hooks@8.3.9(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
-      '@mantine/hooks': 8.3.9(react@19.2.1)
+      '@mantine/core': 8.3.11(@mantine/hooks@8.3.11(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@mantine/hooks': 8.3.11(react@19.2.1)
       clsx: 2.1.1
       dayjs: 1.11.19
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
 
-  '@mantine/form@8.3.10(react@19.2.1)':
+  '@mantine/form@8.3.11(react@19.2.1)':
     dependencies:
       fast-deep-equal: 3.1.3
       klona: 2.0.6
       react: 19.2.1
 
-  '@mantine/hooks@8.3.9(react@19.2.1)':
+  '@mantine/hooks@8.3.11(react@19.2.1)':
     dependencies:
       react: 19.2.1
 
-  '@mantine/modals@8.3.10(@mantine/core@8.3.9(@mantine/hooks@8.3.9(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@mantine/hooks@8.3.9(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)':
+  '@mantine/modals@8.3.11(@mantine/core@8.3.11(@mantine/hooks@8.3.11(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@mantine/hooks@8.3.11(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)':
     dependencies:
-      '@mantine/core': 8.3.9(@mantine/hooks@8.3.9(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
-      '@mantine/hooks': 8.3.9(react@19.2.1)
+      '@mantine/core': 8.3.11(@mantine/hooks@8.3.11(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@mantine/hooks': 8.3.11(react@19.2.1)
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
 
-  '@mantine/notifications@8.3.9(@mantine/core@8.3.9(@mantine/hooks@8.3.9(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@mantine/hooks@8.3.9(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)':
+  '@mantine/notifications@8.3.11(@mantine/core@8.3.11(@mantine/hooks@8.3.11(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@mantine/hooks@8.3.11(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)':
     dependencies:
-      '@mantine/core': 8.3.9(@mantine/hooks@8.3.9(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
-      '@mantine/hooks': 8.3.9(react@19.2.1)
-      '@mantine/store': 8.3.9(react@19.2.1)
+      '@mantine/core': 8.3.11(@mantine/hooks@8.3.11(react@19.2.1))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@mantine/hooks': 8.3.11(react@19.2.1)
+      '@mantine/store': 8.3.11(react@19.2.1)
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
       react-transition-group: 4.4.5(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
 
-  '@mantine/store@8.3.9(react@19.2.1)':
+  '@mantine/store@8.3.11(react@19.2.1)':
     dependencies:
       react: 19.2.1
 
@@ -3388,7 +3410,7 @@ snapshots:
       valibot: 1.2.0(typescript@5.9.3)
       zod: 4.2.1
 
-  '@standard-community/standard-openapi@0.2.9(@standard-community/standard-json@0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1))(@standard-schema/spec@1.1.0)(openapi-types@12.1.3)(valibot@1.2.0(typescript@5.9.3))(zod-openapi@5.4.5(zod@4.2.1))(zod@4.2.1)':
+  '@standard-community/standard-openapi@0.2.9(@standard-community/standard-json@0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1))(@standard-schema/spec@1.1.0)(openapi-types@12.1.3)(valibot@1.2.0(typescript@5.9.3))(zod-openapi@5.4.6(zod@4.2.1))(zod@4.2.1)':
     dependencies:
       '@standard-community/standard-json': 0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1)
       '@standard-schema/spec': 1.1.0
@@ -3396,7 +3418,7 @@ snapshots:
     optionalDependencies:
       valibot: 1.2.0(typescript@5.9.3)
       zod: 4.2.1
-      zod-openapi: 5.4.5(zod@4.2.1)
+      zod-openapi: 5.4.6(zod@4.2.1)
 
   '@standard-schema/spec@1.1.0': {}
 
@@ -3964,10 +3986,10 @@ snapshots:
     dependencies:
       hermes-estree: 0.25.1
 
-  hono-openapi@1.1.2(@hono/standard-validator@0.2.1(@standard-schema/spec@1.1.0)(hono@4.11.3))(@standard-community/standard-json@0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1))(@standard-community/standard-openapi@0.2.9(@standard-community/standard-json@0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1))(@standard-schema/spec@1.1.0)(openapi-types@12.1.3)(valibot@1.2.0(typescript@5.9.3))(zod-openapi@5.4.5(zod@4.2.1))(zod@4.2.1))(@types/json-schema@7.0.15)(hono@4.11.3)(openapi-types@12.1.3):
+  hono-openapi@1.1.2(@hono/standard-validator@0.2.1(@standard-schema/spec@1.1.0)(hono@4.11.3))(@standard-community/standard-json@0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1))(@standard-community/standard-openapi@0.2.9(@standard-community/standard-json@0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1))(@standard-schema/spec@1.1.0)(openapi-types@12.1.3)(valibot@1.2.0(typescript@5.9.3))(zod-openapi@5.4.6(zod@4.2.1))(zod@4.2.1))(@types/json-schema@7.0.15)(hono@4.11.3)(openapi-types@12.1.3):
     dependencies:
       '@standard-community/standard-json': 0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1)
-      '@standard-community/standard-openapi': 0.2.9(@standard-community/standard-json@0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1))(@standard-schema/spec@1.1.0)(openapi-types@12.1.3)(valibot@1.2.0(typescript@5.9.3))(zod-openapi@5.4.5(zod@4.2.1))(zod@4.2.1)
+      '@standard-community/standard-openapi': 0.2.9(@standard-community/standard-json@0.3.5(@standard-schema/spec@1.1.0)(@types/json-schema@7.0.15)(quansync@0.2.11)(valibot@1.2.0(typescript@5.9.3))(zod@4.2.1))(@standard-schema/spec@1.1.0)(openapi-types@12.1.3)(valibot@1.2.0(typescript@5.9.3))(zod-openapi@5.4.6(zod@4.2.1))(zod@4.2.1)
       '@types/json-schema': 7.0.15
       openapi-types: 12.1.3
     optionalDependencies:
@@ -4101,9 +4123,9 @@ snapshots:
 
   magic-bytes.js@1.12.1: {}
 
-  mantine-form-zod-resolver@1.3.0(@mantine/form@8.3.10(react@19.2.1))(zod@4.2.1):
+  mantine-form-zod-resolver@1.3.0(@mantine/form@8.3.11(react@19.2.1))(zod@4.2.1):
     dependencies:
-      '@mantine/form': 8.3.10(react@19.2.1)
+      '@mantine/form': 8.3.11(react@19.2.1)
       zod: 4.2.1
 
   mime-db@1.54.0: {}
@@ -4599,7 +4621,7 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-openapi@5.4.5(zod@4.2.1):
+  zod-openapi@5.4.6(zod@4.2.1):
     dependencies:
       zod: 4.2.1
 
