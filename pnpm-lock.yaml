@@ -232,6 +232,25 @@ importers:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.9.3)(vite@7.2.6(@types/node@22.19.1)(lightningcss@1.30.2)(tsx@4.21.0))
 
+  packages/convert:
+    dependencies:
+      '@evnt/schema':
+        specifier: workspace:*
+        version: link:../schema
+      zod:
+        specifier: ^4.2.1
+        version: 4.2.1
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
   packages/event-pretty:
     dependencies:
       '@evnt/schema':

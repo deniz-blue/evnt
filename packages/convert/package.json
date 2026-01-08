@@ -1,0 +1,24 @@
+{
+    "name": "@evnt/convert",
+    "version": "0.0.1",
+    "type": "module",
+    "author": "deniz.blue",
+    "private": true,
+    "keywords": [],
+    "files": [
+        "/dist"
+    ],
+    "exports": {
+        "./foss-events": "./src/foss-events/index.ts",
+        ".": "./src/index.ts"
+    },
+    "devDependencies": {
+        "@repo/typescript-config": "workspace:*",
+        "tsx": "^4.21.0",
+        "typescript": "^5.6.3"
+    },
+    "dependencies": {
+        "@evnt/schema": "workspace:*",
+        "zod": "^4.2.1"
+    }
+}
