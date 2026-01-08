@@ -3,7 +3,7 @@ import { Anchor, Box, Group, Stack, Text, Tooltip } from "@mantine/core";
 import { useCallback, useMemo, type PropsWithChildren, type ReactNode } from "react";
 import { Trans } from "./event/Trans";
 import { AddressSnippetLabel } from "./address/AddressSnippetLabel";
-import { IconCalendar, IconClock, IconExternalLink, IconMapPin, IconWorld } from "@tabler/icons-react";
+import { IconCalendar, IconClock, IconExternalLink, IconMapPin, IconWorld, IconWorldPin } from "@tabler/icons-react";
 import { TimeSnippetLabel } from "./datetime/TimeSnippetLabel";
 import { PartialDateSnippetLabel } from "./datetime/PartialDateSnippetLabel";
 import { TimeRangeSnippetLabel } from "./datetime/TimeRangeSnippetLabel";
@@ -11,9 +11,10 @@ import { PartialDateRangeSnippetLabel } from "./datetime/PartialDateRangeSnippet
 
 export const Snippet = ({ snippet }: { snippet: TSnippet }) => {
     const icon: ReactNode = ({
-        "map-pin": <IconMapPin />,
+        "venue-physical": <IconMapPin />,
+        "venue-online": <IconWorld />,
+        "venue-mixed": <IconWorldPin />,
         calendar: <IconCalendar />,
-        website: <IconWorld />,
         clock: <IconClock />,
         _: null,
     } as Partial<Record<SnippetIcon | "_", ReactNode>>)[snippet.icon ?? "_"] ?? null;

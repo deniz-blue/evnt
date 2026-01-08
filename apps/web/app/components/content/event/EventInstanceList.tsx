@@ -4,7 +4,9 @@ import { snippetEvent } from "@evnt/pretty";
 import { Snippet } from "../Snippet";
 
 export const EventInstanceList = ({ value }: { value: EventData }) => {
-    const snippets = snippetEvent(value);
+    const snippets = snippetEvent(value, {
+        maxVenues: 3,
+    });
 
     return (
         <Stack gap={4}>

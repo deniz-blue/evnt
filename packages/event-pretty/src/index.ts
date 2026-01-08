@@ -15,9 +15,10 @@ export type SnippetLabel =
     | { type: "date-time-range"; value: Range<PartialDate> }
 
 export type SnippetIcon =
+    | "venue-online"
+    | "venue-physical"
+    | "venue-mixed"
     | "calendar"
-    | "website"
-    | "map-pin"
     | "clock"
 
 export interface TSnippet {
@@ -27,7 +28,9 @@ export interface TSnippet {
     children?: TSnippet[];
 };
 
-export const snippetEvent = (data: EventData): TSnippet[] => {
+export const snippetEvent = (data: EventData, opts?: {
+    maxVenues?: number;
+}): TSnippet[] => {
     const snippets: TSnippet[] = [];
 
     const groupedInstances = data.instances.reduce((acc, instance) => {
@@ -40,11 +43,33 @@ export const snippetEvent = (data: EventData): TSnippet[] => {
     for (const [venueIdsJson, instances] of Object.entries(groupedInstances)) {
         const venueIds = JSON.parse(venueIdsJson) as string[];
 
-        for (const venueId of venueIds) {
-            const venue = data.venues?.find(v => v.venueId === venueId);
-            if (!venue) continue;
-            snippets.push(snippetVenue(venue));
+        if (venueIds.length > (opts?.maxVenues ?? Infinity)) {
+            let hasPhysical = false;
+            let hasOnline = false;
+            for (let venueId of venueIds) {
+                const venue = data.venues?.find(v => v.venueId === venueId);
+                if (!venue) continue;
+                if (venue.venueType === "physical") hasPhysical = true;
+                if (venue.venueType === "online") hasOnline = true;
+            };
+
+            snippets.push({
+                icon: hasPhysical && hasOnline ? "venue-mixed" : hasPhysical ? "venue-physical" : "venue-online",
+                label: {
+                    type: "translations",
+                    value: {
+                        en: `${venueIds.length} venues`,
+                    },
+                },
+            });
+        } else {
+            for (const venueId of venueIds) {
+                const venue = data.venues?.find(v => v.venueId === venueId);
+                if (!venue) continue;
+                snippets.push(snippetVenue(venue));
+            }
         }
+
 
         for (const instance of instances) {
             snippets.push(...snippetInstance(instance));
@@ -56,15 +81,15 @@ export const snippetEvent = (data: EventData): TSnippet[] => {
 
 export const snippetVenue = (venue: Venue): TSnippet => {
     let sublabel: SnippetLabel | undefined = undefined;
-    
+
     if (venue.venueType === "physical" && venue.address) {
         sublabel = { type: "address", value: venue.address };
-    } else if(venue.venueType === "online" && venue.url) {
+    } else if (venue.venueType === "online" && venue.url) {
         sublabel = { type: "external-link", value: venue.url };
     }
 
     return {
-        icon: venue.venueType === "physical" ? "map-pin" : "website",
+        icon: venue.venueType === "physical" ? "venue-physical" : "venue-online",
         label: { type: "translations", value: venue.venueName },
         sublabel,
     };
