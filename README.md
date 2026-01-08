@@ -5,9 +5,9 @@ Links:
   - 💎 [Zod Schema](./packages/schema/), which generate:
     - [JSON Schema](./event-data.schema.json)
     - [Markdown Documentation](./docs/SCHEMA.md)
-- [Redirector](./apps/redirector#readme)
+- [Redirector](./docs/APPS.md#redirector)
   - 🌐 [event.nya.pub](https://event.nya.pub)
-- [Web App](./apps/web#readme) (example app that uses the format & APIs)
+- [Web App](./docs/APPS.md#web-app) (example app that uses the format & APIs)
   - 🌐 [devent.pages.dev](https://devent.pages.dev)
 - [data-server](./apps/data-server#readme) (example wip server)
 

@@ -1,21 +1,29 @@
-# Apps
+🔙 [@evnt Project](../README.md)
+
+Table of contents:
+- [Redirector](#redirector)
+    - [Redirector API](#redirector-api)
+- [Web App](#web-app)
 
 ## Redirector
 
-The redirector (currently `event.nya.pub`) allows users to use their preferred event viewing/tracking website/application.
+[Live Website](https://event.nya.pub) / [Source Code](../apps/redirector)
 
-The redirector will show a list of public apps ([data/instances.json](../data/instances.json)) when the user has not set a default app to handle links.
+The redirector acts as a bridge between apps that use the [@evnt Event Format](../README.md); apps share links to the redirector and the redirector takes users to their preferred applications (called instances).
 
-Event viewing/tracking applications should use the redirector domain while sharing events in the [Format spec](./README.md)
+If the user does not have a default instance, a list of public apps ([data/instances.json](../data/instances.json)) are shown in the redirector.
 
 #### Redirector API
 
-- You can redirect to `event.nya.pub` with a few `?` search query parameters:
-  - `?setInstanceUrl=...` sets the instance url
-  - `?clearInstanceUrl` clears the instance url
-  - `?popup` to close the popup after operation
-- You can create an `<iframe>` with src `event.nya.pub/?iframe` to get a messaging API which you can use to check if you are the default instance:
-  - recieve `{ type: "ready" }`
-  - send `{ type: "isDefaultInstance" }`
-  - recieve `{ type: "state", isDefaultInstance: boolean }`
-  - recieve `{ type: "instanceChanged" }`
+You can redirect to `event.nya.pub` with a few `?` search query parameters:
+
+- Redirects if `?action` or `?r` are defined
+- `?setInstanceUrl=<url>` sets the instance url
+- `?clearInstanceUrl` clears the instance url
+- `?popup` to close the popup after operation
+
+## Web App
+
+[Live Instance](https://devent.pages.dev) / [Source Code](../apps/web)
+
+The web app acts as an example application to view and save events.
