@@ -8,6 +8,7 @@ import { TimeSnippetLabel } from "./datetime/TimeSnippetLabel";
 import { PartialDateSnippetLabel } from "./datetime/PartialDateSnippetLabel";
 import { TimeRangeSnippetLabel } from "./datetime/TimeRangeSnippetLabel";
 import { PartialDateRangeSnippetLabel } from "./datetime/PartialDateRangeSnippetLabel";
+import { ExternalLink } from "./base/ExternalLink";
 
 export const Snippet = ({ snippet }: { snippet: TSnippet }) => {
     const icon: ReactNode = ({
@@ -33,15 +34,7 @@ export const Snippet = ({ snippet }: { snippet: TSnippet }) => {
         if (label.type === "time-range") return <TimeRangeSnippetLabel value={label.value} />;
         if (label.type === "date-time-range") return <PartialDateRangeSnippetLabel value={label.value} />;
         if (label.type === "partial-date" || label.type == "date-time") return <PartialDateSnippetLabel value={label.value} />;
-        if (label.type === "external-link") {
-            return (
-                <Tooltip label={label.value}>
-                    <Anchor inline inherit href={label.value} fz="sm" c="dimmed" target="_blank" rel="noopener noreferrer">
-                        {new URL(label.value).hostname} <IconExternalLink size="0.8em" />
-                    </Anchor>
-                </Tooltip>
-            )
-        }
+        if (label.type === "external-link") return <ExternalLink href={label.value} />;
 
         return null;
     }, []);
