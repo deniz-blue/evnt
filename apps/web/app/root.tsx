@@ -15,6 +15,10 @@ import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
 import "@denizblue/mantine-zod-form/style.css";
 
+export const meta: Route.MetaFunction = () => [
+	{ title: "@evnt Viewer" },
+];
+
 export function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en">

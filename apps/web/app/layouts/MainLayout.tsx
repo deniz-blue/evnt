@@ -2,8 +2,8 @@ import { AppShell, Box, Button, Group, Loader } from "@mantine/core";
 import { useEffect } from "react";
 import { Link, Outlet } from "react-router";
 import { useEventStore } from "../stores/useEventStore";
-import { useEventRedirectorStore } from "../hooks/useEventRedirector";
 import { LinkOpenHandler } from "../components/app/handlers/LinkOpenHandler";
+import { EventDetailsOverlay } from "../components/app/overlay/event/EventDetailsOverlay";
 
 export default function MainLayout() {
     useEffect(() => {
@@ -31,6 +31,7 @@ export default function MainLayout() {
             </AppShell.Header>
             <AppShell.Main>
                 <Outlet />
+                <EventDetailsOverlay />
             </AppShell.Main>
 
             <LinkOpenHandler />

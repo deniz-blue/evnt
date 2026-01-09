@@ -3,6 +3,7 @@ import { Trans } from "./Trans";
 import type { EventData } from "@evnt/schema";
 import { EventInstanceList } from "./EventInstanceList";
 import { EventContextMenu } from "./EventContextMenu";
+import { SubtleLink } from "../base/SubtleLink";
 
 export const EventCard = ({
     variant = "card",
@@ -23,9 +24,11 @@ export const EventCard = ({
             <Stack>
                 <Group>
                     <Stack gap={0} flex="1">
-                        <Text fw="bold" span>
-                            <Trans t={value.name} />
-                        </Text>
+                        <SubtleLink if={!!id} to={`?eventId=${id}`}>
+                            <Text fw="bold" span>
+                                <Trans t={value.name} />
+                            </Text>
+                        </SubtleLink>
                         <Text fz="sm" c="dimmed" inline span>
                             <Trans t={value.description} />
                         </Text>
