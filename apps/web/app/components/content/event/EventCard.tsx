@@ -2,8 +2,8 @@ import { Group, Paper, Stack, Text } from "@mantine/core";
 import { Trans } from "./Trans";
 import type { EventData } from "@evnt/schema";
 import { EventInstanceList } from "./EventInstanceList";
-import { EventContextMenu } from "./EventContextMenu";
 import { SubtleLink } from "../base/SubtleLink";
+import { useEventDetailsModal } from "../../../hooks/app/useEventDetailsModal";
 
 export const EventCard = ({
     variant = "card",
@@ -16,6 +16,8 @@ export const EventCard = ({
     id?: number;
     menu?: React.ReactNode;
 }) => {
+    const { openLink } = useEventDetailsModal();
+
     return (
         <Paper
             p="xs"
@@ -26,7 +28,7 @@ export const EventCard = ({
             <Stack>
                 <Group>
                     <Stack gap={0} flex="1">
-                        <SubtleLink if={!!id} to={`?eventId=${id}`}>
+                        <SubtleLink if={!!id} to={openLink(id!.toString())}>
                             <Text fw="bold" span>
                                 <Trans t={value.name} />
                             </Text>

@@ -4,7 +4,7 @@ import { CountryFlag } from "./CountryFlag";
 
 export const AddressSnippetLabel = ({ value }: { value: Address }) => {
     return (
-        <Text fz="sm" c="dimmed" span inline>
+        <Text span inline>
             {value.addr} {value.countryCode && (
                 <CountryFlag countryCode={value.countryCode} />
             )}

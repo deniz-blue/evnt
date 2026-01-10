@@ -2,7 +2,7 @@ import type { EventData } from "@evnt/schema";
 import { Group, Modal, Stack, Text, Title } from "@mantine/core";
 import { Trans } from "../Trans";
 import { SmallTitle } from "../../base/SmallTitle";
-import { snippetInstance, snippetVenue } from "@evnt/pretty";
+import { snippetInstance, snippetVenue, venueGoogleMapsLink, venueOpenStreetMapsLink } from "@evnt/pretty";
 import { Snippet } from "../../Snippet";
 
 export const EventDetailsContent = ({
@@ -25,11 +25,33 @@ export const EventDetailsContent = ({
 
             <Stack gap={0}>
                 <SmallTitle padLeft>
-                    venues
+                    venue{data.venues && data.venues.length !== 1 ? "s" : ""}
                 </SmallTitle>
                 <Stack gap={4}>
                     {data.venues?.map((venue, index) => (
-                        <Snippet snippet={snippetVenue(venue)} />
+                        <Stack key={index} gap={0}>
+                            <Snippet snippet={snippetVenue(venue)} />
+                            <Stack gap={0}>
+                                {venueGoogleMapsLink(venue) && (
+                                    <Snippet snippet={{
+                                        sublabel: {
+                                            type: "external-link",
+                                            name: "View on Google Maps",
+                                            url: venueGoogleMapsLink(venue)!,
+                                        },
+                                    }} />
+                                )}
+                                {venueOpenStreetMapsLink(venue) && (
+                                    <Snippet snippet={{
+                                        sublabel: {
+                                            type: "external-link",
+                                            name: "View on OpenStreetMap",
+                                            url: venueOpenStreetMapsLink(venue)!,
+                                        },
+                                    }} />
+                                )}
+                            </Stack>
+                        </Stack>
                     ))}
                 </Stack>
             </Stack>

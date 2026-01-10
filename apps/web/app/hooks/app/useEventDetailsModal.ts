@@ -1,3 +1,3 @@
 import { useQueryModalState } from "../base/useQueryModalState";
 
-export const useEventDetailsModal = () => useQueryModalState("eventId");
+export const useEventDetailsModal = () => useQueryModalState("eventDetails");

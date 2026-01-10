@@ -13,6 +13,12 @@ export const useQueryModalState = (key: string) => {
         setSearchParams(newParams);
     }, [key, searchParams, setSearchParams]);
 
+    const openLink = useCallback((value: string) => {
+        const newParams = new URLSearchParams(searchParams);
+        newParams.set(key, value);
+        return `?${newParams.toString()}`;
+    }, [key, searchParams]);
+
     const close = useCallback(() => {
         const newParams = new URLSearchParams(searchParams);
         newParams.delete(key);
@@ -22,7 +28,9 @@ export const useQueryModalState = (key: string) => {
     return {
         isOpen,
         open,
+        openLink,
         close,
         value,
+        key,
     };
 };

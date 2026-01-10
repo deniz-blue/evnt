@@ -6,7 +6,7 @@ export type Range<T> = { start: T; end: T };
 export type SnippetLabel =
     | { type: "text"; value: string }
     | { type: "translations"; value: Translations }
-    | { type: "external-link"; value: string }
+    | { type: "external-link"; url: string; name?: string }
     | { type: "address"; value: Address }
     | { type: "partial-date"; value: PartialDate }
     | { type: "time"; value: string }
@@ -23,7 +23,7 @@ export type SnippetIcon =
 
 export interface TSnippet {
     icon?: SnippetIcon;
-    label: SnippetLabel;
+    label?: SnippetLabel;
     sublabel?: SnippetLabel;
     children?: TSnippet[];
 };
@@ -85,7 +85,7 @@ export const snippetVenue = (venue: Venue): TSnippet => {
     if (venue.venueType === "physical" && venue.address) {
         sublabel = { type: "address", value: venue.address };
     } else if (venue.venueType === "online" && venue.url) {
-        sublabel = { type: "external-link", value: venue.url };
+        sublabel = { type: "external-link", url: venue.url };
     }
 
     return {
@@ -94,6 +94,21 @@ export const snippetVenue = (venue: Venue): TSnippet => {
         sublabel,
     };
 };
+
+export const venueGoogleMapsLink = (venue: Venue): string | null => {
+    if (venue.venueType !== "physical") return null;
+    if (venue.googleMapsPlaceId) return `https://www.google.com/maps/place/?${new URLSearchParams({ q: `place_id:${venue.googleMapsPlaceId}` }).toString()}`;
+    if (venue.coordinates) return `https://www.google.com/maps/search/?${new URLSearchParams({ api: "1", query: `${venue.coordinates.lat},${venue.coordinates.lng}` }).toString()}`;
+    if (venue.address?.addr) return `https://www.google.com/maps/search/?${new URLSearchParams({ api: "1", query: venue.address.addr }).toString()}`;
+    return null;
+}
+
+export const venueOpenStreetMapsLink = (venue: Venue): string | null => {
+    if (venue.venueType !== "physical") return null;
+    if (venue.coordinates) return `https://www.openstreetmap.org/?mlat=${venue.coordinates.lat}&mlon=${venue.coordinates.lng}#map=18/${venue.coordinates.lat}/${venue.coordinates.lng}`;
+    if (venue.address?.addr) return `https://www.openstreetmap.org/search?${new URLSearchParams({ query: venue.address.addr }).toString()}`;
+    return null;
+}
 
 export const snippetInstance = (instance: EventInstance): TSnippet[] => {
     const snippets: TSnippet[] = [];

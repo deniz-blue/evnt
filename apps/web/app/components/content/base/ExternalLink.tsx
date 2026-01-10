@@ -10,7 +10,7 @@ export const ExternalLink = ({
 }>) => {
     return (
         <Tooltip label={href}>
-            <Anchor inline inherit href={href} fz="sm" c="dimmed" target="_blank" rel="noopener noreferrer">
+            <Anchor inline inherit href={href} target="_blank" rel="noopener noreferrer">
                 {children ?? new URL(href).hostname} <IconExternalLink size="0.8em" />
             </Anchor>
         </Tooltip>

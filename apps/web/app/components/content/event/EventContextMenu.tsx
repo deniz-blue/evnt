@@ -7,6 +7,7 @@ import { useHomeStore } from "../../../stores/useHomeStore";
 import type { StoredEvent } from "../../../models/StoredEvent";
 import { EVENT_REDIRECTOR_URL } from "../../../constants";
 import { useTranslations } from "../../../stores/useLocaleStore";
+import { handleCopy } from "../../../lib/util/copy";
 
 export const EventContextMenu = ({ event }: { event: StoredEvent }) => {
     const isPinned = useHomeStore((state) => state.pinnedEventIds.includes(event.id!));
@@ -36,26 +37,6 @@ export const EventContextMenu = ({ event }: { event: StoredEvent }) => {
         return shareLink
     }
 
-    const copy = (value: string, message: string) => {
-        navigator.clipboard.writeText(value)
-            .then(() => notifications.show({
-                message,
-            }));
-    };
-
-    const onClickCopyLink = () => {
-        if (event.source.type !== "url") return;
-        navigator.clipboard.writeText(getShareLink()!)
-            .then(() => notifications.show({
-                message: "Share link copied to clipboard",
-            }));
-    }
-
-    const onClickCopyMarkdownLink = () => {
-        if (event.source.type !== "url") return;
-        copy(`[${t(event.data.name)}](<${getShareLink()!}>)`, "Share link copied to clipboard");
-    }
-
     const onClickViewJSON = () => modals.open({
         size: "xl",
         title: "Event JSON Data",
@@ -65,15 +46,6 @@ export const EventContextMenu = ({ event }: { event: StoredEvent }) => {
             </Code>
         ),
     });
-
-    const onClickCopyJSON = () => {
-        copy(JSON.stringify(event.data, null, 2), "Event JSON copied to clipboard");
-    }
-
-    const onClickCopySourceURL = () => {
-        if (event.source.type !== "url") return;
-        copy(event.source.data, "Event Data URL copied to clipboard");
-    }
 
     return (
         <Menu>
@@ -102,12 +74,12 @@ export const EventContextMenu = ({ event }: { event: StoredEvent }) => {
                         </Menu.Sub.Target>
                         <Menu.Sub.Dropdown>
                             <Menu.Item
-                                onClick={onClickCopyLink}
+                                onClick={handleCopy(getShareLink()!, "Share link copied to clipboard")}
                             >
                                 Copy Link
                             </Menu.Item>
                             <Menu.Item
-                                onClick={onClickCopyMarkdownLink}
+                                onClick={handleCopy(`[${t(event.data.name)}](<${getShareLink()!}>)`, "Share link copied to clipboard")}
                             >
                                 Copy Link (Markdown)
                             </Menu.Item>
@@ -127,7 +99,7 @@ export const EventContextMenu = ({ event }: { event: StoredEvent }) => {
                             View JSON
                         </Menu.Item>
                         <Menu.Item
-                            onClick={onClickCopyJSON}
+                            onClick={handleCopy(JSON.stringify(event.data, null, 2), "Event JSON copied to clipboard")}
                         >
                             Copy JSON
                         </Menu.Item>
@@ -145,7 +117,7 @@ export const EventContextMenu = ({ event }: { event: StoredEvent }) => {
                 )}
                 {event.source.type === "url" && (
                     <Menu.Item
-                        onClick={onClickCopySourceURL}
+                        onClick={handleCopy(event.source.data, "Event Data URL copied to clipboard")}
                     >
                         Copy Event Data URL
                     </Menu.Item>

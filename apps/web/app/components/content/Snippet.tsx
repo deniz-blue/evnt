@@ -34,7 +34,7 @@ export const Snippet = ({ snippet }: { snippet: TSnippet }) => {
         if (label.type === "time-range") return <TimeRangeSnippetLabel value={label.value} />;
         if (label.type === "date-time-range") return <PartialDateRangeSnippetLabel value={label.value} />;
         if (label.type === "partial-date" || label.type == "date-time") return <PartialDateSnippetLabel value={label.value} />;
-        if (label.type === "external-link") return <ExternalLink href={label.value} />;
+        if (label.type === "external-link") return <ExternalLink href={label.url} children={label.name} />;
 
         return null;
     }, []);
@@ -45,7 +45,9 @@ export const Snippet = ({ snippet }: { snippet: TSnippet }) => {
     return (
         <BaseSnippet icon={icon}>
             {label}
-            {sublabel}
+            <Text span inline inherit fz="sm" c="dimmed">
+                {sublabel}
+            </Text>
         </BaseSnippet>
     );
 };
