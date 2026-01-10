@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "@evnt/schema": "workspace:*",
+        "googleapis": "^170.0.0",
         "zod": "^4.2.1"
     }
 }
