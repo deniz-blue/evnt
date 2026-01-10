@@ -14,6 +14,7 @@ import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
 import "@denizblue/mantine-zod-form/style.css";
+import.meta.glob("./styles/**/*.css", { eager: true });
 
 export const meta: Route.MetaFunction = () => [
 	{ title: "@evnt Viewer" },

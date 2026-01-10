@@ -1,5 +1,4 @@
-import { Box, Container, Modal, Paper } from "@mantine/core";
-import { useDisclosure, useHotkeys } from "@mantine/hooks";
+import { Modal, ScrollArea } from "@mantine/core";
 import type { PropsWithChildren } from "react";
 
 export const BaseOverlay = ({
@@ -17,8 +16,15 @@ export const BaseOverlay = ({
             opened={opened}
             onClose={onClose}
             transitionProps={{
-                transition: "slide-up",
+                duration: 250,
+                transition: {
+                    in: { opacity: 1, transform: 'translateY(0)', borderTopLeftRadius: 0, borderTopRightRadius: 0 },
+                    out: { opacity: 0, transform: 'translateY(100%)', borderTopLeftRadius: 24, borderTopRightRadius: 24 },
+                    common: { transformOrigin: 'bottom' },
+                    transitionProperty: 'transform, opacity, border-top-left-radius, border-top-right-radius',
+                },
             }}
+            scrollAreaComponent={ScrollArea.Autosize}
         >
             <Modal.Overlay />
             <Modal.Content bdrs={0} mih="100lvh">

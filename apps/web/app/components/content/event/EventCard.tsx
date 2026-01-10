@@ -20,6 +20,8 @@ export const EventCard = ({
         <Paper
             p="xs"
             withBorder
+            w="100%"
+            h={variant === "card" ? "100%" : undefined}
         >
             <Stack>
                 <Group>

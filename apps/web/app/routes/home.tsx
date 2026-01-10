@@ -1,9 +1,10 @@
 import { InstanceInfoSection } from "../components/app/instance/InstanceInfoSection";
 import { EventCard } from "../components/content/event/EventCard";
+import { EventContextMenu } from "../components/content/event/EventContextMenu";
 import { useEventStore } from "../stores/useEventStore";
 import { useHomeStore } from "../stores/useHomeStore";
 import type { Route } from "./+types/home";
-import { Button, Container, Stack, Title } from "@mantine/core";
+import { Box, Button, Container, Group, ScrollArea, Stack, Title } from "@mantine/core";
 
 export function meta({ }: Route.MetaArgs) {
 	return [
@@ -25,9 +26,15 @@ export default function Home() {
 				</Title>
 			</Stack>
 			<Stack>
-				{pinnedEvents.map(event => (
-					<EventCard key={event.id} value={event.data} id={event.id} />
-				))}
+				<ScrollArea.Autosize maw="100%" scrollbars="x" offsetScrollbars p={4}>
+					<Group wrap="nowrap">
+						{pinnedEvents.map(event => (
+							<Box w="20rem" h="20rem" key={event.id}>
+								<EventCard value={event.data} id={event.id} menu={<EventContextMenu event={event} />} />
+							</Box>
+						))}
+					</Group>
+				</ScrollArea.Autosize>
 			</Stack>
 		</Container>
 	);
