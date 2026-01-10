@@ -10,7 +10,7 @@ export interface ImportURLModalProps<T> {
     onSubmit: (url: string, data: T) => void;
 };
 
-export const openImportURLModal = <T extends z.ZodType>(props: ImportURLModalProps<T>) => {
+export const openImportURLModal = <T,>(props: ImportURLModalProps<T>) => {
     const modalId = randomId();
     modals.open({
         title: "Import Event from URL",

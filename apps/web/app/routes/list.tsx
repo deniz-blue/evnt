@@ -25,8 +25,6 @@ export default function List() {
         });
     };
 
-    console.log({ events, filtered });
-
     return (
         <Stack>
             <Stack>

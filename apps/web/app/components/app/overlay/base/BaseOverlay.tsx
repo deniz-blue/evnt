@@ -20,7 +20,7 @@ export const BaseOverlay = ({
                 transition: {
                     in: { opacity: 1, transform: 'translateY(0)', borderTopLeftRadius: 0, borderTopRightRadius: 0 },
                     out: { opacity: 0, transform: 'translateY(100%)', borderTopLeftRadius: 24, borderTopRightRadius: 24 },
-                    common: { transformOrigin: 'bottom' },
+                    common: { transformOrigin: 'bottom', borderRadius: undefined },
                     transitionProperty: 'transform, opacity, border-top-left-radius, border-top-right-radius',
                 },
             }}

@@ -8,6 +8,7 @@ import type { StoredEvent } from "../../../models/StoredEvent";
 import { EVENT_REDIRECTOR_URL } from "../../../constants";
 import { useTranslations } from "../../../stores/useLocaleStore";
 import { handleCopy } from "../../../lib/util/copy";
+import { withConfirmation } from "../../../lib/util/confirm";
 
 export const EventContextMenu = ({ event }: { event: StoredEvent }) => {
     const isPinned = useHomeStore((state) => state.pinnedEventIds.includes(event.id!));
@@ -127,12 +128,8 @@ export const EventContextMenu = ({ event }: { event: StoredEvent }) => {
                     <Menu.Item
                         leftSection={<IconTrash size={14} />}
                         color="red"
-                        onClick={() => modals.openConfirmModal({
-                            children: "Are you sure you want to delete this event?",
-                            labels: { confirm: "Delete", cancel: "Cancel" },
-                            onConfirm: () => {
-                                useEventStore.getState().deleteLocalEvent(event.id!);
-                            },
+                        onClick={withConfirmation("Are you sure you want to delete this event?", () => {
+                            useEventStore.getState().deleteLocalEvent(event.id!);
                         })}
                     >
                         Delete
