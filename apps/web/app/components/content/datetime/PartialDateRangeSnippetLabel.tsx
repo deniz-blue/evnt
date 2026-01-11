@@ -16,7 +16,7 @@ export const PartialDateRangeSnippetLabel = ({ value }: { value: Range<PartialDa
     const isSameTime = UtilPartialDateRange.isSameTime(value);
 
     return (
-        <Tooltip label={``}>
+        <Tooltip label={`meow`}>
             <Text span inline inherit>
                 {new Intl.DateTimeFormat(language, {
                     year: "numeric",
