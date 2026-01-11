@@ -22,7 +22,8 @@
     "homepage": "https://github.com/deniz-blue/events-format/tree/main/packages/schema#readme",
     "repository": {
         "type": "git",
-        "url": "https://github.com/deniz-blue/events-format.git"
+        "url": "https://github.com/deniz-blue/events-format.git",
+        "directory": "packages/schema"
     },
     "scripts": {
         "build": "tsc",

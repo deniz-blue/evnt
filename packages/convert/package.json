@@ -1,25 +1,33 @@
 {
-    "name": "@evnt/convert",
-    "version": "0.0.1",
-    "type": "module",
-    "author": "deniz.blue",
-    "private": true,
-    "keywords": [],
-    "files": [
-        "/dist"
-    ],
-    "exports": {
-        "./foss-events": "./src/foss-events/index.ts",
-        ".": "./src/index.ts"
-    },
-    "devDependencies": {
-        "@repo/typescript-config": "workspace:*",
-        "tsx": "^4.21.0",
-        "typescript": "^5.6.3"
-    },
-    "dependencies": {
-        "@evnt/schema": "workspace:*",
-        "googleapis": "^170.0.0",
-        "zod": "^4.2.1"
-    }
+  "name": "@evnt/convert",
+  "version": "0.0.1",
+  "type": "module",
+  "author": "deniz.blue",
+  "private": true,
+  "keywords": [],
+  "files": [
+    "/dist"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./vendor/facebook": "./src/vendor/facebook",
+    "./vendor/foss-events": "./src/vendor/foss-events",
+    "./vendor/frab": "./src/vendor/frab",
+    "./vendor/google": "./src/vendor/google",
+    "./vendor/schema-org": "./src/vendor/schema-org"
+  },
+  "scripts": {
+    "gen": "tsx ./scripts/gen.ts"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^25.0.6",
+    "tsx": "^4.21.0",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@evnt/schema": "workspace:*",
+    "googleapis": "^170.0.0",
+    "zod": "^4.2.1"
+  }
 }
