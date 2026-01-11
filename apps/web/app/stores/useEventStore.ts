@@ -6,8 +6,8 @@ import { createTasksSlice, type TasksStore } from "./slices/createTasksSlice";
 import { DATABASE_NAME, STORE_NAME } from "../constants";
 
 interface EventStore {
-    createLocalEvent: (data: EventData) => Promise<void>;
-    createRemoteEvent: (url: string, data: EventData) => Promise<void>;
+    createLocalEvent: (data: EventData) => Promise<number>;
+    createRemoteEvent: (url: string, data: EventData) => Promise<number>;
     deleteLocalEvent: (id: number) => Promise<void>;
     refetchEvent: (id: number) => Promise<void>;
     updateEventData: (id: number, data: EventData) => Promise<void>;
@@ -21,21 +21,21 @@ export const useEventStore = create<EventStore & IDBStore<StoredEvent> & TasksSt
     })(set, get, s),
     
     createLocalEvent: async (data: EventData) => {
-        get().dbMutate(async (db) => {
-            await db.add(STORE_NAME, { source: { type: "local" }, data, timestamp: Date.now() });
+        return await get().dbMutate(async (db) => {
+            return await db.add(STORE_NAME, { source: { type: "local" }, data, timestamp: Date.now() });
         }, {
             title: "Creating local event",
             notify: true,
-        });
+        }) as number;
     },
 
     createRemoteEvent: async (url: string, data: EventData) => {
-        get().dbMutate(async (db) => {
-            await db.add(STORE_NAME, { source: { type: "url", data: url }, data, timestamp: Date.now() });
+        return await get().dbMutate(async (db) => {
+            return await db.add(STORE_NAME, { source: { type: "url", data: url }, data, timestamp: Date.now() });
         }, {
             title: "Creating remote event",
             notify: true,
-        });
+        }) as number;
     },
 
     deleteLocalEvent: async (id: number) => {

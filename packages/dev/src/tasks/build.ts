@@ -11,13 +11,15 @@ export type EventEntry = {
     relativepath: string;
 };
 
+export const lsfile = ".ls.json";
+
 export const build = async (dir: string, out: string = "./dist") => {
     console.log(`Building events from ${dir} to ${out}...`);
     if(existsSync(out)) rmSync(out, { recursive: true });
 
     const files = globSync("**/*", {
         cwd: dir,
-        exclude: ["node_modules/**", ".github/**", "dist/**", ".ls"],
+        exclude: ["node_modules/**", ".github/**", "dist/**", lsfile],
         withFileTypes: true,
     });
 
@@ -30,7 +32,7 @@ export const build = async (dir: string, out: string = "./dist") => {
 
             if (file.isDirectory()) {
                 if(!existsSync(join(out, path))) mkdirSync(join(out, path), { recursive: true });
-                writeFileSync(join(out, path, ".ls"), JSON.stringify(readdirSync(path).filter(x => x !== ".ls")));
+                writeFileSync(join(out, path, lsfile), JSON.stringify(readdirSync(path).filter(x => x !== lsfile)));
             } else {
                 const content = readFileSync(path, "utf-8");
                 const data = validateJsonFile(content, path);

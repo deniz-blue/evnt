@@ -11,7 +11,7 @@ export interface IDBStore<TData = any> {
     dbSync: () => Promise<void>;
     dbBroadcastSync: () => Promise<void>;
     addTaskWithDB: <TOutput>(meta: TaskMetadataInput, run: TaskExecute<TOutput, TaskContext & { db: IDBPDatabase }>) => Promise<TOutput>;
-    dbMutate: (fn: (db: IDBPDatabase) => Promise<void>, meta?: TaskMetadataInput) => Promise<void>;
+    dbMutate: <T>(fn: (db: IDBPDatabase) => Promise<T>, meta?: TaskMetadataInput) => Promise<T>;
 };
 
 export interface CreateIDBSliceOptions {
@@ -86,12 +86,13 @@ export const createIDBSlice = <TData>({
         get().dbSyncChannel?.postMessage("update");
         await get().dbSync();
     },
-    dbMutate: async (fn, meta) => {
-        await get().addTaskWithDB(meta || {
+    dbMutate: async <T>(fn: (db: IDBPDatabase) => Promise<T>, meta?: TaskMetadataInput): Promise<T> => {
+        return await get().addTaskWithDB(meta || {
             title: "Updating database",
         }, async ({ db }) => {
-            await fn(db);
+            const result = await fn(db);
             await get().dbBroadcastSync();
+            return result;
         });
     },
 });
