@@ -373,8 +373,7 @@
         }
       },
       "required": [
-        "url",
-        "disabled"
+        "url"
       ],
       "additionalProperties": false
     }

@@ -97,14 +97,14 @@ _(\*) Required._
 
 _Object containing the following properties:_
 
-| Property            | Description                                         | Type                          |
-| :------------------ | :-------------------------------------------------- | :---------------------------- |
-| **`url`** (\*)      | The URL of the link                                 | `string`                      |
-| `name`              | The name of the link                                | [Translations](#translations) |
-| `description`       | A description of the link                           | [Translations](#translations) |
-| **`disabled`** (\*) | Whether the link is disabled                        | `boolean`                     |
-| `opensAt`           | The date and/or time when the link becomes active   | [PartialDate](#partialdate)   |
-| `closesAt`          | The date and/or time when the link becomes inactive | [PartialDate](#partialdate)   |
+| Property       | Description                                         | Type                          |
+| :------------- | :-------------------------------------------------- | :---------------------------- |
+| **`url`** (\*) | The URL of the link                                 | `string`                      |
+| `name`         | The name of the link                                | [Translations](#translations) |
+| `description`  | A description of the link                           | [Translations](#translations) |
+| `disabled`     | Whether the link is disabled                        | `boolean`                     |
+| `opensAt`      | The date and/or time when the link becomes active   | [PartialDate](#partialdate)   |
+| `closesAt`     | The date and/or time when the link becomes inactive | [PartialDate](#partialdate)   |
 
 _(\*) Required._
 
