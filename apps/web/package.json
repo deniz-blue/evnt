@@ -25,7 +25,12 @@
     "isbot": "^5",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
+    "react-markdown": "^10.1.0",
     "react-router": "^7.9.2",
+    "remark-breaks": "^4.0.0",
+    "remark-emoji": "^5.0.2",
+    "remark-gfm": "^4.0.1",
+    "remark-squeeze-paragraphs": "^6.0.0",
     "zod": "^4.2.1",
     "zustand": "^5.0.9"
   },

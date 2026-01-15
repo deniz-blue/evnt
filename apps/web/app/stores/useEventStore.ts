@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { StoredEvent } from "../models/StoredEvent";
+import type { StoredEvent } from "../lib/models/StoredEvent";
 import { EventDataSchema, type EventData } from "@evnt/schema";
 import { createIDBSlice, type IDBStore } from "./slices/createIDBSlice";
 import { createTasksSlice, type TasksStore } from "./slices/createTasksSlice";

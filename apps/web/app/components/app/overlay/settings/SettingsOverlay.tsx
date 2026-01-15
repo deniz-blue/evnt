@@ -25,7 +25,7 @@ export const SettingsOverlay = () => {
 					onChange={lang => useLocaleStore.getState().setLanguage(lang)}
 				/>
 
-				{/* <TimezoneSelect /> */}
+				<TimezoneSelect />
 			</Stack>
 		</Drawer>
 	);

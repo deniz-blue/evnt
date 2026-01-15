@@ -4,7 +4,7 @@ import { notifications } from "@mantine/notifications";
 import { IconDotsVertical, IconJson, IconPinned, IconPinnedOff, IconReload, IconShare, IconTrash } from "@tabler/icons-react";
 import { useEventStore } from "../../../stores/useEventStore";
 import { useHomeStore } from "../../../stores/useHomeStore";
-import type { StoredEvent } from "../../../models/StoredEvent";
+import type { StoredEvent } from "../../../lib/models/StoredEvent";
 import { EVENT_REDIRECTOR_URL } from "../../../constants";
 import { useTranslations } from "../../../stores/useLocaleStore";
 import { handleCopy } from "../../../lib/util/copy";

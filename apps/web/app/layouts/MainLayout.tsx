@@ -6,14 +6,21 @@ import { LinkOpenHandler } from "../components/app/handlers/LinkOpenHandler";
 import { EventDetailsOverlay } from "../components/app/overlay/event/EventDetailsOverlay";
 import { IconSettings } from "@tabler/icons-react";
 import { SettingsOverlay, useSettingsOverlay } from "../components/app/overlay/settings/SettingsOverlay";
+import { useHotkeys } from "@mantine/hooks";
 
 export default function MainLayout() {
-    const { open: openSettings } = useSettingsOverlay();
+    const { toggle: toggleSettings } = useSettingsOverlay();
 
     useEffect(() => {
         useEventStore.getState().getDB();
         return () => void useEventStore.getState().dbUninitialize();
     }, [useEventStore]);
+
+	useHotkeys([
+		["mod + O", () => toggleSettings("")],
+		["mod + ,", () => toggleSettings("")],
+	], []);
+	useHotkeys([["O", () => toggleSettings("")]]);
 
     return (
         <AppShell
@@ -40,7 +47,7 @@ export default function MainLayout() {
                         <DatabaseStateView />
                     </Group>
                     <Group>
-                        <ActionIcon onClick={() => openSettings("")}>
+                        <ActionIcon onClick={() => toggleSettings("")}>
                             <IconSettings />
                         </ActionIcon>
                     </Group>

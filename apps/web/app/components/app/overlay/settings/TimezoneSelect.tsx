@@ -1,17 +1,15 @@
-import { OsuSelect } from "../../../base/input/OsuSelect";
+import { Select, Stack } from "@mantine/core";
 
 export const TimezoneSelect = () => {
 	return (
-		<OsuSelect
-			value="UTC"
-			onChange={(value) => console.log("Selected timezone:", value)}
-			options={[
-				{ value: "UTC", label: "Coordinated Universal Time (UTC)" },
-				{ value: "PST", label: "Pacific Standard Time (PST)" },
-				{ value: "EST", label: "Eastern Standard Time (EST)" },
-				{ value: "CET", label: "Central European Time (CET)" },
-				{ value: "IST", label: "India Standard Time (IST)" },
-			]}
-		/>
+		<Stack>
+			<Select
+				label="Timezone (TODO)"
+				placeholder="Select your timezone"
+				data={Intl.supportedValuesOf('timeZone').map(tz => ({ value: tz, label: tz }))}
+				readOnly
+				searchable
+			/>
+		</Stack>
 	);
 };

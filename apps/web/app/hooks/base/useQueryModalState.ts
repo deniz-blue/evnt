@@ -25,11 +25,20 @@ export const useQueryModalState = (key: string) => {
         setSearchParams(newParams);
     }, [key, searchParams, setSearchParams]);
 
+	const toggle = useCallback((value: string) => {
+		if (isOpen && value === value) {
+			close();
+		} else {
+			open(value);
+		}
+	}, [isOpen, value, open, close]);
+
     return {
         isOpen,
         open,
         openLink,
         close,
+		toggle,
         value,
         key,
     };
