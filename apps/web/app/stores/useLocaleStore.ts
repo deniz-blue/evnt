@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { LOCALSTORAGE_LOCALE_KEY } from "../constants";
+import { LOCALSTORAGE_KEYS } from "../constants";
 import { useCallback } from "react";
 import type { Translations } from "@evnt/schema";
 
@@ -20,7 +20,7 @@ export const useLocaleStore = create<LocaleStore>()(
             }),
         })),
         {
-            name: LOCALSTORAGE_LOCALE_KEY,
+            name: LOCALSTORAGE_KEYS.locale,
             version: 1,
         },
     ),

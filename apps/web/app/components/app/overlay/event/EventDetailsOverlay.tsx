@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useEventDetailsModal } from "../../../../hooks/app/useEventDetailsModal";
 import { BaseOverlay } from "../base/BaseOverlay";
 import { EventDataSchema, type EventData } from "@evnt/schema";
-import { useEventStore } from "../../../../stores/useEventStore";
 import { EventDetailsContent } from "../../../content/event/details/EventDetailsContent";
 import { CenteredLoader } from "../../../content/base/CenteredLoader";
 import { fetchValidate } from "../../../../lib/util/fetchValidate";
@@ -32,9 +31,9 @@ export const EventDetailsOverlayHandler = ({ id }: { id: string }) => {
                 setData(res.value);
             })()
         } else {
-            const record = useEventStore.getState().data.find(e => e.id === Number(id));
-            if(!record) return;
-            setData(record.data);
+            // const record = useEventStore.getState().data.find(e => e.id === Number(id));
+            // if(!record) return;
+            // setData(record.data);
         }
     }, [id]);
 

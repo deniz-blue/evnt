@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router";
 import { fetchValidate } from "../../../lib/util/fetchValidate";
 import { EventDataSchema } from "@evnt/schema";
 import { notifications } from "@mantine/notifications";
-import { useEventStore } from "../../../stores/useEventStore";
+// import { useEventStore } from "../../../stores/useEventStore";
 import { useEventDetailsModal } from "../../../hooks/app/useEventDetailsModal";
 
 export const LinkOpenHandler = () => {
@@ -41,7 +41,7 @@ export const LinkOpenHandler = () => {
 					};
 
 					const eventData = result.value;
-					const newId = await useEventStore.getState().createRemoteEvent(url, eventData);
+					// const newId = await useEventStore.getState().createRemoteEvent(url, eventData);
 					notifications.update({
 						id: "import-event",
 						color: "teal",
@@ -50,7 +50,7 @@ export const LinkOpenHandler = () => {
 						loading: false,
 					});
 					const newParams = new URLSearchParams();
-					newParams.set(eventDetailsKey, newId.toString());
+					// newParams.set(eventDetailsKey, newId.toString());
 					newParams.delete("action");
 					newParams.delete("url");
 					setSearchParams(newParams);

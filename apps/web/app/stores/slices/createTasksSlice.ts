@@ -23,7 +23,7 @@ export interface TasksStore {
     addTask: <T = any>(meta: TaskMetadataInput, run: TaskExecute<T>) => Promise<T>;
 };
 
-export const createTasksSlice = <TOutput>(): StateCreator<
+export const createTasksSlice = (): StateCreator<
     TasksStore
 > => (set, get) => ({
     tasks: [] as TaskMetadata[],

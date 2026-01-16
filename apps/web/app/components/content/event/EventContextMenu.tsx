@@ -2,7 +2,6 @@ import { ActionIcon, Code, Menu } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { IconDotsVertical, IconJson, IconPinned, IconPinnedOff, IconReload, IconShare, IconTrash } from "@tabler/icons-react";
-import { useEventStore } from "../../../stores/useEventStore";
 import { useHomeStore } from "../../../stores/useHomeStore";
 import type { StoredEvent } from "../../../lib/models/StoredEvent";
 import { EVENT_REDIRECTOR_URL } from "../../../constants";
@@ -110,7 +109,7 @@ export const EventContextMenu = ({ event }: { event: StoredEvent }) => {
                     <Menu.Item
                         leftSection={<IconReload size={14} />}
                         onClick={() => {
-                            useEventStore.getState().refetchEvent(event.id!);
+                            // useEventStore.getState().refetchEvent(event.id!);
                         }}
                     >
                         Refetch
@@ -129,7 +128,7 @@ export const EventContextMenu = ({ event }: { event: StoredEvent }) => {
                         leftSection={<IconTrash size={14} />}
                         color="red"
                         onClick={withConfirmation("Are you sure you want to delete this event?", () => {
-                            useEventStore.getState().deleteLocalEvent(event.id!);
+                            // useEventStore.getState().deleteLocalEvent(event.id!);
                         })}
                     >
                         Delete

@@ -3,7 +3,9 @@ import type { StoredEvent } from "../lib/models/StoredEvent";
 import { EventDataSchema, type EventData } from "@evnt/schema";
 import { createIDBSlice, type IDBStore } from "./slices/createIDBSlice";
 import { createTasksSlice, type TasksStore } from "./slices/createTasksSlice";
-import { DATABASE_NAME, STORE_NAME } from "../constants";
+import { DATABASE_NAME } from "../constants";
+
+const STORE_NAME = "events";
 
 interface EventStore {
     createLocalEvent: (data: EventData) => Promise<number>;

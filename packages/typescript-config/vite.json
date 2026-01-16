@@ -12,7 +12,6 @@
             "DOM"
         ],
         "types": [
-            "node",
             "vite/client"
         ],
         "sourceMap": true,

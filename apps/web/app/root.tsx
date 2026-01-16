@@ -9,6 +9,11 @@ import {
 import { createTheme, MantineProvider, type ActionIconProps, type ButtonProps, type TooltipProps } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
+import { useEffect, useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { DataDB } from "./db/data-db";
+import { eventDataQueryKey } from "./db/useEventDataQuery";
+
 import type { Route } from "./+types/root";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
@@ -69,7 +74,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-	return <Outlet />;
+	const [queryClient] = useState(() => new QueryClient());
+
+	useEffect(() => {
+		return DataDB.onUpdate((key) => {
+			queryClient.invalidateQueries({ queryKey: [eventDataQueryKey(key), "event-data-keys"] });
+		});
+	}, [queryClient]);
+	
+	return (
+		<QueryClientProvider client={queryClient}>
+			<Outlet />
+		</QueryClientProvider>
+	);
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

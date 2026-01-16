@@ -1,20 +1,14 @@
 import { ActionIcon, AppShell, Box, Button, Group, Loader } from "@mantine/core";
-import { useEffect } from "react";
 import { Link, Outlet } from "react-router";
-import { useEventStore } from "../stores/useEventStore";
 import { LinkOpenHandler } from "../components/app/handlers/LinkOpenHandler";
 import { EventDetailsOverlay } from "../components/app/overlay/event/EventDetailsOverlay";
 import { IconSettings } from "@tabler/icons-react";
 import { SettingsOverlay, useSettingsOverlay } from "../components/app/overlay/settings/SettingsOverlay";
 import { useHotkeys } from "@mantine/hooks";
+import { useTasksStore } from "../stores/useTasksStore";
 
 export default function MainLayout() {
     const { toggle: toggleSettings } = useSettingsOverlay();
-
-    useEffect(() => {
-        useEventStore.getState().getDB();
-        return () => void useEventStore.getState().dbUninitialize();
-    }, [useEventStore]);
 
 	useHotkeys([
 		["mod + O", () => toggleSettings("")],
@@ -65,7 +59,7 @@ export default function MainLayout() {
 };
 
 export const DatabaseStateView = () => {
-    const tasks = useEventStore((state) => state.tasks);
+    const tasks = useTasksStore((state) => state.tasks);
 
     return (
         <Box>
