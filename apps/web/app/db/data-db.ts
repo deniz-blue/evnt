@@ -25,9 +25,7 @@ export class DataDB {
 	static STORE_NAME_DATA = "data" as const;
 
 	static async db(): Promise<IDBPDatabase<DataDB.StoreNames>> {
-		console.log("DataDB: Getting DB", this.#db);
 		if (this.#db) return this.#db;
-		console.log("Opening DB:", DATABASE_NAME);
 		this.#db = await openDB<DataDB.StoreNames>(DATABASE_NAME, 7, {
 			upgrade: (db) => {
 				if (db.objectStoreNames.contains(this.STORE_NAME_DATA))
@@ -61,6 +59,7 @@ export class DataDB {
 
 	static #dispatchUpdateEvent(key: string) {
 		for (const listener of this.#listeners) listener(key);
+		console.log("update", key);
 	}
 
 	static channel(): BroadcastChannel {

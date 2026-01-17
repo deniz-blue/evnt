@@ -5,13 +5,15 @@ import { SmallTitle } from "../../base/SmallTitle";
 import { snippetInstance, snippetVenue, venueGoogleMapsLink, venueOpenStreetMapsLink } from "@evnt/pretty";
 import { Snippet } from "../../Snippet";
 import { MarkdownTranslations } from "../../base/MarkdownTranslations";
+import type { EventDataSource } from "../../../../db/models/event-source";
+import { LayerImportSection } from "./LayerImportSection";
 
 export const EventDetailsContent = ({
 	data,
-	id,
+	source,
 }: {
 	data: EventData;
-	id?: number;
+	source?: EventDataSource;
 }) => {
 	return (
 		<Stack>
@@ -23,6 +25,8 @@ export const EventDetailsContent = ({
 					<Modal.CloseButton />
 				</Group>
 			</Group>
+
+			{source && <LayerImportSection source={source} />}
 
 			<Stack gap={0}>
 				<SmallTitle padLeft>

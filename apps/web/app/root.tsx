@@ -19,6 +19,9 @@ import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
 import "@denizblue/mantine-zod-form/style.css";
+import { useLayersStore } from "./db/useLayersStore";
+import { useWindowEvent } from "@mantine/hooks";
+import { useHomeStore } from "./stores/useHomeStore";
 import.meta.glob("./styles/**/*.css", { eager: true });
 
 export const meta: Route.MetaFunction = () => [
@@ -79,9 +82,15 @@ export default function App() {
 	useEffect(() => {
 		return DataDB.onUpdate((key) => {
 			queryClient.invalidateQueries({ queryKey: [eventDataQueryKey(key), "event-data-keys"] });
+			useLayersStore.persist.rehydrate();
 		});
 	}, [queryClient]);
-	
+
+	useWindowEvent("storage", (event) => {
+		if (event.key === useLayersStore.persist.getOptions().name) useLayersStore.persist.rehydrate();
+		if (event.key === useHomeStore.persist.getOptions().name) useHomeStore.persist.rehydrate();
+	});
+
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Outlet />

@@ -5,7 +5,7 @@ export const RQResult = <TData,>({
 	children,
 }: {
 	query: UseQueryResult<TData>;
-	children: (data: TData) => React.ReactNode;
+	children: (data: TData, query: UseQueryResult<TData>) => React.ReactNode;
 }) => {
 	if (query.isLoading) {
 		return <div>Loading...</div>;
@@ -15,5 +15,5 @@ export const RQResult = <TData,>({
 		return <div>Error: {(query.error as Error).message}</div>;
 	}
 
-	return <>{children(query.data!)}</>;
+	return <>{children(query.data!, query)}</>;
 };

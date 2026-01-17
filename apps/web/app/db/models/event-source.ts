@@ -47,6 +47,14 @@ export class UtilEventSource {
 		return null;
 	}
 
+	static isValidKey(key: string): boolean {
+		return this.fromKey(key) !== null;
+	}
+
+	static equals(a: EventDataSource, b: EventDataSource): boolean {
+		return this.getKey(a) === this.getKey(b);
+	}
+
 	static newLocal(): EventDataSource {
 		return {
 			type: "local",

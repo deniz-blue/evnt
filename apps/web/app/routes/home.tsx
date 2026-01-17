@@ -1,6 +1,8 @@
 import { InstanceInfoSection } from "../components/app/instance/InstanceInfoSection";
 import { EventCard } from "../components/content/event/EventCard";
 import { EventContextMenu } from "../components/content/event/EventContextMenu";
+import { RQResult } from "../components/data/RQResult";
+import { useEventQueries } from "../db/useEventDataQuery";
 import { useHomeStore } from "../stores/useHomeStore";
 import type { Route } from "./+types/home";
 import { Box, Button, Container, Group, ScrollArea, Stack, Title } from "@mantine/core";
@@ -12,10 +14,8 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function Home() {
-	// const pinnedEventIds = useHomeStore((state) => state.pinnedEventIds);
-	// const events = useEventStore((state) => state.data);
-
-	// const pinnedEvents = events.filter(event => pinnedEventIds.includes(event.id!));
+	const pinnedEventSources = useHomeStore((state) => state.pinnedEvents);
+	const pinnedEvents = useEventQueries(pinnedEventSources);
 
 	return (
 		<Container size="md">
@@ -27,11 +27,17 @@ export default function Home() {
 			<Stack>
 				<ScrollArea.Autosize maw="100%" scrollbars="x" offsetScrollbars p={4}>
 					<Group wrap="nowrap">
-						{/* {pinnedEvents.map(event => (
-							<Box w="20rem" h="20rem" key={event.id}>
-								<EventCard value={event.data} id={event.id} menu={<EventContextMenu event={event} />} />
-							</Box>
-						))} */}
+						{pinnedEvents.map(({ query, source }, index) => (
+							<RQResult key={index} query={query}>
+								{(data) => (
+									<EventCard
+										value={data}
+										source={source}
+										menu={<EventContextMenu source={source} />}
+									/>
+								)}
+							</RQResult>
+						))}
 					</Group>
 				</ScrollArea.Autosize>
 			</Stack>

@@ -5,43 +5,45 @@ import { EventDataSchema, type EventData } from "@evnt/schema";
 import { EventDetailsContent } from "../../../content/event/details/EventDetailsContent";
 import { CenteredLoader } from "../../../content/base/CenteredLoader";
 import { fetchValidate } from "../../../../lib/util/fetchValidate";
+import { useEventDataQuery } from "../../../../db/useEventDataQuery";
+import { UtilEventSource, type EventDataSource } from "../../../../db/models/event-source";
+import { Stack, Text } from "@mantine/core";
+import { RQResult } from "../../../data/RQResult";
 
 export const EventDetailsOverlay = () => {
-    const { isOpen, close, value: eventId } =  useEventDetailsModal();
+	const { isOpen, close, value: eventSourceKey } = useEventDetailsModal();
 
-    return (
-        <BaseOverlay
-            opened={isOpen}
-            onClose={close}
-        >
-            <EventDetailsOverlayHandler id={eventId || ""} />
-        </BaseOverlay>
-    )
+	const source = UtilEventSource.fromKey(eventSourceKey || "");
+
+	return (
+		<BaseOverlay
+			opened={isOpen}
+			onClose={close}
+		>
+			{source ? (
+				<EventDetailsOverlayHandler source={source} />
+			) : (
+				<Stack>
+					<Text>Invalid event source.</Text>
+				</Stack>
+			)}
+		</BaseOverlay>
+	)
 };
 
-export const EventDetailsOverlayHandler = ({ id }: { id: string }) => {
-    const [data, setData] = useState<EventData | null>(null);
+export const EventDetailsOverlayHandler = ({ source }: { source: EventDataSource }) => {
+	const [data, setData] = useState<EventData | null>(null);
 
-    useEffect(() => {
-        if(!id) return;
-        if(id.startsWith("http")) {
-            (async () => {
-                const res = await fetchValidate(id, EventDataSchema);
-                if(!res.ok) return;
-                setData(res.value);
-            })()
-        } else {
-            // const record = useEventStore.getState().data.find(e => e.id === Number(id));
-            // if(!record) return;
-            // setData(record.data);
-        }
-    }, [id]);
+	const query = useEventDataQuery(source);
 
-    if(!data) return <CenteredLoader />;
-    
-    return (
-        <EventDetailsContent
-            data={data}
-        />
-    );
+	return (
+		<RQResult query={query}>
+			{(data) => (
+				<EventDetailsContent
+					data={data}
+					source={source}
+				/>
+			)}
+		</RQResult>
+	);
 };

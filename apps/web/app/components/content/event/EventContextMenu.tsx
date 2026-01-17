@@ -3,138 +3,151 @@ import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { IconDotsVertical, IconJson, IconPinned, IconPinnedOff, IconReload, IconShare, IconTrash } from "@tabler/icons-react";
 import { useHomeStore } from "../../../stores/useHomeStore";
-import type { StoredEvent } from "../../../lib/models/StoredEvent";
 import { EVENT_REDIRECTOR_URL } from "../../../constants";
 import { useTranslations } from "../../../stores/useLocaleStore";
-import { handleCopy } from "../../../lib/util/copy";
+import { handleAsyncCopy, handleCopy } from "../../../lib/util/copy";
 import { withConfirmation } from "../../../lib/util/confirm";
+import { UtilEventSource, type EventDataSource } from "../../../db/models/event-source";
+import { DataDB } from "../../../db/data-db";
+import { AsyncLoader } from "../../data/AsyncLoader";
+import type { EventData } from "@evnt/schema";
+import { EventActions } from "../../../db/events";
 
-export const EventContextMenu = ({ event }: { event: StoredEvent }) => {
-    const isPinned = useHomeStore((state) => state.pinnedEventIds.includes(event.id!));
-    const t = useTranslations();
+export const EventContextMenu = ({ source }: { source: EventDataSource }) => {
+	const isPinned = useHomeStore((state) => state.pinnedEvents.some(e => (
+		UtilEventSource.equals(e, source)
+	)));
 
-    const onClickPinUnpin = () => {
-        if (isPinned) {
-            useHomeStore.getState().unpinEvent(event.id!);
-            notifications.show({
-                message: "Event unpinned from Home",
-            });
-        } else {
-            useHomeStore.getState().pinEvent(event.id!);
-            notifications.show({
-                message: "Event pinned to Home",
-            });
-        }
-    }
+	const t = useTranslations();
 
-    const getShareLink = () => {
-        if (event.source.type !== "url") return;
-        const shareLink = `${EVENT_REDIRECTOR_URL}/?${new URLSearchParams({
-            action: "import",
-            url: event.source.data,
-        }).toString()}`;
+	const onClickPinUnpin = () => {
+		if (isPinned) {
+			useHomeStore.getState().unpinEvent(source);
+			notifications.show({
+				message: "Event unpinned from Home",
+			});
+		} else {
+			useHomeStore.getState().pinEvent(source);
+			notifications.show({
+				message: "Event pinned to Home",
+			});
+		}
+	}
 
-        return shareLink
-    }
+	const getShareLink = () => {
+		if (source.type !== "remote") return;
+		const shareLink = `${EVENT_REDIRECTOR_URL}/?${new URLSearchParams({
+			action: "view-event",
+			url: source.url,
+		}).toString()}`;
 
-    const onClickViewJSON = () => modals.open({
-        size: "xl",
-        title: "Event JSON Data",
-        children: (
-            <Code block>
-                {JSON.stringify(event.data, null, 2)}
-            </Code>
-        ),
-    });
+		return shareLink
+	}
 
-    return (
-        <Menu>
-            <Menu.Target>
-                <ActionIcon
-                    variant="subtle"
-                    color="gray"
-                    size="sm"
-                >
-                    <IconDotsVertical />
-                </ActionIcon>
-            </Menu.Target>
-            <Menu.Dropdown>
-                <Menu.Item
-                    leftSection={isPinned ? <IconPinnedOff size={14} /> : <IconPinned size={14} />}
-                    onClick={onClickPinUnpin}
-                >
-                    {isPinned ? "Unpin from Home" : "Pin to Home"}
-                </Menu.Item>
-                {event.source.type === "url" && (
-                    <Menu.Sub>
-                        <Menu.Sub.Target>
-                            <Menu.Sub.Item leftSection={<IconShare size={14} />}>
-                                Share...
-                            </Menu.Sub.Item>
-                        </Menu.Sub.Target>
-                        <Menu.Sub.Dropdown>
-                            <Menu.Item
-                                onClick={handleCopy(getShareLink()!, "Share link copied to clipboard")}
-                            >
-                                Copy Link
-                            </Menu.Item>
-                            <Menu.Item
-                                onClick={handleCopy(`[${t(event.data.name)}](<${getShareLink()!}>)`, "Share link copied to clipboard")}
-                            >
-                                Copy Link (Markdown)
-                            </Menu.Item>
-                        </Menu.Sub.Dropdown>
-                    </Menu.Sub>
-                )}
-                <Menu.Sub>
-                    <Menu.Sub.Target>
-                        <Menu.Sub.Item leftSection={<IconJson size={14} />}>
-                            JSON...
-                        </Menu.Sub.Item>
-                    </Menu.Sub.Target>
-                    <Menu.Sub.Dropdown>
-                        <Menu.Item
-                            onClick={onClickViewJSON}
-                        >
-                            View JSON
-                        </Menu.Item>
-                        <Menu.Item
-                            onClick={handleCopy(JSON.stringify(event.data, null, 2), "Event JSON copied to clipboard")}
-                        >
-                            Copy JSON
-                        </Menu.Item>
-                    </Menu.Sub.Dropdown>
-                </Menu.Sub>
-                {event.source.type === "url" && (
-                    <Menu.Item
-                        leftSection={<IconReload size={14} />}
-                        onClick={() => {
-                            // useEventStore.getState().refetchEvent(event.id!);
-                        }}
-                    >
-                        Refetch
-                    </Menu.Item>
-                )}
-                {event.source.type === "url" && (
-                    <Menu.Item
-                        onClick={handleCopy(event.source.data, "Event Data URL copied to clipboard")}
-                    >
-                        Copy Event Data URL
-                    </Menu.Item>
-                )}
+	const getData = async () => (await DataDB.get(UtilEventSource.getKey(source)!))?.data ?? null;
 
-                {event.id && (
-                    <Menu.Item
-                        leftSection={<IconTrash size={14} />}
-                        color="red"
-                        onClick={withConfirmation("Are you sure you want to delete this event?", () => {
-                            // useEventStore.getState().deleteLocalEvent(event.id!);
-                        })}
-                    >
-                        Delete
-                    </Menu.Item>
-                )}
-            </Menu.Dropdown>
-        </Menu>
-    );
+	const onClickViewJSON = () => modals.open({
+		size: "xl",
+		title: "Event JSON Data",
+		children: (
+			<AsyncLoader fetcher={getData}>
+				{(data: EventData | null) => (
+					<Code block>
+						{JSON.stringify(data, null, 2)}
+					</Code>
+				)}
+			</AsyncLoader>
+		),
+	});
+
+	return (
+		<Menu>
+			<Menu.Target>
+				<ActionIcon
+					variant="subtle"
+					color="gray"
+					size="sm"
+				>
+					<IconDotsVertical />
+				</ActionIcon>
+			</Menu.Target>
+			<Menu.Dropdown>
+				<Menu.Item
+					leftSection={isPinned ? <IconPinnedOff size={14} /> : <IconPinned size={14} />}
+					onClick={onClickPinUnpin}
+				>
+					{isPinned ? "Unpin from Home" : "Pin to Home"}
+				</Menu.Item>
+				{source.type === "remote" && (
+					<Menu.Sub>
+						<Menu.Sub.Target>
+							<Menu.Sub.Item leftSection={<IconShare size={14} />}>
+								Share...
+							</Menu.Sub.Item>
+						</Menu.Sub.Target>
+						<Menu.Sub.Dropdown>
+							<Menu.Item
+								onClick={handleCopy(getShareLink()!, "Share link copied to clipboard")}
+							>
+								Copy Link
+							</Menu.Item>
+							<Menu.Item
+								onClick={handleCopy(`[Event](<${getShareLink()!}>)`, "Share link copied to clipboard")}
+							>
+								Copy Link (Markdown)
+							</Menu.Item>
+						</Menu.Sub.Dropdown>
+					</Menu.Sub>
+				)}
+				<Menu.Sub>
+					<Menu.Sub.Target>
+						<Menu.Sub.Item leftSection={<IconJson size={14} />}>
+							JSON...
+						</Menu.Sub.Item>
+					</Menu.Sub.Target>
+					<Menu.Sub.Dropdown>
+						<Menu.Item
+							onClick={onClickViewJSON}
+						>
+							View JSON
+						</Menu.Item>
+						<Menu.Item
+							onClick={handleAsyncCopy(async () => JSON.stringify(await getData(), null, 2), "Event JSON copied to clipboard")}
+						>
+							Copy JSON
+						</Menu.Item>
+					</Menu.Sub.Dropdown>
+				</Menu.Sub>
+				{source.type === "remote" && (
+					<Menu.Item
+						leftSection={<IconReload size={14} />}
+						onClick={() => {
+							// useEventStore.getState().refetchEvent(event.id!);
+						}}
+					>
+						Refetch
+					</Menu.Item>
+				)}
+				{source.type === "remote" && (
+					<Menu.Item
+						onClick={handleCopy(source.url, "Event Data URL copied to clipboard")}
+					>
+						Copy Event Data URL
+					</Menu.Item>
+				)}
+
+				{source && (
+					<Menu.Item
+						leftSection={<IconTrash size={14} />}
+						color="red"
+						onClick={withConfirmation("Are you sure you want to delete this event?", () => {
+							EventActions.deleteEvent(source);
+						})}
+					>
+						Delete
+					</Menu.Item>
+				)}
+			</Menu.Dropdown>
+		</Menu>
+	);
 };

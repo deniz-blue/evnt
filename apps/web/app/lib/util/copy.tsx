@@ -25,3 +25,11 @@ export const copyWithFeedback = async (
 };
 
 export const handleCopy = (text: string, feedback?: string | Translations) => () => copyWithFeedback(text, feedback);
+
+export const handleAsyncCopy = (
+	getText: () => Promise<string>,
+	feedback?: string | Translations,
+) => async () => {
+	const text = await getText();
+	return copyWithFeedback(text, feedback);
+}

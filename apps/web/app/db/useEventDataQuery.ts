@@ -1,8 +1,9 @@
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
 import { UtilEventSource, type EventDataSource } from "./models/event-source";
 import { DataDB } from "./data-db";
 import { EventDataSchema, type EventData } from "@evnt/schema";
 import { fetchValidate } from "../lib/util/fetchValidate";
+import { useMemo } from "react";
 
 export const eventDataQueryKey = (key: string) => {
 	return ["event-data", key] as const;
@@ -36,3 +37,17 @@ export const useEventDataQuery = (source: EventDataSource) => {
 	const query = useQuery(eventDataQueryOptions(source));
 	return query;
 };
+
+export const useEventQueries = (sources: EventDataSource[]) => {
+	const queries = useQueries({
+		queries: sources.map((source) => (
+			eventDataQueryOptions(source)
+		)),
+	});
+
+	const result = useMemo(() => {
+		return queries.map((query, index) => ({ query, source: sources[index]! }));
+	}, [queries, sources]);
+
+	return result;
+}

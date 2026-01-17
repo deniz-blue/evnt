@@ -1,10 +1,10 @@
 import type { EventData } from "@evnt/schema";
 import { useLayersStore } from "./useLayersStore";
-import { UtilEventSource } from "./models/event-source";
+import { UtilEventSource, type EventDataSource } from "./models/event-source";
 import { DataDB } from "./data-db";
 import { useTasksStore } from "../stores/useTasksStore";
 
-export class EventUtils {
+export class EventActions {
 	static async createLocalEvent(data: EventData, layerId?: string) {
 		useTasksStore.getState().addTask({
 			title: "Creating local event",
@@ -12,6 +12,17 @@ export class EventUtils {
 		}, async () => {
 			const source = UtilEventSource.newLocal();
 			await DataDB.put(UtilEventSource.getKey(source), { data });
+			useLayersStore.getState().addEventSource(source, layerId);
+		});
+	}
+
+	static async createRemoteEventFromUrl(url: string, layerId?: string) {
+		useTasksStore.getState().addTask({
+			title: "Creating remote event from URL",
+			notify: true,
+		}, async () => {
+			// TODO: validation
+			const source = UtilEventSource.newRemote(url);
 			useLayersStore.getState().addEventSource(source, layerId);
 		});
 	}
@@ -25,6 +36,15 @@ export class EventUtils {
 			await DataDB.put(UtilEventSource.getKey(source), { data });
 			useLayersStore.getState().addEventSource(source, layerId);
 			console.log("Created remote event:", source);
+		});
+	}
+
+	static async deleteEvent(source: EventDataSource, layerId?: string) {
+		useTasksStore.getState().addTask({
+			title: "Deleting event from layer",
+			notify: true,
+		}, async () => {
+			useLayersStore.getState().removeEventSource(source, layerId);
 		});
 	}
 };

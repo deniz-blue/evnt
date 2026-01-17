@@ -5,39 +5,30 @@ import { openImportJSONModal } from "../components/app/modal/ImportJSONModal";
 import { IconPlus } from "@tabler/icons-react";
 import { EventCard } from "../components/content/event/EventCard";
 import { openImportURLModal } from "../components/app/modal/ImportURLModal";
-import { useQueries, useQuery } from "@tanstack/react-query";
-import { DataDB } from "../db/data-db";
-import { eventDataQueryOptions } from "../db/useEventDataQuery";
-import { UtilEventSource } from "../db/models/event-source";
+import { useEventQueries } from "../db/useEventDataQuery";
 import { RQResult } from "../components/data/RQResult";
-import { EventUtils } from "../db/events";
+import { EventActions } from "../db/events";
+import { EventContextMenu } from "../components/content/event/EventContextMenu";
+import { useLayersStore } from "../db/useLayersStore";
+import { UtilTranslations } from "@evnt/schema/utils";
 
 export default function List() {
-	const dbKeys = useQuery({
-		queryKey: ["event-data-keys"],
-		queryFn: () => DataDB.getAllKeys(),
-	});
+	const defaultLayerSources = useLayersStore(store => store.layers["default"]?.data.events ?? []);
 
-	console.log("Event data keys:", dbKeys.data);
-
-	const events = useQueries({
-		queries: (dbKeys.data ?? []).map((key) => (
-			eventDataQueryOptions(UtilEventSource.fromKey(key)!)
-		)),
-	});
+	const events = useEventQueries(defaultLayerSources);
 
 	const [search, setSearch] = useState("");
 
-	// let filtered = events;
+	let filtered = events;
 
-	// if (search) {
-	//     filtered = filtered.filter((event) => {
-	//         return [
-	//             event.data.name,
-	//             event.data.description,
-	//         ].some(translation => !!UtilTranslations.search(translation, search))
-	//     });
-	// };
+	if (search) {
+		filtered = filtered.filter(({ query }) => {
+			return [
+				query.data?.name ?? {},
+				query.data?.description ?? {},
+			].some(translation => !!UtilTranslations.search(translation, search))
+		});
+	};
 
 	return (
 		<Stack>
@@ -63,7 +54,7 @@ export default function List() {
 										openImportJSONModal({
 											schema: EventDataSchema,
 											onSubmit: (data) => {
-												EventUtils.createLocalEvent(data);
+												EventActions.createLocalEvent(data);
 											},
 										});
 									}}
@@ -75,7 +66,7 @@ export default function List() {
 										openImportURLModal({
 											schema: EventDataSchema,
 											onSubmit: (url, data) => {
-												EventUtils.createRemoteEvent(url, data);
+												EventActions.createRemoteEvent(url, data);
 											},
 										});
 									}}
@@ -92,26 +83,18 @@ export default function List() {
 				type="container"
 				cols={{ base: 1, '300px': 2, '500px': 4 }}
 			>
-				{/* {filtered.map((event, index) => (
-                    <EventCard
-                        key={index}
-                        value={event.data}
-                        variant="card"
-                        id={event.id}
-                        menu={<EventContextMenu event={event} />}
-                    />
-                ))} */}
-				{events.map((eventQuery, index) => (
+				{filtered.map(({ query, source }, index) => (
 					<RQResult
 						key={index}
-						query={eventQuery}
+						query={query}
 					>
 						{(data) => (
 							<EventCard
 								key={index}
 								value={data}
 								variant="card"
-								id={0}
+								source={source}
+								menu={<EventContextMenu source={source} />}
 							/>
 						)}
 					</RQResult>
