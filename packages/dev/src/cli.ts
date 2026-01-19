@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { writeFileSync } from "node:fs";
+import { existsSync, writeFileSync } from "node:fs";
 import {
 	build,
 	indexhtml,
@@ -14,7 +14,7 @@ const main = async () => {
 	const entries = await build(dir, out);
 	writeFileSync(join(out, "index.html"), indexhtml());
 	writeFileSync(join(out, ".index.json"), JSON.stringify(indexjson(entries)));
-	await readmelist(join(out, "README.md"), entries);
+	if(existsSync("README.md")) await readmelist("README.md", entries);
 }
 
 main();
