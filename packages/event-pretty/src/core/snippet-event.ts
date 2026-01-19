@@ -127,12 +127,18 @@ export const snippetInstance = (instance: EventInstance): TSnippet[] => {
         })
     }
 
-    if (UtilPartialDateRange.isSameTime(instance)) {
+    if (UtilPartialDateRange.isSingleDay(instance) && UtilPartialDateRange.isSameTime(instance)) {
         snippets.push({
             icon: "clock",
             label: { type: "time", value: UtilPartialDate.getTimePart(instance.start!)! },
         })
-    } else if (instance.start && instance.end && UtilPartialDate.hasTime(instance.start) && UtilPartialDate.hasTime(instance.end)) {
+    } else if (
+		instance.start
+		&& instance.end
+		&& UtilPartialDateRange.isSingleDay(instance)
+		&& UtilPartialDate.hasTime(instance.start)
+		&& UtilPartialDate.hasTime(instance.end)
+	) {
         snippets.push({
             icon: "clock",
             label: { type: "time-range", value: { start: UtilPartialDate.getTimePart(instance.start!)!, end: UtilPartialDate.getTimePart(instance.end!)! } },

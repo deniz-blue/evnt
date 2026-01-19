@@ -5,11 +5,13 @@ import { useLocaleStore } from "../../../stores/useLocaleStore";
 
 export const PartialDateSnippetLabel = ({ value }: { value: PartialDate }) => {
 	const language = useLocaleStore(store => store.language);
+	const timezone = useLocaleStore(store => store.timezone);
 
     return (
         <Text span inline>
             {UtilPartialDate.toIntlString(value, {
 				locale: language,
+				timezone,
 			})}
         </Text>
     )
