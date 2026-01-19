@@ -30,7 +30,10 @@ export const getHtmlUrl = async () => {
 			owner,
 			repo,
 		});
-		return pages.html_url ?? null;
+		// http -> https
+		return pages.html_url ? (
+			pages.html_url.replace(/^http:/, "https:")
+		) : null;
 	} catch (e) {
 		return null;
 	}
