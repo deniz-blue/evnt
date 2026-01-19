@@ -18,7 +18,7 @@ export const readmelist = async (md: string, entries: EventEntry[]) => {
 ${list}
 <!-- EVENTS LIST END -->`);
 
-	writeFileSync(htmlUrl, newcontents);
+	writeFileSync(md, newcontents);
 };
 
 export const getHtmlUrl = async () => {
