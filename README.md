@@ -23,9 +23,12 @@ This monorepo aims to fix these issues with the other related projects:
 - A single master [event data format](./docs/README.md) to [rule them all](https://xkcd.com/927/)
 - A way to [share and open](./apps/redirector#readme) event information in your preferred application
 - A default [web app](./apps/web#readme) to view events from many sources
+- A [repository](https://github.com/deniz-blue/events-data) where event data can be collaboratively stored and updated
 - A [server](./apps/data-server#readme) that allows users to collaboratively store and update event data
 
 ## Demo Links
 
-- [FOSDEM26](https://event.nya.pub/?action=import&url=https%3A%2F%2Fraw.githubusercontent.com%2Fdeniz-blue%2Fevents-data%2Frefs%2Fheads%2Fmain%2Fdata%2F2026%2Ffosdem26.json) (import url)
-- [FOSDEM26](https://event.nya.pub/?action=view&url=https%3A%2F%2Fraw.githubusercontent.com%2Fdeniz-blue%2Fevents-data%2Frefs%2Fheads%2Fmain%2Fdata%2F2026%2Ffosdem26.json) (view url - unimplemented)
+These links show examples of events with the source as the [deniz-blue/events-data](https://github.com/deniz-blue/events-data) repository:
+
+- [FOSDEM26](<https://event.nya.pub/?action=view-event&url=https%3A%2F%2Fdeniz.blue%2Fevents-data%2Fevents%2F2026%2Ffoss%2Ffosdem26.json>)
+- [CHAOSSCon26](<https://event.nya.pub/?action=view-event&url=https%3A%2F%2Fdeniz.blue%2Fevents-data%2Fevents%2F2026%2Ffoss%2Fchaosscon26.json>)
