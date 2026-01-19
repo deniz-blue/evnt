@@ -15,7 +15,8 @@ export const eventDataQueryOptions = (source: EventDataSource) => {
 		networkMode: "always",
 		refetchOnReconnect: UtilEventSource.isRemote(source),
 		queryFn: async (): Promise<EventData> => {
-			const cached = await DataDB.get(UtilEventSource.getKey(source));
+			const key = UtilEventSource.getKey(source)!;
+			const cached = await DataDB.get(key);
 
 			if (cached == null) {
 				switch (source.type) {
@@ -24,6 +25,9 @@ export const eventDataQueryOptions = (source: EventDataSource) => {
 					case "remote":
 						const result = await fetchValidate(source.url, EventDataSchema);
 						if (!result.ok) throw new Error(`Failed to fetch event data: ${result.error}`);
+						await DataDB.put(key, {
+							data: result.value,
+						});
 						return result.value;
 				};
 			};

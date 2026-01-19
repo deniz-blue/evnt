@@ -1,5 +1,6 @@
 import { Center, Loader } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { CenteredLoader } from "../content/base/CenteredLoader";
 
 export const AsyncLoader = <T,>({
 	children,
@@ -13,38 +14,24 @@ export const AsyncLoader = <T,>({
 	const [loading, setLoading] = useState<boolean>(true);
 
 	useEffect(() => {
-		let isMounted = true;
-
+		setData(null);
+		setError(null);
 		setLoading(true);
-		fetcher()
-			.then((result) => {
-				if (isMounted) {
-					setData(result);
-					setError(null);
-				}
-			})
-			.catch((err) => {
-				if (isMounted) {
-					setError(err);
-					setData(null);
-				}
-			})
-			.finally(() => {
-				if (isMounted) {
-					setLoading(false);
-				}
-			});
-		
-		return () => {
-			isMounted = false;
-		};
+		(async () => {
+			try {
+				const result = await fetcher();
+				setData(result);
+			} catch (err) {
+				setError(err as Error);
+			} finally {
+				setLoading(false);
+			}
+		})();
 	}, [fetcher]);
 
 	if (loading) {
 		return (
-			<Center>
-				<Loader />
-			</Center>
+			<CenteredLoader />
 		);
 	}
 

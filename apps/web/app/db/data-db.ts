@@ -1,6 +1,10 @@
 import { openDB, type IDBPDatabase } from "idb";
 import { DATABASE_NAME } from "../constants";
 import type { EventData } from "@evnt/schema";
+import { Logger } from "../lib/util/logger";
+
+const logger = Logger.main.styledChild("DataDB", "#a6d189");
+const loggerBroadcast = logger.styledChild("Broadcast", "#81a1c1");
 
 export namespace DataDB {
 	export interface Entry {
@@ -32,23 +36,24 @@ export class DataDB {
 					db.deleteObjectStore(this.STORE_NAME_DATA);
 
 				db.createObjectStore(this.STORE_NAME_DATA);
+				logger.log("Database upgraded");
 			},
 			blocking() {
 				// If another tab tries to upgrade, close this connection
 				if (DataDB.#db) {
 					DataDB.#db.close();
 					DataDB.#db = null;
-					console.log("Database closed due to version change in another tab.");
+					logger.log("Database closed due to version change in another tab.");
 				}
 			},
 			blocked() {
-				console.warn("Update blocked: please close other tabs running this app.");
+				logger.log("Update blocked: please close other tabs running this app.");
 			}
 		}).catch((err) => {
-			console.error("Failed to open DataDB:", err);
+			logger.log("Failed to open DataDB:", err);
 			throw err;
 		});
-		console.log("Initialized DataDB");
+		logger.log("initialized");
 		return this.#db;
 	}
 
@@ -59,7 +64,7 @@ export class DataDB {
 
 	static #dispatchUpdateEvent(key: string) {
 		for (const listener of this.#listeners) listener(key);
-		console.log("update", key);
+		logger.log(`Key updated`, key);
 	}
 
 	static channel(): BroadcastChannel {
@@ -67,7 +72,9 @@ export class DataDB {
 			this.#channel = new BroadcastChannel(this.CHANNEL_NAME);
 			this.#channel.addEventListener("message", (msg: MessageEvent<string>) => {
 				this.#dispatchUpdateEvent(msg.data);
+				loggerBroadcast.log(`Message`, msg.data);
 			});
+			loggerBroadcast.log("initialized");
 		};
 
 		return this.#channel;
@@ -80,12 +87,15 @@ export class DataDB {
 
 	static async get(key: string): Promise<DataDB.Entry | null> {
 		const db = await this.db();
-		return await db.get(this.STORE_NAME_DATA, key) || null;
+		const entry = await db.get(this.STORE_NAME_DATA, key) || null;
+		logger.log("Get", [key, entry]);
+		return entry;
 	}
 
 	static async put(key: string, entry: DataDB.Entry): Promise<void> {
 		const db = await this.db();
 		await db.put(this.STORE_NAME_DATA, entry, key);
+		logger.log("Put", [key, entry]);
 		this.#updated(key);
 	}
 
