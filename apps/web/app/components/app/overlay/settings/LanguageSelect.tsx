@@ -1,5 +1,5 @@
 import type { LanguageKey } from "@evnt/schema";
-import { Select } from "@mantine/core";
+import { Anchor, Input, Select, Stack } from "@mantine/core";
 import languages from "../../../../lib/resources/languages.json";
 import { UtilLanguageCode } from "../../../../lib/util/language-code";
 import { useState } from "react";
@@ -13,28 +13,50 @@ export const LanguageSelect = ({
 }) => {
 	const [searchValue, setSearchValue] = useState("");
 
-	return (
-		<Select
-			value={value || "en"}
-			onChange={v => onChange(v || "en")}
-			data={languages.map(value => ({ value, label: UtilLanguageCode.getEnglishName(value) || value }))}
-			searchable
-			searchValue={searchValue}
-			onSearchChange={setSearchValue}
-			onFocus={() => setSearchValue("")}
-			clearable={value !== "en"}
-			leftSection={UtilLanguageCode.toEmoji(value)}
-			renderOption={({ option, checked }) => {
-				const emoji = UtilLanguageCode.toEmoji(option.value as LanguageKey);
+	const navigatorLanguages = [...new Set(navigator.languages
+		.map(lang => lang.split("-")[0] as LanguageKey)
+		.filter((lang): lang is LanguageKey => lang !== null))];
 
-				return (
-					<span>
-						{checked ? "✅" : ""} {emoji} {UtilLanguageCode.getLabel(option.value as LanguageKey)}
-					</span>
-				);
-			}}
-			label="Language"
-			placeholder="Select language"
-		/>
+	return (
+		<Stack gap={4}>
+			<Select
+				value={value || "en"}
+				onChange={v => onChange(v || "en")}
+				data={languages.map(value => ({ value, label: UtilLanguageCode.getEnglishName(value) || value }))}
+				searchable
+				searchValue={searchValue}
+				onSearchChange={setSearchValue}
+				onFocus={() => setSearchValue("")}
+				clearable={value !== "en"}
+				leftSection={UtilLanguageCode.toEmoji(value)}
+				renderOption={({ option, checked }) => {
+					const emoji = UtilLanguageCode.toEmoji(option.value as LanguageKey);
+
+					return (
+						<span>
+							{checked ? "✅" : ""} {emoji} {UtilLanguageCode.getLabel(option.value as LanguageKey)}
+						</span>
+					);
+				}}
+				label="Language"
+				description="Select content language"
+			/>
+			<Stack gap={0}>
+				{navigatorLanguages.filter(lang => value !== lang).map(lang => (
+					<Input.Description key={lang} style={{ cursor: "pointer" }} onClick={() => onChange(lang)}>
+						Change to <Anchor
+							component="button"
+							type="button"
+							onClick={() => {
+								onChange(lang);
+							}}
+							inherit
+						>
+							{UtilLanguageCode.getLabel(lang)}
+						</Anchor>
+					</Input.Description>
+				))}
+			</Stack>
+		</Stack>
 	);
 };
