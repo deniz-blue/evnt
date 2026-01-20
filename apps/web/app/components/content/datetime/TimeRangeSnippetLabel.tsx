@@ -1,11 +1,11 @@
-import type { Range } from "@evnt/pretty";
+import type { SnippetLabelProps } from "@evnt/pretty";
 import { Text } from "@mantine/core";
 import { TimeSnippetLabel } from "./TimeSnippetLabel";
 
-export const TimeRangeSnippetLabel = ({ value }: { value: Range<string> }) => {
+export const TimeRangeSnippetLabel = ({ value }: SnippetLabelProps<"time-range">) => {
     return (
         <Text span inline>
-            <TimeSnippetLabel value={value.start} /> - <TimeSnippetLabel value={value.end} />
+            <TimeSnippetLabel value={value.start.value} date={value.start.date} /> - <TimeSnippetLabel value={value.end.value} date={value.end.date} />
         </Text>
     )
 };

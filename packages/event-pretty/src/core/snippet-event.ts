@@ -139,9 +139,12 @@ export const snippetInstance = (instance: EventInstance): TSnippet[] => {
 		&& UtilPartialDate.hasTime(instance.start)
 		&& UtilPartialDate.hasTime(instance.end)
 	) {
+		const start = { value: UtilPartialDate.getTimePart(instance.start!)!, date: UtilPartialDate.getDatePart(instance.start!) };
+		const end = { value: UtilPartialDate.getTimePart(instance.end!)!, date: UtilPartialDate.getDatePart(instance.end!) };
+
         snippets.push({
             icon: "clock",
-            label: { type: "time-range", value: { start: UtilPartialDate.getTimePart(instance.start!)!, end: UtilPartialDate.getTimePart(instance.end!)! } },
+            label: { type: "time-range", value: { start, end } },
         })
     }
 

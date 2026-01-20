@@ -30,8 +30,8 @@ export const Snippet = ({ snippet }: { snippet: TSnippet }) => {
             </Text>
         );
         if (label.type === "address") return <AddressSnippetLabel value={label.value} />;
-        if (label.type === "time") return <TimeSnippetLabel value={label.value} />;
-        if (label.type === "time-range") return <TimeRangeSnippetLabel value={label.value} />;
+        if (label.type === "time") return <TimeSnippetLabel value={label.value} date={label.date} />;
+        if (label.type === "time-range") return <TimeRangeSnippetLabel value={label.value}  />;
         if (label.type === "date-time-range") return <PartialDateRangeSnippetLabel value={label.value} />;
         if (label.type === "partial-date" || label.type == "date-time") return <PartialDateSnippetLabel value={label.value} />;
         if (label.type === "external-link") return <ExternalLink href={label.url} children={label.name} />;

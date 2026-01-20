@@ -2,6 +2,7 @@ import type { LanguageKey } from "@evnt/schema";
 import { Select } from "@mantine/core";
 import languages from "../../../../lib/resources/languages.json";
 import { UtilLanguageCode } from "../../../../lib/util/language-code";
+import { useState } from "react";
 
 export const LanguageSelect = ({
 	value,
@@ -10,12 +11,17 @@ export const LanguageSelect = ({
 	value: LanguageKey;
 	onChange: (value: LanguageKey) => void;
 }) => {
+	const [searchValue, setSearchValue] = useState("");
+
 	return (
 		<Select
 			value={value || "en"}
 			onChange={v => onChange(v || "en")}
 			data={languages.map(value => ({ value, label: UtilLanguageCode.getEnglishName(value) || value }))}
 			searchable
+			searchValue={searchValue}
+			onSearchChange={setSearchValue}
+			onFocus={() => setSearchValue("")}
 			clearable={value !== "en"}
 			leftSection={UtilLanguageCode.toEmoji(value)}
 			renderOption={({ option, checked }) => {
