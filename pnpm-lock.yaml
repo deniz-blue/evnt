@@ -191,6 +191,9 @@ importers:
       isbot:
         specifier: ^5.1.32
         version: 5.1.32
+      qr:
+        specifier: ^0.5.4
+        version: 0.5.4
       react:
         specifier: ^19.2.3
         version: 19.2.3
@@ -2859,6 +2862,10 @@ packages:
 
   pure-react-types@0.1.4:
     resolution: {integrity: sha512-8y1P/kWmo839jDqhLnaTAatjwU2SVjs34iwOwYtiMdcfGLBGiOrUTPjpb9hOgTB3cPNuAT0q90AtmPEIp1zJxA==}
+
+  qr@0.5.4:
+    resolution: {integrity: sha512-gjVMHOt7CX+BQd7JLQ9fnS4kJK4Lj4u+Conq52tcCbW7YH3mATTtBbTMA+7cQ1rKOkDo61olFHJReawe+XFxIA==}
+    engines: {node: '>= 20.19.0'}
 
   qs@6.14.1:
     resolution: {integrity: sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==}
@@ -6099,6 +6106,8 @@ snapshots:
   punycode@2.3.1: {}
 
   pure-react-types@0.1.4: {}
+
+  qr@0.5.4: {}
 
   qs@6.14.1:
     dependencies:

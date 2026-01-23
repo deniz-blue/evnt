@@ -1,7 +1,7 @@
 import { ActionIcon, Code, Menu } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
-import { IconDotsVertical, IconJson, IconPinned, IconPinnedOff, IconReload, IconShare, IconTrash } from "@tabler/icons-react";
+import { IconCopy, IconDotsVertical, IconJson, IconPinned, IconPinnedOff, IconQrcode, IconReload, IconShare, IconTrash } from "@tabler/icons-react";
 import { useHomeStore } from "../../../stores/useHomeStore";
 import { EVENT_REDIRECTOR_URL } from "../../../constants";
 import { useTranslations } from "../../../stores/useLocaleStore";
@@ -12,6 +12,7 @@ import { DataDB } from "../../../db/data-db";
 import { AsyncLoader } from "../../data/AsyncLoader";
 import type { EventData } from "@evnt/schema";
 import { EventActions } from "../../../db/events";
+import { QRCode } from "../../../lib/util/qrcode";
 
 export const EventContextMenu = ({ source }: { source: EventDataSource }) => {
 	const isPinned = useHomeStore((state) => state.pinnedEvents.some(e => (
@@ -60,6 +61,13 @@ export const EventContextMenu = ({ source }: { source: EventDataSource }) => {
 		),
 	});
 
+	const onClickShareQRCode = () => modals.open({
+		size: "md",
+		children: (
+			<QRCode value={getShareLink() || ""} />
+		),
+	});
+
 	return (
 		<Menu>
 			<Menu.Target>
@@ -87,14 +95,22 @@ export const EventContextMenu = ({ source }: { source: EventDataSource }) => {
 						</Menu.Sub.Target>
 						<Menu.Sub.Dropdown>
 							<Menu.Item
+								leftSection={<IconCopy size={14} />}
 								onClick={handleCopy(getShareLink()!, "Share link copied to clipboard")}
 							>
 								Copy Link
 							</Menu.Item>
 							<Menu.Item
+								leftSection={<IconCopy size={14} />}
 								onClick={handleCopy(`[Event](<${getShareLink()!}>)`, "Share link copied to clipboard")}
 							>
 								Copy Link (Markdown)
+							</Menu.Item>
+							<Menu.Item
+								leftSection={<IconQrcode size={14} />}
+								onClick={onClickShareQRCode}
+							>
+								Show QR Code
 							</Menu.Item>
 						</Menu.Sub.Dropdown>
 					</Menu.Sub>

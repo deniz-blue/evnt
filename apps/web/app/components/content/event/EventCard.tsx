@@ -34,9 +34,9 @@ export const EventCard = ({
                                 <Trans t={value.name} />
                             </Text>
                         </SubtleLink>
-                        <Text fz="sm" c="dimmed" inline span>
-                            <Trans t={value.description} />
-                        </Text>
+                        {/* <Text fz="sm" c="dimmed" inline span>
+							{"Short description would go here"}
+                        </Text> */}
                     </Stack>
                     {menu}
                 </Group>
