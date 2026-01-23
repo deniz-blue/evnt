@@ -7,6 +7,7 @@ import { Snippet } from "../../Snippet";
 import { MarkdownTranslations } from "../../base/MarkdownTranslations";
 import type { EventDataSource } from "../../../../db/models/event-source";
 import { LayerImportSection } from "./LayerImportSection";
+import { EventLinkButton } from "../components/EventLinkButton";
 
 export const EventDetailsContent = ({
 	data,
@@ -85,6 +86,17 @@ export const EventDetailsContent = ({
 					) : (
 						<Text c="dimmed" span fs="italic">No description provided.</Text>
 					)}
+				</Stack>
+			</Stack>
+
+			<Stack gap={0}>
+				<SmallTitle padLeft>
+					links
+				</SmallTitle>
+				<Stack gap={4}>
+					{data.components?.filter(component => component.type == "link").map(x => x.data).map((link, index) => (
+						<EventLinkButton key={index} value={link} />
+					))}
 				</Stack>
 			</Stack>
 
