@@ -20,7 +20,14 @@ export const Page = ({
 
 	return (
 		<main>
-			<h2>event.nya.pub</h2>
+			<span style={{ fontSize: "1.2em", fontFamily: "monospace" }}>
+				<span>
+					{"⟶ "}
+				</span>
+				<span style={{ color: "gray" }}>
+					event.nya.pub
+				</span>
+			</span>
 
 			{message && (
 				<p>
@@ -30,9 +37,9 @@ export const Page = ({
 
 			{instanceUrl && (
 				<p>
-					Default instance: <a href={instanceUrl}>{new URL(instanceUrl).host}</a>
+					<span style={{ fontWeight: "bold" }}>Your Default:</span> <a href={instanceUrl}>{new URL(instanceUrl).host}</a>
 					<a style={{ marginLeft: "1em", fontSize: "0.8em" }} href={`/?clearInstanceUrl`}>
-						clear
+						[unset]
 					</a>
 				</p>
 			)}
@@ -66,13 +73,13 @@ export const StorageAccessGranter = () => {
 	const requestStorageAccess = async () => {
 		try {
 			await document.requestStorageAccess();
-		} catch(e) {
+		} catch (e) {
 			console.error("Storage access request failed:", e);
 			alert("Storage access request failed. See console for details.");
 		}
 	};
 
-	if(state !== "prompt") return null;
+	if (state !== "prompt") return null;
 
 	return (
 		<p style={{ color: "gray" }}>
@@ -91,14 +98,14 @@ export const InstanceList = ({ params }: { params?: URLSearchParams }) => {
 		fetch(INSTANCES_URL)
 			.then(res => res.json())
 			.then(data => {
-				data.instances.push({ url: "http://localhost:5173" });
+				// data.instances.push({ url: "http://localhost:5173" });
 				setData(data);
 			});
 	}, []);
 
 	return (
 		<ul>
-			<span style={{ fontSize: "0.8em", color: "gray" }}>Available Instances:</span>
+			<span style={{ fontSize: "0.8em", color: "gray" }}>Applications:</span>
 			{!data && (
 				<li>Loading...</li>
 			)}
@@ -110,11 +117,19 @@ export const InstanceList = ({ params }: { params?: URLSearchParams }) => {
 						<a href={`${url.origin}/${window.location.search}`}>
 							{url.host}
 						</a>
-						<a style={{ marginLeft: "1em", fontSize: "0.8em" }} href={`/?${new URLSearchParams({
-							setInstanceUrl: instance.url,
-						}).toString() + (params ? `&${params.toString()}` : "")}`}>
-							set default
-						</a>
+						{(url.hostname === "localhost") ? (
+							<span
+								style={{ marginLeft: "1em", fontSize: "0.8em", color: "gray" }}
+							>
+								(developers only)
+							</span>
+						) : (
+							<a style={{ marginLeft: "1em", fontSize: "0.8em" }} href={`/?${new URLSearchParams({
+								setInstanceUrl: instance.url,
+							}).toString() + (params ? `&${params.toString()}` : "")}`}>
+								[set default]
+							</a>
+						)}
 					</li>
 				);
 			})}
