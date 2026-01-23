@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && pnpm gen && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+	"gen": "pnpm dlx tsx ./scripts/scope_ext.ts"
   },
   "dependencies": {
     "react": "^19.2.0",

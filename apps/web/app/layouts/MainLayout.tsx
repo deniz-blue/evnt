@@ -30,8 +30,9 @@ export default function MainLayout() {
 			}}
 		>
 			<AppShell.Header>
-				<Group p="xs" align="center" h="100%" w="100%" justify="space-between">
-					<Group>
+				<Group gap={0} p="xs" align="center" h="100%" w="100%" justify="space-between">
+					<Group gap="xs">
+						<img src="/icon.svg" alt="@evnt Viewer Logo" width={32} height={32} />
 						<Button
 							component={Link}
 							to="/"

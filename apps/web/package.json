@@ -34,6 +34,7 @@
     "remark-emoji": "^5.0.2",
     "remark-gfm": "^4.0.1",
     "remark-squeeze-paragraphs": "^6.0.0",
+    "vite-plugin-pwa": "^1.2.0",
     "zod": "^4.3.5",
     "zustand": "^5.0.10"
   },
