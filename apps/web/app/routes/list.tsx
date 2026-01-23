@@ -1,4 +1,4 @@
-import { ActionIcon, Group, Menu, SimpleGrid, Stack, TextInput } from "@mantine/core";
+import { ActionIcon, Button, Group, Menu, SimpleGrid, Stack, TextInput } from "@mantine/core";
 import { useState } from "react";
 import { EventDataSchema } from "@evnt/schema";
 import { openImportJSONModal } from "../components/app/modal/ImportJSONModal";
@@ -10,25 +10,17 @@ import { RQResult } from "../components/data/RQResult";
 import { EventActions } from "../db/events";
 import { EventContextMenu } from "../components/content/event/EventContextMenu";
 import { useLayersStore } from "../db/useLayersStore";
-import { UtilTranslations } from "@evnt/schema/utils";
+import { applyEventFilters, EventFilters } from "../lib/filter/event-filters";
 
 export default function List() {
 	const defaultLayerSources = useLayersStore(store => store.layers["default"]?.data.events ?? []);
 
-	const events = useEventQueries(defaultLayerSources);
-
 	const [search, setSearch] = useState("");
 
-	let filtered = events;
-
-	if (search) {
-		filtered = filtered.filter(({ query }) => {
-			return [
-				query.data?.name ?? {},
-				query.data?.description ?? {},
-			].some(translation => !!UtilTranslations.search(translation, search))
-		});
-	};
+	const allQueries = useEventQueries(defaultLayerSources);
+	const filtered = applyEventFilters(allQueries, [
+		(search && search.length > 0) ? EventFilters.Search(search) : EventFilters.None,
+	]);
 
 	return (
 		<Stack>
@@ -44,9 +36,9 @@ export default function List() {
 					<Group>
 						<Menu>
 							<Menu.Target>
-								<ActionIcon>
-									<IconPlus />
-								</ActionIcon>
+								<Button leftSection={<IconPlus />}>
+									Add
+								</Button>
 							</Menu.Target>
 							<Menu.Dropdown>
 								<Menu.Item
@@ -81,7 +73,7 @@ export default function List() {
 
 			<SimpleGrid
 				type="container"
-				cols={{ base: 1, '300px': 2, '500px': 4 }}
+				cols={{ base: 1, "680px": 2, "1400px": 3, "1800px": 4 }}
 			>
 				{filtered.map(({ query, source }, index) => (
 					<RQResult

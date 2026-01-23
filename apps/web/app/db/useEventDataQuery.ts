@@ -42,7 +42,12 @@ export const useEventDataQuery = (source: EventDataSource) => {
 	return query;
 };
 
-export const useEventQueries = (sources: EventDataSource[]) => {
+export type EventDataQueryResult = {
+	query: ReturnType<typeof useQuery<EventData>>;
+	source: EventDataSource;
+};
+
+export const useEventQueries = (sources: EventDataSource[]): EventDataQueryResult[] => {
 	const queries = useQueries({
 		queries: sources.map((source) => (
 			eventDataQueryOptions(source)
