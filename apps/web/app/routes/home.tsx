@@ -1,17 +1,9 @@
-import { InstanceInfoSection } from "../components/app/instance/InstanceInfoSection";
 import { EventCard } from "../components/content/event/EventCard";
 import { EventContextMenu } from "../components/content/event/EventContextMenu";
 import { RQResult } from "../components/data/RQResult";
 import { useEventQueries } from "../db/useEventDataQuery";
 import { useHomeStore } from "../stores/useHomeStore";
-import type { Route } from "./+types/home";
-import { Box, Button, Container, Group, ScrollArea, Stack, Title } from "@mantine/core";
-
-export function meta({ }: Route.MetaArgs) {
-	return [
-		{ title: "Universal Events Format" },
-	];
-}
+import { Container, Group, ScrollArea, Stack, Text, Title } from "@mantine/core";
 
 export default function Home() {
 	const pinnedEventSources = useHomeStore((state) => state.pinnedEvents);
@@ -23,6 +15,9 @@ export default function Home() {
 				<Title>
 					Home
 				</Title>
+				<Text c="dimmed">
+					Welcome to @evnt Viewer! Pinned events will show up here for quick access.
+				</Text>
 			</Stack>
 			<Stack>
 				<ScrollArea.Autosize maw="100%" scrollbars="x" offsetScrollbars p={4}>

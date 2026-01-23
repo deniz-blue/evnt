@@ -1,11 +1,12 @@
-import { Drawer, Group, Kbd, Stack, Text } from "@mantine/core";
+import { Button, Drawer, Group, Kbd, Stack, Text } from "@mantine/core";
 import { useQueryModalState } from "../../../../hooks/base/useQueryModalState";
 import { LanguageSelect } from "./LanguageSelect";
 import { useLocaleStore } from "../../../../stores/useLocaleStore";
 import { TimezoneSelect } from "./TimezoneSelect";
-import { IconSettings } from "@tabler/icons-react";
+import { IconExternalLink, IconSettings } from "@tabler/icons-react";
+import { EVENT_REDIRECTOR_URL } from "../../../../constants";
 
-export const useSettingsOverlay = () => useQueryModalState("settings");
+export const useSettingsOverlay = () => useQueryModalState("settings", true);
 
 export const SettingsOverlay = () => {
 	const { isOpen, close } = useSettingsOverlay();
@@ -33,6 +34,18 @@ export const SettingsOverlay = () => {
 				/>
 
 				<TimezoneSelect />
+
+				<Button
+					component="a"
+					href={EVENT_REDIRECTOR_URL + "/?" + new URLSearchParams({
+						setInstanceUrl: window.location.origin,
+						popup: "true",
+					})}
+					target="_blank"
+					rightSection={<IconExternalLink size={16} />}
+				>
+					Set this Application as Default
+				</Button>
 			</Stack>
 		</Drawer>
 	);
