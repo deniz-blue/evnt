@@ -2,7 +2,7 @@ import { ActionIcon, Button, Group, Menu, SimpleGrid, Stack, TextInput } from "@
 import { useState } from "react";
 import { EventDataSchema } from "@evnt/schema";
 import { openImportJSONModal } from "../components/app/modal/ImportJSONModal";
-import { IconPlus } from "@tabler/icons-react";
+import { IconBraces, IconLink, IconPlus } from "@tabler/icons-react";
 import { EventCard } from "../components/content/event/EventCard";
 import { openImportURLModal } from "../components/app/modal/ImportURLModal";
 import { useEventQueries } from "../db/useEventDataQuery";
@@ -42,6 +42,7 @@ export default function List() {
 							</Menu.Target>
 							<Menu.Dropdown>
 								<Menu.Item
+									leftSection={<IconBraces />}
 									onClick={() => {
 										openImportJSONModal({
 											schema: EventDataSchema,
@@ -51,9 +52,10 @@ export default function List() {
 										});
 									}}
 								>
-									Add JSON
+									From JSON content
 								</Menu.Item>
 								<Menu.Item
+									leftSection={<IconLink />}
 									onClick={() => {
 										openImportURLModal({
 											schema: EventDataSchema,
@@ -63,7 +65,7 @@ export default function List() {
 										});
 									}}
 								>
-									Add URL
+									From URL
 								</Menu.Item>
 							</Menu.Dropdown>
 						</Menu>
