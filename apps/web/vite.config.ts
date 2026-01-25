@@ -14,6 +14,8 @@ export default defineConfig({
 				name: "@evnt Viewer",
 				short_name: "@evnt Viewer",
 				description: "The default viewer for @evnt events.",
+				theme_color: "#242424",
+				background_color: "#242424",
 				icons: [
 					{
 						src: "icon.svg",

@@ -1,0 +1,23 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "gen": "tsx ./src/gen.ts",
+    "dev": "tsx watch ./src/gen.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.0",
+  "devDependencies": {
+    "@evnt/schema": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^25.0.10",
+    "json-schema-to-lexicon": "workspace:*",
+    "tsx": "^4.21.0",
+    "zod": "^4.3.5",
+    "zod2md": "^0.2.4"
+  }
+}

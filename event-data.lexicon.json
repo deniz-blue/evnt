@@ -1,0 +1,59 @@
+{
+	"lexicon": 1,
+	"id": "blue.deniz.atproto.event",
+	"description": "Event Data Lexicon",
+	"defs": {
+		"EventData": {
+			"type": "object",
+			"properties": {
+				"v": {
+					"type": "integer",
+					"description": "The version of the Event Data schema"
+				},
+				"id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "unknown",
+					"description": "The name of the event"
+				},
+				"description": {
+					"type": "unknown",
+					"description": "A short description of the event"
+				},
+				"status": {
+					"type": "unknown",
+					"description": "The status of the event"
+				},
+				"venues": {
+					"type": "array",
+					"items": {
+						"type": "unknown"
+					},
+					"description": "The venues associated with this event"
+				},
+				"instances": {
+					"type": "array",
+					"items": {
+						"type": "unknown"
+					},
+					"description": "The instances of the event"
+				},
+				"components": {
+					"type": "array",
+					"items": {
+						"type": "unknown"
+					},
+					"description": "Additional components of the event"
+				}
+			},
+			"required": [
+				"v",
+				"name",
+				"venues",
+				"instances"
+			],
+			"description": "An event"
+		}
+	}
+}

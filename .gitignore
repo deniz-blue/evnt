@@ -2,7 +2,13 @@
 .env
 node_modules
 .react-router
-build
+build/
 .turbo
 dist
 .tmp
+
+.gradle/
+*.aab
+*.apk
+*.idsig
+manifest-checksum.txt
