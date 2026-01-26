@@ -6,7 +6,7 @@ import {
 	Scripts,
 	ScrollRestoration,
 } from "react-router";
-import { createTheme, MantineProvider, type ActionIconProps, type ButtonProps, type TooltipProps } from "@mantine/core";
+import { Box, createTheme, MantineProvider, type ActionIconProps, type ButtonProps, type TooltipProps } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
 import { useEffect, useState } from "react";
@@ -39,7 +39,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Meta />
 				<Links />
 			</head>
-			<body>
+			<body style={{ backgroundColor: "#242424" }}>
 				<MantineProvider
 					forceColorScheme="dark"
 					theme={createTheme({
@@ -130,5 +130,9 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 }
 
 export function HydrateFallback() {
-	return <CenteredLoader />;
+	return (
+		<Box h="90vh" pt="xl">
+			<CenteredLoader />
+		</Box>
+	);
 }
