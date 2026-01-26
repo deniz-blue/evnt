@@ -1,9 +1,10 @@
 {
-  "name": "app",
+  "name": "webapp",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "react-router build",
+    "build:web": "react-router build",
+    "build:android": "cap sync",
     "dev": "react-router dev",
     "typecheck": "react-router typegen && tsc"
   },
@@ -39,6 +40,13 @@
     "zustand": "^5.0.10"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.0.1",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/cli": "^8.0.1",
+    "@capacitor/core": "^8.0.1",
+    "@capacitor/haptics": "^8.0.0",
+    "@capacitor/keyboard": "^8.0.0",
+    "@capacitor/status-bar": "^8.0.0",
     "@react-router/dev": "^7.12.0",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.19.7",

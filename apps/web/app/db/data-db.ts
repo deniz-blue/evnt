@@ -3,8 +3,8 @@ import { DATABASE_NAME } from "../constants";
 import type { EventData } from "@evnt/schema";
 import { Logger } from "../lib/util/logger";
 
-const logger = Logger.main.styledChild("DataDB", "#a6d189");
-const loggerBroadcast = logger.styledChild("Broadcast", "#81a1c1");
+const logger = Logger.main.styledChild("DataDB", "blue");
+const loggerBroadcast = logger.styledChild("Broadcast", "green");
 
 export namespace DataDB {
 	export interface Entry {
