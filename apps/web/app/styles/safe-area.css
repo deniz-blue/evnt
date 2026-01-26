@@ -1,0 +1,8 @@
+:root {
+	--safe-area-inset-top: env(safe-area-inset-top, 0px);
+	/* --safe-area-inset-top: 2rem; */
+}
+
+.mantine-Drawer-content, .mantine-Modal-content {
+	padding-top: var(--safe-area-inset-top);
+}

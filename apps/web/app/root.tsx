@@ -22,6 +22,7 @@ import "@denizblue/mantine-zod-form/style.css";
 import { useLayersStore } from "./db/useLayersStore";
 import { useWindowEvent } from "@mantine/hooks";
 import { useHomeStore } from "./stores/useHomeStore";
+import { CenteredLoader } from "./components/content/base/CenteredLoader";
 import.meta.glob("./styles/**/*.css", { eager: true });
 
 export const meta: Route.MetaFunction = () => [
@@ -33,7 +34,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 		<html lang="en">
 			<head>
 				<meta charSet="utf-8" />
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 				<link rel="manifest" href="/manifest.webmanifest" />
 				<Meta />
 				<Links />
@@ -126,4 +127,8 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 			)}
 		</main>
 	);
+}
+
+export function HydrateFallback() {
+	return <CenteredLoader />;
 }
