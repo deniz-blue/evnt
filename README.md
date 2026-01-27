@@ -1,21 +1,24 @@
-# @evnt
+# <img src="https://github.com/deniz-blue/md-emojis/raw/main/emojis/denizblue/evnt.svg" align="center" height="32" /> @evnt
 
-A standardized open format for representing and sharing event data across different applications.
+A **standardized**, **open-source** data **format** for representing and sharing event data across different applications.
 
 _Links:_
 
+- [About](#about-evnt)
+- 📱 [Applications](#applications)
 - 📜 [Data Format Specification](./docs/README.md)
-  - [@evnt/schema](./packages/schema/) (Zod schema & validator)
-  - [(Generated) JSON Schema](./event-data.schema.json)
-  - [(Generated) Markdown Documentation](./docs/SCHEMA.md)
-- 🔗 [Application Links Format](./docs/LINKS.md)
+  - [@evnt/schema](./packages/schema/) package
+  - [JSON Schema](./event-data.schema.json) _(generated)_
+  - [Markdown Documentation](./docs/SCHEMA.md) _(generated)_
+  - [ATProto Lexicon](./event-data.lexicon.json) _(generated)_
+- 🔗 [Application Links Format](./docs/LINKS.md) _event.nya.pub_
 
 ## Applications
 
-| Name             | Description     | Platform | Link                                             | Source Code                                          |
-|------------------|-----------------|----------|--------------------------------------------------|------------------------------------------------------|
-| **Vantage**      | Example Web App | Web      | [vantage.deniz.blue](https://vantage.deniz.blue) | [Source Code](./apps/web)                            |
-| **Event Viewer** | Kuylar's WIP    | Android  | N/A                                              | [Source Code](https://github.com/kuylar/EventViewer) |
+| Name                                      | Description     | Plat.                                                                                                                 | Lang.    | Source Code                                                 |
+|-------------------------------------------|-----------------|-----------------------------------------------------------------------------------------------------------------------|----------|-------------------------------------------------------------|
+| **[Vantage](https://vantage.deniz.blue)** | Example Web App | 🌐                                                                                                                    | TS+React | [./apps/web](./apps/web)                                    |
+| **Event Viewer**                          | Kuylar's WIP    | <img src="https://github.com/deniz-blue/md-emojis/raw/main/emojis/platform/android.svg" align="center" height="24" /> | Kotlin   | [kuylar/EventViewer](https://github.com/kuylar/EventViewer) |
 
 Applications are the different clients that can be used to view and interact with events. Each application may have its own features and user interface. These applications should support the [Application Links Format](./docs/LINKS.md).
 
@@ -25,6 +28,7 @@ An easy way to share and distribute event data is through event repositories whi
 
 A list of event repositories:
 - [deniz-blue/events-data](https://github.com/deniz-blue/events-data): FOSS, tech, other public events.
+- [deniz-blue/events-data-scraped](https://github.com/deniz-blue/events-data-scraped): Scraped event data from various sources.
 
 _Open an issue or PR to add your event repository to this list_
 

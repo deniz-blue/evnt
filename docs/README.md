@@ -1,8 +1,8 @@
-# Deniz's Structured Event Data Format
+🔙 [@evnt Project](../README.md)
 
-A data format for defining any kind of event, big or small.
+# Data Format Specification
 
-The current schema is [defined using Zod4](../packages/schema); exported to [json schema](../event-data.schema.json) and [markdown documentation](./SCHEMA.md).
+This document defines the data structures and types used for the @evnt Event format.
 
 ## Definitions
 
