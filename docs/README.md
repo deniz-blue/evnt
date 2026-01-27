@@ -2,23 +2,7 @@
 
 A data format for defining any kind of event, big or small.
 
-The current schema is [defined using Zod4](../packages/schema); exported to [json schema](../event-data.schema.json) and [markdown](./SCHEMA.md).
-
-## Design Goals
-
-- Use as many international standards as possible (ISO etc)
-- Prefer machine readable values rather than human readable values
-- Support partial states and unknown values (for example, events with unannounced dates or locations)
-- Be able to describe all kinds of events from concerts, workshops, cosplay conventions, academic exams/lectures to online/hybrid meetings and/or events.
-
-Considerations:
-- [x] Multilingual events
-- [ ] Media URLs
-- [ ] Age restricted events
-- [ ] Embedding external URLs to other event listing sites or the event's website
-- [ ] Events with multiple ticket types
-- [ ] Events that require an attendance form
-- [ ] Events that require membership to an organization (private events)
+The current schema is [defined using Zod4](../packages/schema); exported to [json schema](../event-data.schema.json) and [markdown documentation](./SCHEMA.md).
 
 ## Definitions
 
@@ -36,7 +20,7 @@ interface Translations {
 { en: "Example", tr: "Örnek", lt: "Pavyzdys" }
 ```
 
-  Data consumers should try to use the user's language in the object and fall back to the `en` key (if the key is not in the object or the value is an empty string `""` or `null`)
+Data consumers should try to use the user's language in the object and fall back (`undefined | null | ""`) to other values.
 
 ### `PartialDate`
 
@@ -57,43 +41,116 @@ Examples:
 
 This type allows us to define dates where we dont know enough information to define a full date. An event might be known to take place on April but the exact day might be unknown.
 
-## RFC
+### `EventData`
 
-### Physical Addresses
+The main data structure representing an event is `EventData`.
 
-Addresses are really complicated and there is not any size-fits-all solution.
-`Address#addr: string?` and `Address#postalCode: string?` is the current solution which is a full address and a postal code in the context of the country.
-Trying to include even the first subdivision (ex. city) of an address becomes too much of a hassle.
+See the [schema documentation](./SCHEMA.md#event-data-schema) for the full definition.
 
-### Attendance Requirements
+An EventData object has a list of venues and instances. Data consumers should match instances to venues using the `venueId` field on instances - they shouldn't list venues without attaching them to instance information.
 
-We could have a `attendance requirements` field in `EventInstance` which includes a discriminated enum (like `EventComponent`)
-which would have variants like `"ticket"`, `"part_of_group"` or `"filled_form"` etc.
+### `Venue`
 
-But how can we handle cases like "to attend this event you must either be a part of our club **or** fill this form along with buying a ticket"
-which creates a relation `part_of_group || (filled_form && ticket)`
+A `Venue` is either a `PhysicalVenue` or an `OnlineVenue`. The type is defined using the `venueType` field: `"physical"` or `"online"`.
 
-To solve this we might seperate the "requirements" into its own array of "attending stuff" which "attendance requirements" would reference by id?
+All venues has a `venueId` field which is referenced in `EventInstance` objects to link them together.
 
-Cl\*ude gave 2 options, Ch\*tGPT also outlined the second:
+All venues have a `venueName` field which is of type `Translations`.
+
+### `PhysicalVenue`
+
+A [`PhysicalVenue`](./SCHEMA.md#physicalvenue) represents a real-world location where an event takes place.
+
+This object includes:
+- `address`: Optional physical address information.
+- `coordinates`: Optional latitude and longitude coordinates.
+
+_Examples_:
 
 ```ts
-attendanceRequirements?: AttendanceRequirement[];
-attendanceLogic?: string; // e.g., "membership || (form && ticket)"
+{
+	venueId: "venue-1",
+	venueType: "physical",
+	venueName: { en: "Central Park", es: "Parque Central" },
+	address: {
+		addr: "Central Park West & 5th Ave, New York, NY 10024, USA",
+		countryCode: "US",
+	},
+	coordinates: { lat: 40.785091, lng: -73.968285 },
+}
 ```
+
+### `OnlineVenue`
+
+An [`OnlineVenue`](./SCHEMA.md#onlinevenue) represents an online location where an event takes place, such as a website or streaming platform.
+
+This object includes:
+- `url`: The URL where the event can be accessed.
+
+_Examples_:
 
 ```ts
-attendanceRequirement?: AttendanceLogic;
-
-type AttendanceLogic =
-  | { type: "requirement", data: AttendanceRequirement }
-  | { type: "and", requirements: AttendanceLogic[] }
-  | { type: "or", requirements: AttendanceLogic[] }
+{
+	venueId: "venue-2",
+	venueType: "online",
+	venueName: { en: "YouTube Live" },
+	url: "https://www.youtube.com/live/example",
+}
 ```
 
-It looks like we need a way to define all the rules and have relations between them seperately.
+### `EventInstance`
 
-### Announcements
+An `EventInstance` represents a specific continuous occurrence of an event.
 
-Should **announcements** be in its own field or should it be a type of `EventComponent`?
-Announcements are for things like "this event has been postponed due to xyz" or "event venue will be rainy" etc messages.
+If an event has multiple occurrences (e.g., a conference with multiple days), each occurrence should be represented as a separate `EventInstance`.
+
+If an event spans multiple days (such as a Game Jam or a Festival longer than 24 hours), it should be represented as a single `EventInstance` with a start and end date.
+
+Every `EventInstance` has an array of `venueIds` to link it to one or more `Venue` objects. If an event takes place in multiple locations simultaneously (e.g., a hybrid event), all relevant venue IDs should be included. If an event instance's venue is not known, this field can be an empty array.
+
+Every `EventInstance` has optional `start` and `end` fields of type `PartialDate` representing the start/end date and time of the event instance.
+
+_Examples_:
+
+```ts
+{
+	venueIds: ["venue-1"],
+	start: "2025-11-12T10:00",
+	end: "2025-11-12T18:00",
+}
+```
+
+### `EventStatus`
+
+The `EventStatus` enum defines the possible statuses of an event instance or the whole event. This enum does not define the tense of the event (past, present, future) but rather the current state of the event planning or execution.
+
+_Table of variants_:
+
+| Variant     | Description                                                                           | Date Validity |
+|-------------|---------------------------------------------------------------------------------------|---------------|
+| `planned`   | Default state - event is planned to occur or has occurred as scheduled.               | ✅             |
+| `uncertain` | Uncertain - event might get cancelled, postponed etc.                                 | ❓             |
+| `postponed` | Postponed to a later, unknown date.                                                   | ❌             |
+| `cancelled` | The event has been cancelled and will not take place.                                 | ❌             |
+| `suspended` | No guarantees if the event will continue as planned, will get postponed or cancelled. | ❌             |
+
+_Hellish Graph_:
+
+```mermaid
+graph LR;
+	planned --> uncertain
+	planned --> postponed
+	planned --> cancelled
+	planned --> suspended
+	
+	uncertain ==> planned
+	uncertain --> postponed
+	uncertain --> cancelled
+	uncertain --> suspended
+	
+	postponed ==> planned
+
+	suspended ==> planned
+	suspended --> postponed
+	suspended --> cancelled
+```
