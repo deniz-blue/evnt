@@ -12,6 +12,9 @@ function showUserInterface(props: PageProps) {
 	createRoot(document.getElementById('root')!).render(<Page {...props} />);
 };
 
+export const DeveloperModeKey = "event-redirector:developer-mode";
+export const IsDeveloperMode = localStorage.getItem(DeveloperModeKey) === "true";
+
 export const BroadcastChannelKey = "instance-changed";
 
 async function main() {
