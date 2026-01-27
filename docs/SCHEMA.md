@@ -6,16 +6,16 @@ An event
 
 _Object containing the following properties:_
 
-| Property             | Description                           | Type                                               |
-| :------------------- | :------------------------------------ | :------------------------------------------------- |
-| **`v`** (\*)         | The version of the Event Data schema  | `0`                                                |
-| `id`                 |                                       | `string`                                           |
-| **`name`** (\*)      | The name of the event                 | [Translations](#translations)                      |
-| `description`        | A short description of the event      | [Translations](#translations)                      |
-| `status`             | The status of the event               | [EventStatus](#eventstatus)                        |
-| **`venues`** (\*)    | The venues associated with this event | _Array of [Venue](#venue) items_                   |
-| **`instances`** (\*) | The instances of the event            | _Array of [EventInstance](#eventinstance) items_   |
-| `components`         | Additional components of the event    | _Array of [EventComponent](#eventcomponent) items_ |
+| Property        | Description                           | Type                                               | Default |
+| :-------------- | :------------------------------------ | :------------------------------------------------- | :------ |
+| **`v`** (\*)    | The version of the Event Data schema  | `0`                                                |         |
+| `id`            |                                       | `string`                                           |         |
+| **`name`** (\*) | The name of the event                 | [Translations](#translations)                      |         |
+| `description`   | A short description of the event      | [Translations](#translations)                      |         |
+| `status`        | The status of the event               | [EventStatus](#eventstatus)                        |         |
+| `venues`        | The venues associated with this event | _Array of [Venue](#venue) items_                   | `[]`    |
+| `instances`     | The instances of the event            | _Array of [EventInstance](#eventinstance) items_   | `[]`    |
+| `components`    | Additional components of the event    | _Array of [EventComponent](#eventcomponent) items_ | `[]`    |
 
 _(\*) Required._
 
@@ -31,18 +31,6 @@ _Object containing the following properties:_
 
 _All properties are optional._
 
-## EventActivity
-
-_Object containing the following properties:_
-
-| Property        | Description                     | Type                          |
-| :-------------- | :------------------------------ | :---------------------------- |
-| `id`            |                                 | `string`                      |
-| **`name`** (\*) | The name of the activity        | [Translations](#translations) |
-| `description`   | The description of the activity | [Translations](#translations) |
-
-_(\*) Required._
-
 ## EventComponent
 
 _Union of the following possible types:_
@@ -55,14 +43,13 @@ A part of an event that can occur at a known or unknown date and/or time and a k
 
 _Object containing the following properties:_
 
-| Property            | Description                                                 | Type                                             |
-| :------------------ | :---------------------------------------------------------- | :----------------------------------------------- |
-| `id`                |                                                             | `string`                                         |
-| **`venueIds`** (\*) | The IDs of the venues where this event instance takes place | `Array<string>`                                  |
-| `start`             | The start date and/or time                                  | [PartialDate](#partialdate)                      |
-| `end`               | The end date and/or time                                    | [PartialDate](#partialdate)                      |
-| `status`            | The status of the event instance                            | [EventStatus](#eventstatus)                      |
-| `activities`        | The activities taking place during this event instance      | _Array of [EventActivity](#eventactivity) items_ |
+| Property            | Description                                                 | Type                        |
+| :------------------ | :---------------------------------------------------------- | :-------------------------- |
+| `id`                |                                                             | `string`                    |
+| **`venueIds`** (\*) | The IDs of the venues where this event instance takes place | `Array<string>`             |
+| `start`             | The start date and/or time                                  | [PartialDate](#partialdate) |
+| `end`               | The end date and/or time                                    | [PartialDate](#partialdate) |
+| `status`            | The status of the event instance                            | [EventStatus](#eventstatus) |
 
 _(\*) Required._
 
@@ -118,18 +105,6 @@ _Object containing the following properties:_
 | **`venueId`** (\*)   | ID of the venue to be used in Event Instances | `string`                      |
 | **`venueName`** (\*) | The name of the venue                         | [Translations](#translations) |
 | `url`                |                                               | `string`                      |
-
-_(\*) Required._
-
-## Organizer
-
-_Object containing the following properties:_
-
-| Property        | Description                             | Type                          |
-| :-------------- | :-------------------------------------- | :---------------------------- |
-| `id`            |                                         | `string`                      |
-| **`name`** (\*) | The name of the organizer               | [Translations](#translations) |
-| `avatarUrl`     | The URL of the organizer's avatar image | `string` (_url_)              |
 
 _(\*) Required._
 

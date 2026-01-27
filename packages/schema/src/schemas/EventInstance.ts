@@ -11,7 +11,7 @@ export const EventInstanceSchema = z.object({
     end: PartialDateSchema.optional().meta({ description: "The end date and/or time" }),
     
     status: EventStatusSchema.optional().meta({ description: "The status of the event instance" }),
-    activities: EventActivitySchema.array().optional().meta({ description: "The activities taking place during this event instance" }),
+    // activities: EventActivitySchema.array().optional().meta({ description: "The activities taking place during this event instance" }),
     // TODO: metadata
     // TODO: organizers
 }).meta({

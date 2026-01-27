@@ -23,20 +23,23 @@
       "$ref": "#/$defs/EventStatus"
     },
     "venues": {
+      "default": [],
+      "description": "The venues associated with this event",
       "type": "array",
       "items": {
         "$ref": "#/$defs/Venue"
-      },
-      "description": "The venues associated with this event"
+      }
     },
     "instances": {
+      "default": [],
+      "description": "The instances of the event",
       "type": "array",
       "items": {
         "$ref": "#/$defs/EventInstance"
-      },
-      "description": "The instances of the event"
+      }
     },
     "components": {
+      "default": [],
       "description": "Additional components of the event",
       "type": "array",
       "items": {
@@ -48,7 +51,8 @@
     "v",
     "name",
     "venues",
-    "instances"
+    "instances",
+    "components"
   ],
   "additionalProperties": false,
   "id": "EventData",
@@ -265,13 +269,6 @@
         "status": {
           "description": "The status of the event instance",
           "$ref": "#/$defs/EventStatus"
-        },
-        "activities": {
-          "description": "The activities taking place during this event instance",
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/EventActivity"
-          }
         }
       },
       "required": [
@@ -299,27 +296,6 @@
           "body": "${1:${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}T${CURRENT_HOUR}:${CURRENT_MINUTE}}"
         }
       ]
-    },
-    "EventActivity": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "description": "The name of the activity",
-          "$ref": "#/$defs/Translations"
-        },
-        "description": {
-          "description": "The description of the activity",
-          "$ref": "#/$defs/Translations"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "additionalProperties": false,
-      "id": "EventActivity"
     },
     "EventComponent": {
       "oneOf": [

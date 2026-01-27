@@ -15,9 +15,9 @@ export const EventDataSchema = z.object({
     description: TranslationsSchema.optional().meta({ description: "A short description of the event" }),
     status: EventStatusSchema.optional().meta({ description: "The status of the event" }),
 
-    venues: VenueSchema.array().meta({ description: "The venues associated with this event" }),
-    instances: EventInstanceSchema.array().meta({ description: "The instances of the event" }),
-    components: EventComponentSchema.array().optional().meta({ description: "Additional components of the event" }),
+    venues: VenueSchema.array().default([]).meta({ description: "The venues associated with this event" }),
+    instances: EventInstanceSchema.array().default([]).meta({ description: "The instances of the event" }),
+    components: EventComponentSchema.array().default([]).meta({ description: "Additional components of the event" }),
 }).meta({
     id: "EventData",
     title: "Event Data",

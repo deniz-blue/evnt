@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "gen": "tsx ./src/gen.ts",
+    "gen": "pnpm run gen:scriptables && pnpm run gen:typelex",
+	"gen:scriptables": "tsx ./src/gen.ts",
+    "gen:typelex": "tsp compile ./typelex/main.tsp --emit @typelex/emitter && mv ./tsp-output/@typelex/emitter/blue/deniz/atproto/event.json ../event-data.lexicon.json && rm -rf ./tsp-output",
     "dev": "tsx watch ./src/gen.ts"
   },
   "keywords": [],
@@ -14,10 +16,15 @@
   "devDependencies": {
     "@evnt/schema": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@typelex/cli": "^0.4.0",
+    "@typelex/emitter": "^0.4.0",
     "@types/node": "^25.0.10",
     "json-schema-to-lexicon": "workspace:*",
     "tsx": "^4.21.0",
     "zod": "^4.3.5",
     "zod2md": "^0.2.4"
+  },
+  "dependencies": {
+    "@typespec/compiler": "^1.8.0"
   }
 }

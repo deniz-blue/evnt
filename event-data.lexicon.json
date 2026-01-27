@@ -1,59 +1,157 @@
 {
-	"lexicon": 1,
-	"id": "blue.deniz.atproto.event",
-	"description": "Event Data Lexicon",
-	"defs": {
-		"EventData": {
-			"type": "object",
-			"properties": {
-				"v": {
-					"type": "integer",
-					"description": "The version of the Event Data schema"
-				},
-				"id": {
-					"type": "string"
-				},
-				"name": {
-					"type": "unknown",
-					"description": "The name of the event"
-				},
-				"description": {
-					"type": "unknown",
-					"description": "A short description of the event"
-				},
-				"status": {
-					"type": "unknown",
-					"description": "The status of the event"
-				},
-				"venues": {
-					"type": "array",
-					"items": {
-						"type": "unknown"
-					},
-					"description": "The venues associated with this event"
-				},
-				"instances": {
-					"type": "array",
-					"items": {
-						"type": "unknown"
-					},
-					"description": "The instances of the event"
-				},
-				"components": {
-					"type": "array",
-					"items": {
-						"type": "unknown"
-					},
-					"description": "Additional components of the event"
-				}
-			},
-			"required": [
-				"v",
-				"name",
-				"venues",
-				"instances"
-			],
-			"description": "An event"
-		}
-	}
+  "lexicon": 1,
+  "id": "blue.deniz.atproto.event",
+  "defs": {
+    "main": {
+      "type": "object",
+      "properties": {
+        "v": {
+          "type": "integer",
+          "const": 0
+        },
+        "name": {
+          "type": "unknown"
+        },
+        "description": {
+          "type": "unknown"
+        },
+        "venues": {
+          "type": "array",
+          "items": {
+            "type": "union",
+            "refs": [
+              "#physicalVenue",
+              "#onlineVenue"
+            ]
+          }
+        },
+        "instances": {
+          "type": "array",
+          "items": {
+            "type": "ref",
+            "ref": "#eventInstance"
+          }
+        },
+        "status": {
+          "type": "ref",
+          "ref": "#eventStatus"
+        }
+      },
+      "required": [
+        "v",
+        "name"
+      ]
+    },
+    "physicalVenue": {
+      "type": "object",
+      "properties": {
+        "venueId": {
+          "type": "string"
+        },
+        "venueType": {
+          "type": "string",
+          "const": "physical"
+        },
+        "venueName": {
+          "type": "unknown"
+        },
+        "address": {
+          "type": "ref",
+          "ref": "#address"
+        },
+        "coordinates": {
+          "type": "ref",
+          "ref": "#coordinates"
+        }
+      },
+      "required": [
+        "venueId",
+        "venueType",
+        "venueName"
+      ]
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "addr": {
+          "type": "string"
+        },
+        "countryCode": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        }
+      }
+    },
+    "coordinates": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "integer"
+        },
+        "lng": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "lat",
+        "lng"
+      ]
+    },
+    "onlineVenue": {
+      "type": "object",
+      "properties": {
+        "venueId": {
+          "type": "string"
+        },
+        "venueType": {
+          "type": "string",
+          "const": "online"
+        },
+        "venueName": {
+          "type": "unknown"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "venueId",
+        "venueType",
+        "venueName"
+      ]
+    },
+    "eventInstance": {
+      "type": "object",
+      "properties": {
+        "venueIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "start": {
+          "type": "string"
+        },
+        "end": {
+          "type": "string"
+        },
+        "status": {
+          "type": "ref",
+          "ref": "#eventStatus"
+        }
+      }
+    },
+    "eventStatus": {
+      "type": "string",
+      "knownValues": [
+        "planned",
+        "uncertain",
+        "postponed",
+        "cancelled",
+        "suspended"
+      ]
+    }
+  }
 }

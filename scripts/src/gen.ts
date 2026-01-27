@@ -1,5 +1,4 @@
 import { readFileSync } from "node:fs";
-import { genLexicon } from "./gen-lexicon";
 import { genMarkdownDocs } from "./gen-md";
 import { genJsonSchema } from "./gen-schema";
 import { genWellKnownOriginAssoc } from "./gen-wellknown-originassoc";
@@ -16,8 +15,6 @@ async function main() {
 	console.log("Generated JSON Schema at", JSON_SCHEMA_PATH.href);
 	await genMarkdownDocs(MD_PATH);
 	console.log("Generated Markdown Docs at", MD_PATH.href);
-	await genLexicon(LEXICON_PATH, jsonSchema);
-	console.log("Generated Lexicon at", LEXICON_PATH.href);
 
 	const instancesJson = JSON.parse(readFileSync(INSTANCES_JSON_PATH, "utf-8"));
 
