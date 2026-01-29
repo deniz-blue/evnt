@@ -7,14 +7,14 @@ export const snippetEvent = (data: EventData, opts?: {
 }): TSnippet[] => {
     const snippets: TSnippet[] = [];
 
-    const groupedInstances = data.instances.reduce((acc, instance) => {
+    const groupedInstances = data.instances?.reduce((acc, instance) => {
         const key = JSON.stringify(instance.venueIds.sort());
         acc[key] = acc[key] || [];
         acc[key].push(instance);
         return acc;
     }, {} as Record<string, EventInstance[]>);
 
-    for (const [venueIdsJson, instances] of Object.entries(groupedInstances)) {
+    for (const [venueIdsJson, instances] of Object.entries(groupedInstances ?? {})) {
         const venueIds = JSON.parse(venueIdsJson) as string[];
 
         if (venueIds.length > (opts?.maxVenues ?? Infinity)) {

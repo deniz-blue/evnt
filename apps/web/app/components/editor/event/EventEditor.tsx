@@ -10,8 +10,6 @@ export const EventEditor = () => {
 		initialValues: {
 			v: 0,
 			name: {},
-			venues: [],
-			instances: [],
 		},
 		validate: zod4Resolver(EventDataSchema),
 	});

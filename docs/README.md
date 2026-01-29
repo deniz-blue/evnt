@@ -8,11 +8,11 @@ This document defines the data structures and types used for the @evnt Event for
 
 ### `Translations`
 
-`Translations` are defined as a json object where the keys are **BCP47**/**ISO 639-1** language codes and values are `string` or `null` values.
+`Translations` are defined as a json object where the keys are **BCP47**/**ISO 639-1** language codes and values are `string` values.
 
 ```ts
 interface Translations {
-  [language: string]: string | null;
+  [language: string]: string;
 }
 ```
 
@@ -20,7 +20,7 @@ interface Translations {
 { en: "Example", tr: "Örnek", lt: "Pavyzdys" }
 ```
 
-Data consumers should try to use the user's language in the object and fall back (`undefined | null | ""`) to other values.
+Data consumers should try to use the user's language in the object and fall back (`undefined | ""`) to other values.
 
 ### `PartialDate`
 

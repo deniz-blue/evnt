@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mantine/core";
-import { MarkdownHooks } from "react-markdown";
+import { MarkdownHooks as MDHooks } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import remarkEmoji from "remark-emoji";
@@ -7,6 +7,8 @@ import remarkSqueezeParagraphs from "remark-squeeze-paragraphs";
 import type { Translations } from "@evnt/schema";
 import { useTranslations } from "../../../stores/useLocaleStore";
 import { useMemo } from "react";
+
+const MarkdownHooks = MDHooks as React.FC<React.ComponentProps<typeof MDHooks>>;
 
 export const MarkdownTranslations = ({
 	content,

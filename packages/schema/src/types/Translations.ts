@@ -6,7 +6,7 @@ export const LanguageKeySchema = z.string().meta({
 });
 
 export type Translations = z.infer<typeof TranslationsSchema>;
-export const TranslationsSchema = z.record(LanguageKeySchema, z.string().nullish())
+export const TranslationsSchema = z.record(LanguageKeySchema, z.string())
     // .brand<"Translations">()
     .meta({
         id: "Translations",

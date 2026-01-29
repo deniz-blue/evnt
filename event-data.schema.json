@@ -14,6 +14,10 @@
       "description": "The name of the event",
       "$ref": "#/$defs/Translations"
     },
+    "label": {
+      "description": "!unstable(#9)",
+      "$ref": "#/$defs/Translations"
+    },
     "description": {
       "description": "A short description of the event",
       "$ref": "#/$defs/Translations"
@@ -23,7 +27,6 @@
       "$ref": "#/$defs/EventStatus"
     },
     "venues": {
-      "default": [],
       "description": "The venues associated with this event",
       "type": "array",
       "items": {
@@ -31,7 +34,6 @@
       }
     },
     "instances": {
-      "default": [],
       "description": "The instances of the event",
       "type": "array",
       "items": {
@@ -39,7 +41,6 @@
       }
     },
     "components": {
-      "default": [],
       "description": "Additional components of the event",
       "type": "array",
       "items": {
@@ -49,10 +50,7 @@
   },
   "required": [
     "v",
-    "name",
-    "venues",
-    "instances",
-    "components"
+    "name"
   ],
   "additionalProperties": false,
   "id": "EventData",
@@ -67,14 +65,7 @@
         "description": "BCP37 or ISO 639-1 language code"
       },
       "additionalProperties": {
-        "anyOf": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "null"
-          }
-        ]
+        "type": "string"
       },
       "id": "Translations",
       "description": "A multilingual string",
@@ -315,6 +306,24 @@
             "data"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "source"
+            },
+            "data": {
+              "$ref": "#/$defs/SourceComponent"
+            }
+          },
+          "required": [
+            "type",
+            "data"
+          ],
+          "additionalProperties": false,
+          "description": "!unstable(#5)"
         }
       ],
       "id": "EventComponent"
@@ -352,6 +361,21 @@
       ],
       "additionalProperties": false,
       "id": "LinkComponent"
+    },
+    "SourceComponent": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "The URL of the source"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "additionalProperties": false,
+      "id": "SourceComponent",
+      "description": "!unstable(#5)"
     }
   }
 }

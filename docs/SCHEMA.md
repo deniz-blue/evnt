@@ -6,16 +6,17 @@ An event
 
 _Object containing the following properties:_
 
-| Property        | Description                           | Type                                               | Default |
-| :-------------- | :------------------------------------ | :------------------------------------------------- | :------ |
-| **`v`** (\*)    | The version of the Event Data schema  | `0`                                                |         |
-| `id`            |                                       | `string`                                           |         |
-| **`name`** (\*) | The name of the event                 | [Translations](#translations)                      |         |
-| `description`   | A short description of the event      | [Translations](#translations)                      |         |
-| `status`        | The status of the event               | [EventStatus](#eventstatus)                        |         |
-| `venues`        | The venues associated with this event | _Array of [Venue](#venue) items_                   | `[]`    |
-| `instances`     | The instances of the event            | _Array of [EventInstance](#eventinstance) items_   | `[]`    |
-| `components`    | Additional components of the event    | _Array of [EventComponent](#eventcomponent) items_ | `[]`    |
+| Property        | Description                           | Type                                               |
+| :-------------- | :------------------------------------ | :------------------------------------------------- |
+| **`v`** (\*)    | The version of the Event Data schema  | `0`                                                |
+| `id`            |                                       | `string`                                           |
+| **`name`** (\*) | The name of the event                 | [Translations](#translations)                      |
+| `label`         | !unstable(#9)                         | [Translations](#translations)                      |
+| `description`   | A short description of the event      | [Translations](#translations)                      |
+| `status`        | The status of the event               | [EventStatus](#eventstatus)                        |
+| `venues`        | The venues associated with this event | _Array of [Venue](#venue) items_                   |
+| `instances`     | The instances of the event            | _Array of [EventInstance](#eventinstance) items_   |
+| `components`    | Additional components of the event    | _Array of [EventComponent](#eventcomponent) items_ |
 
 _(\*) Required._
 
@@ -36,6 +37,7 @@ _All properties are optional._
 _Union of the following possible types:_
 
 - _Object with properties:_<ul><li>**`type`** (\*): `'link'`</li><li>**`data`** (\*): [LinkComponent](#linkcomponent)</li></ul>
+- _Object with properties:_<ul><li>**`type`** (\*): `'source'`</li><li>**`data`** (\*): [SourceComponent](#sourcecomponent) - !unstable(#5)</li></ul>
 
 ## EventInstance
 
@@ -95,6 +97,49 @@ _Object containing the following properties:_
 
 _(\*) Required._
 
+## Media
+
+!unstable(#6) A media item, such as an image or video
+
+_Object containing the following properties:_
+
+| Property           | Description                                        | Type                                                    |
+| :----------------- | :------------------------------------------------- | :------------------------------------------------------ |
+| **`sources`** (\*) | The sources for the media item                     | _Array of at least 1 [MediaSource](#mediasource) items_ |
+| `altText`          | Alternative text for the media item                | [Translations](#translations)                           |
+| `caption`          | A caption for the media item                       | [Translations](#translations)                           |
+| `blurhash`         |  A BlurHash representation of the media item       | `string`                                                |
+| `dominantColor`    | The dominant color of the media item in hex format | `string`                                                |
+
+_(\*) Required._
+
+## MediaSize
+
+!unstable(#6) The dimensions of a media item
+
+_Object containing the following properties:_
+
+| Property          | Description                       | Type                 |
+| :---------------- | :-------------------------------- | :------------------- |
+| **`width`** (\*)  | The width of the media in pixels  | `number` (_int, ≥0_) |
+| **`height`** (\*) | The height of the media in pixels | `number` (_int, ≥0_) |
+
+_(\*) Required._
+
+## MediaSource
+
+!unstable(#6) A source for a media item
+
+_Object containing the following properties:_
+
+| Property       | Description                 | Type                    |
+| :------------- | :-------------------------- | :---------------------- |
+| **`url`** (\*) | The URL of the media        | `string` (_url_)        |
+| `size`         | The dimensions of the media | [MediaSize](#mediasize) |
+| `type`         | The MIME type of the media  | `string`                |
+
+_(\*) Required._
+
 ## OnlineVenue
 
 _Object containing the following properties:_
@@ -131,6 +176,18 @@ _Object containing the following properties:_
 
 _(\*) Required._
 
+## SourceComponent
+
+!unstable(#5)
+
+_Object containing the following properties:_
+
+| Property       | Description           | Type     |
+| :------------- | :-------------------- | :------- |
+| **`url`** (\*) | The URL of the source | `string` |
+
+_(\*) Required._
+
 ## Translations
 
 A multilingual string
@@ -138,7 +195,7 @@ A multilingual string
 _Object record with dynamic keys:_
 
 - _keys of type_ [LanguageKey](#languagekey)
-- _values of type_ `string` (_optional & nullable_)
+- _values of type_ `string`
 
 ## Venue
 

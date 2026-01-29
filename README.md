@@ -1,4 +1,4 @@
-# <img src="https://github.com/deniz-blue/md-emojis/raw/main/emojis/denizblue/evnt.svg" align="center" height="32" /> @evnt
+# <img src="https://github.com/deniz-blue/md-emojis/raw/main/emojis/denizblue/evnt.svg" width="32px" /> @evnt
 
 A **standardized**, **open-source** data **format** for representing and sharing event data across different applications.
 

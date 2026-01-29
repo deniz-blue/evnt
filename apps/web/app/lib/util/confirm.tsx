@@ -12,7 +12,7 @@ export const ConfirmModalShim = ({
         ["Enter", () => onConfirm?.()],
     ]);
 
-    return children;
+    return <>{children}</>;
 };
 
 export const withConfirmation = (

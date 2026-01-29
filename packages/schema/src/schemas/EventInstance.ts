@@ -1,6 +1,5 @@
 import z from "zod";
 import { PartialDateSchema } from "../types/PartialDate";
-import { EventActivitySchema } from "./activity/EventActivity";
 import { EventStatusSchema } from "./enums/EventStatus";
 
 export type EventInstance = z.infer<typeof EventInstanceSchema>;
