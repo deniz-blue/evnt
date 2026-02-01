@@ -1,71 +1,69 @@
-import { Button, JsonInput, Stack, TextInput } from "@mantine/core";
+import { Button, Stack, TextInput } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { randomId } from "@mantine/hooks";
 import { useState } from "react";
-import { prettifyError, type z } from "zod";
-import { fetchValidate } from "../../../lib/util/fetchValidate";
+import { EventDataResolver } from "../../../lib/resolve/resolve";
+import type { EventData } from "@evnt/schema";
 
-export interface ImportURLModalProps<T> {
-    schema: z.ZodType<T>;
-    onSubmit: (url: string, data: T) => void;
+export interface EventImportURLModalProps {
+	onSubmit: (url: string, data: EventData) => void;
 };
 
-export const openImportURLModal = <T,>(props: ImportURLModalProps<T>) => {
-    const modalId = randomId();
-    modals.open({
-        title: "Import Event from URL",
-        size: "lg",
-        modalId,
-        children: (
-            <ImportURLModal
-                schema={props.schema}
-                onSubmit={(url, data) => {
-                    props.onSubmit(url, data);
-                    modals.close(modalId);
-                }}
-            />
-        ),
-    });
+export const openEventImportURLModal = (props: EventImportURLModalProps) => {
+	const modalId = randomId();
+	modals.open({
+		title: "Import Event from URL",
+		size: "lg",
+		modalId,
+		children: (
+			<EventImportURLModal
+				onSubmit={(url, data) => {
+					props.onSubmit(url, data);
+					modals.close(modalId);
+				}}
+			/>
+		),
+	});
 }
 
-export const ImportURLModal = <T,>({
-    schema,
-    onSubmit,
-}: ImportURLModalProps<T>) => {
-    const [url, setUrl] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+export const EventImportURLModal = ({
+	onSubmit,
+}: EventImportURLModalProps) => {
+	const [url, setUrl] = useState("");
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
-    return (
-        <Stack>
-            <TextInput
-                value={url}
-                onChange={e => setUrl(e.currentTarget.value)}
-                placeholder="URL to event JSON..."
-                error={error}
-                styles={{
-                    error: { whiteSpace: "pre-wrap" },
-                }}
-            />
-            <Button
-                disabled={!url}
-                loading={loading}
-                onClick={async () => {
-                    setLoading(true);
-                    setError(null);
-                    const result = await fetchValidate(url, schema);
-                    if (!result.ok) {
-                        setError(result.error);
-                        setLoading(false);
-                        return;
-                    }
+	return (
+		<Stack>
+			<TextInput
+				value={url}
+				onChange={e => setUrl(e.currentTarget.value)}
+				placeholder="URL to event JSON..."
+				error={error}
+				styles={{
+					error: { whiteSpace: "pre-wrap" },
+				}}
+			/>
+			<Button
+				disabled={!url}
+				loading={loading}
+				onClick={async () => {
+					setLoading(true);
+					setError(null);
+					try {
+						const data = await EventDataResolver.fetch({ type: "remote", url });
+						onSubmit(url, data);
+					} catch (error) {
+						setError("" + error);
+					} finally {
+						setLoading(false);
+					}
 
-                    onSubmit(url, result.value);
-                    setLoading(false);
-                }}
-            >
-                Import
-            </Button>
-        </Stack>
-    );
+					setLoading(false);
+				}}
+			>
+				Import
+			</Button>
+		</Stack>
+	);
 }

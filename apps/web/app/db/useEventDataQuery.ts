@@ -1,9 +1,8 @@
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
 import { UtilEventSource, type EventDataSource } from "./models/event-source";
-import { DataDB } from "./data-db";
-import { EventDataSchema, type EventData } from "@evnt/schema";
-import { fetchValidate } from "../lib/util/fetchValidate";
+import { type EventData } from "@evnt/schema";
 import { useMemo } from "react";
+import { EventDataResolver } from "../lib/resolve/resolve";
 
 export const eventDataQueryKey = (key: string) => {
 	return ["event-data", key] as const;
@@ -15,24 +14,7 @@ export const eventDataQueryOptions = (source: EventDataSource) => {
 		networkMode: "always",
 		refetchOnReconnect: UtilEventSource.isRemote(source),
 		queryFn: async (): Promise<EventData> => {
-			const key = UtilEventSource.getKey(source)!;
-			const cached = await DataDB.get(key);
-
-			if (cached == null) {
-				switch (source.type) {
-					case "local":
-						throw new Error("Event data not found");
-					case "remote":
-						const result = await fetchValidate(source.url, EventDataSchema);
-						if (!result.ok) throw new Error(`Failed to fetch event data: ${result.error}`);
-						await DataDB.put(key, {
-							data: result.value,
-						});
-						return result.value;
-				};
-			};
-
-			return cached.data;
+			return await EventDataResolver.getDataWithCache(source);
 		},
 	});
 };

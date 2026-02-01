@@ -50,6 +50,6 @@ Example usage:
 https://event.nya.pub/?setInstanceUrl=https://example.com/
 ```
 
-_Test link:_ [Set Instance URL to localhost:5173](https://event.nya.pub/?setInstanceUrl=http://localhost:5173/)
+_Test link:_ [Set Instance URL to 127.0.0.1:5173](https://event.nya.pub/?setInstanceUrl=http://127.0.0.1:5173/)
 
 _Test link:_ [Clear Instance URL](https://event.nya.pub/?clearInstanceUrl)

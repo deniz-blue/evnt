@@ -9,24 +9,18 @@ import {
 import { Box, createTheme, MantineProvider, type ActionIconProps, type ButtonProps, type TooltipProps } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { DataDB } from "./db/data-db";
-import { eventDataQueryKey } from "./db/useEventDataQuery";
-
+import { CenteredLoader } from "./components/content/base/CenteredLoader";
 import type { Route } from "./+types/root";
+
+import.meta.glob("./styles/**/*.css", { eager: true });
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
-import "@denizblue/mantine-zod-form/style.css";
-import { useLayersStore } from "./db/useLayersStore";
-import { useWindowEvent } from "@mantine/hooks";
-import { useHomeStore } from "./stores/useHomeStore";
-import { CenteredLoader } from "./components/content/base/CenteredLoader";
-import.meta.glob("./styles/**/*.css", { eager: true });
 
 export const meta: Route.MetaFunction = () => [
-	{ title: "@evnt Viewer" },
+	{ title: "Vantage Events Viewer" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -36,6 +30,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 				<link rel="manifest" href="/manifest.webmanifest" />
+				<link rel="icon" href="/icon.svg" />
+				<link rel="icon" href="/icon.png" />
 				<Meta />
 				<Links />
 			</head>
@@ -81,18 +77,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
 	const [queryClient] = useState(() => new QueryClient());
 
-	useEffect(() => {
-		return DataDB.onUpdate((key) => {
-			queryClient.invalidateQueries({ queryKey: [eventDataQueryKey(key), "event-data-keys"] });
-			useLayersStore.persist.rehydrate();
-		});
-	}, [queryClient]);
-
-	useWindowEvent("storage", (event) => {
-		if (event.key === useLayersStore.persist.getOptions().name) useLayersStore.persist.rehydrate();
-		if (event.key === useHomeStore.persist.getOptions().name) useHomeStore.persist.rehydrate();
-	});
-
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Outlet />
@@ -132,7 +116,9 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 export function HydrateFallback() {
 	return (
 		<Box h="90vh" pt="xl">
-			<CenteredLoader />
+			<CenteredLoader>
+				Loading...
+			</CenteredLoader>
 		</Box>
 	);
 }

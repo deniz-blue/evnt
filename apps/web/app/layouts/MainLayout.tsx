@@ -6,7 +6,7 @@ import { IconSettings } from "@tabler/icons-react";
 import { SettingsOverlay, useSettingsOverlay } from "../components/app/overlay/settings/SettingsOverlay";
 import { useHotkeys } from "@mantine/hooks";
 import { useTasksStore } from "../stores/useTasksStore";
-import { TauriDeepLinks } from "../components/app/handlers/TauriDeepLinks";
+import { Initializers } from "../components/app/handlers/Initializers";
 
 export default function MainLayout() {
 	const { toggle: toggleSettings } = useSettingsOverlay();
@@ -65,7 +65,7 @@ export default function MainLayout() {
 			</AppShell.Main>
 
 			<LinkOpenHandler />
-			<TauriDeepLinks />
+			<Initializers />
 		</AppShell>
 	);
 };

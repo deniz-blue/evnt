@@ -4,10 +4,10 @@ import { EventDataSchema } from "@evnt/schema";
 import { openImportJSONModal } from "../components/app/modal/ImportJSONModal";
 import { IconBraces, IconLink, IconPlus } from "@tabler/icons-react";
 import { EventCard } from "../components/content/event/EventCard";
-import { openImportURLModal } from "../components/app/modal/ImportURLModal";
+import { openEventImportURLModal } from "../components/app/modal/ImportURLModal";
 import { useEventQueries } from "../db/useEventDataQuery";
 import { RQResult } from "../components/data/RQResult";
-import { EventActions } from "../db/events";
+import { EventActions } from "../lib/actions/events";
 import { EventContextMenu } from "../components/content/event/EventContextMenu";
 import { useLayersStore } from "../db/useLayersStore";
 import { applyEventFilters, EventFilters } from "../lib/filter/event-filters";
@@ -57,7 +57,7 @@ export default function List() {
 								<Menu.Item
 									leftSection={<IconLink />}
 									onClick={() => {
-										openImportURLModal({
+										openEventImportURLModal({
 											schema: EventDataSchema,
 											onSubmit: (url, data) => {
 												EventActions.createRemoteEvent(url, data);

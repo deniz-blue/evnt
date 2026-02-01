@@ -2,38 +2,44 @@ import { reactRouter } from "@react-router/dev/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { VitePWA } from "vite-plugin-pwa";
+import metadata from "./public/oauth-client-metadata.json" with { type: "json" };
 
-const host = process.env.TAURI_DEV_HOST;
+const SERVER_HOST = "127.0.0.1";
+const SERVER_PORT = 5173;
 
 export default defineConfig({
 	clearScreen: false,
 	server: {
-		host,
-		port: 5173,
-		strictPort: true,
-		hmr: host ? { host, protocol: "ws" } : undefined,
-		watch: {
-			ignored: ["**/src-tauri/**"],
-		},
-	},
-
-	envPrefix: ['VITE_', 'TAURI_ENV_*'],
-	build: {
-		target: process.env.TAURI_PLATFORM == "windows" ? "chrome105" : "safari13",
-		minify: !process.env.TAURI_DEBUG ? "esbuild" : false,
-		sourcemap: !!process.env.TAURI_DEBUG,
+		host: SERVER_HOST,
+		port: SERVER_PORT,
 	},
 
 	plugins: [
 		reactRouter(),
 		tsconfigPaths(),
+		{
+			name: "oauth",
+			config(_conf, { command }) {
+				if (command === 'build') {
+					process.env.VITE_OAUTH_CLIENT_ID = metadata.client_id;
+					process.env.VITE_OAUTH_REDIRECT_URI = metadata.redirect_uris[0];
+				} else {
+					const redirectUri = `http://${SERVER_HOST}:${SERVER_PORT}${new URL(metadata.redirect_uris[0]!).pathname}`;
+					process.env.VITE_OAUTH_CLIENT_ID =
+						`http://localhost?redirect_uri=${encodeURIComponent(redirectUri)}` +
+						`&scope=${encodeURIComponent(metadata.scope)}`;
+					process.env.VITE_OAUTH_REDIRECT_URI = redirectUri;
+				}
+				process.env.VITE_OAUTH_SCOPE = metadata.scope;
+			},
+		},
 		VitePWA({
 			registerType: "autoUpdate",
 			injectRegister: "auto",
 			manifest: {
-				name: "@evnt Viewer",
-				short_name: "@evnt Viewer",
-				description: "The default viewer for @evnt events.",
+				name: "Vantage Events Viewer",
+				short_name: "Vantage Events Viewer",
+				description: "View @evnt events",
 				theme_color: "#242424",
 				background_color: "#242424",
 				icons: [

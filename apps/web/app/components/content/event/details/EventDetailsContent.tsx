@@ -1,5 +1,5 @@
 import type { EventData } from "@evnt/schema";
-import { Group, Modal, Stack, Text, Title } from "@mantine/core";
+import { Code, Group, Modal, Stack, Text, Title } from "@mantine/core";
 import { Trans } from "../Trans";
 import { SmallTitle } from "../../base/SmallTitle";
 import { snippetInstance, snippetVenue, venueGoogleMapsLink, venueOpenStreetMapsLink } from "@evnt/pretty";
@@ -8,6 +8,7 @@ import { MarkdownTranslations } from "../../base/MarkdownTranslations";
 import type { EventDataSource } from "../../../../db/models/event-source";
 import { LayerImportSection } from "./LayerImportSection";
 import { EventLinkButton } from "../components/EventLinkButton";
+import { ExternalLink } from "../../base/ExternalLink";
 
 export const EventDetailsContent = ({
 	data,
@@ -100,14 +101,25 @@ export const EventDetailsContent = ({
 				</Stack>
 			</Stack>
 
-			{/* <Text>
-                Lorem ipsum:
-            </Text>
-            {Array(50).fill(0).map((_, index) => (
-                <Text key={index} fz="sm" c="dimmed" inline>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </Text>
-            ))} */}
-		</Stack>
+			<Stack gap={0}>
+				<Text c="dimmed" fz="xs">
+					{source?.type == "local" ? (
+						<Text span inherit>
+							Source: Locally saved
+						</Text>
+					) : source?.type == "remote" ? (
+						source.url.startsWith("at://") ? (
+							<Text span inherit>
+								Source: <Code>{source.url}</Code>
+							</Text>
+						) : (
+							<Text span inherit>
+								Source: <ExternalLink href={source.url} />
+							</Text>
+						)
+					) : null}
+				</Text>
+			</Stack>
+		</Stack >
 	);
 };

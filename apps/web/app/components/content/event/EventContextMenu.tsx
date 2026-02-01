@@ -11,7 +11,7 @@ import { UtilEventSource, type EventDataSource } from "../../../db/models/event-
 import { DataDB } from "../../../db/data-db";
 import { AsyncLoader } from "../../data/AsyncLoader";
 import type { EventData } from "@evnt/schema";
-import { EventActions } from "../../../db/events";
+import { EventActions } from "../../../lib/actions/events";
 import { QRCode } from "../../../lib/util/qrcode";
 
 export const EventContextMenu = ({ source }: { source: EventDataSource }) => {

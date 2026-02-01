@@ -1,8 +1,8 @@
 import type { EventData } from "@evnt/schema";
-import { useLayersStore } from "./useLayersStore";
-import { UtilEventSource, type EventDataSource } from "./models/event-source";
-import { DataDB } from "./data-db";
-import { useTasksStore } from "../stores/useTasksStore";
+import { useLayersStore } from "../../db/useLayersStore";
+import { UtilEventSource, type EventDataSource } from "../../db/models/event-source";
+import { DataDB } from "../../db/data-db";
+import { useTasksStore } from "../../stores/useTasksStore";
 
 export class EventActions {
 	static async createLocalEvent(data: EventData, layerId?: string) {

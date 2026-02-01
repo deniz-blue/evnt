@@ -1,4 +1,5 @@
 export const EVENT_REDIRECTOR_URL = "https://event.nya.pub" as const;
+export const ATPROTO_NSID = "blue.deniz.atproto.event" as const;
 
 export const LOCALSTORAGE_PREFIX = "event-app:" as const;
 export const LOCALSTORAGE_KEYS = {

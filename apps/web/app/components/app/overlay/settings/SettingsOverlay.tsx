@@ -5,6 +5,7 @@ import { useLocaleStore } from "../../../../stores/useLocaleStore";
 import { TimezoneSelect } from "./TimezoneSelect";
 import { IconExternalLink, IconSettings } from "@tabler/icons-react";
 import { EVENT_REDIRECTOR_URL } from "../../../../constants";
+import { ATProtoSettings } from "./ATProtoSettings";
 
 export const useSettingsOverlay = () => useQueryModalState("settings", true);
 
@@ -50,6 +51,10 @@ export const SettingsOverlay = () => {
 				>
 					Set this Application as Default
 				</Button>
+
+				<Divider label="ATProto" />
+
+				<ATProtoSettings />
 			</Stack>
 		</Drawer>
 	);

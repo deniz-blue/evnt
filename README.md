@@ -10,7 +10,7 @@ _Links:_
   - [@evnt/schema](./packages/schema/) package
   - [JSON Schema](./event-data.schema.json) _(generated)_
   - [Markdown Documentation](./docs/SCHEMA.md) _(generated)_
-  - [ATProto Lexicon](./event-data.lexicon.json) _(generated)_
+  - [ATProto Lexicon](./event-data.lexicon.json) _(generated, also bad)_
 - 🔗 [Application Links Format](./docs/LINKS.md) _event.nya.pub_
 
 ## Applications

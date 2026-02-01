@@ -1,9 +1,19 @@
 import type { EventEntry } from "./build";
 
+type Index = {
+	events: Entry[];
+};
+
+type Entry = {
+	path: string;
+	lastModified?: number;
+};
+
 export const indexjson = (entries: EventEntry[]) => {
-    return {
+	return {
 		events: entries.map(entry => ({
-			url: entry.relativepath,
+			path: entry.relativepath,
+			lastModified: entry.lastModified,
 		})),
-	};
+	} as Index;
 };

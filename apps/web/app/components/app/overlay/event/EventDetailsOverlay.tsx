@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useEventDetailsModal } from "../../../../hooks/app/useEventDetailsModal";
 import { BaseOverlay } from "../base/BaseOverlay";
-import { EventDataSchema, type EventData } from "@evnt/schema";
+import { type EventData } from "@evnt/schema";
 import { EventDetailsContent } from "../../../content/event/details/EventDetailsContent";
-import { CenteredLoader } from "../../../content/base/CenteredLoader";
-import { fetchValidate } from "../../../../lib/util/fetchValidate";
 import { useEventDataQuery } from "../../../../db/useEventDataQuery";
 import { UtilEventSource, type EventDataSource } from "../../../../db/models/event-source";
 import { Stack, Text } from "@mantine/core";
