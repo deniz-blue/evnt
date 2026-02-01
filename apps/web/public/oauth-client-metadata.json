@@ -12,7 +12,8 @@
 	"response_types": [
 		"code"
 	],
-	"scope": "atproto repo:blue.deniz.event rpc:app.bsky.actor.getProfile?action=read",
+	"token_endpoint_auth_method": "none",
+	"scope": "atproto repo:blue.deniz.event",
 	"client_name": "Vantage Events Viewer",
 	"client_uri": "https://vantage.deniz.blue"
 }
