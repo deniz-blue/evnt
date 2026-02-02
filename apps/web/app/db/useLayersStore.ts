@@ -65,9 +65,9 @@ export const useLayersStore = create<LayersStore>()(
 		})),
 		{
 			name: LOCALSTORAGE_KEYS.layers,
-			version: 1,
+			version: 2,
 			migrate(persistedState: any, version) {
-				if (version > 1) {
+				if (version < 2) {
 					const newLayers: Record<string, Layer> = {};
 					for (const [layerId, layer] of Object.entries(persistedState.layers)) {
 						const newEvents: EventDataSource[] = (layer as any).data.events.map((source: any) =>
