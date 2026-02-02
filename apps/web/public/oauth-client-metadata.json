@@ -1,10 +1,13 @@
 {
 	"client_id": "https://vantage.deniz.blue/oauth-client-metadata.json",
-	"dpop_bound_access_tokens": true,
-	"application_type": "web",
+	"client_name": "Vantage Events Viewer",
+	"client_uri": "https://vantage.deniz.blue",
+	"scope": "atproto repo:blue.deniz.event",
 	"redirect_uris": [
 		"https://vantage.deniz.blue/oauth/callback"
 	],
+	"dpop_bound_access_tokens": true,
+	"application_type": "web",
 	"grant_types": [
 		"authorization_code",
 		"refresh_token"
@@ -12,8 +15,5 @@
 	"response_types": [
 		"code"
 	],
-	"token_endpoint_auth_method": "none",
-	"scope": "atproto repo:blue.deniz.event",
-	"client_name": "Vantage Events Viewer",
-	"client_uri": "https://vantage.deniz.blue"
+	"token_endpoint_auth_method": "none"
 }

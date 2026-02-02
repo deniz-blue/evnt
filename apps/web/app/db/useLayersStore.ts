@@ -58,15 +58,33 @@ export const useLayersStore = create<LayersStore>()(
 			removeEventSource: (source: EventDataSource, layerId = "default") =>
 				set((state) => {
 					if (!state.layers[layerId]) return;
-					const index = state.layers[layerId].data.events.findIndex((e) =>
-						UtilEventSource.equals(e, source)
-					);
+					const index = state.layers[layerId].data.events.findIndex((e) => e === source);
 					if (index === -1) return;
 					state.layers[layerId].data.events.splice(index, 1);
 				}),
 		})),
 		{
 			name: LOCALSTORAGE_KEYS.layers,
+			version: 1,
+			migrate(persistedState: any, version) {
+				if (version > 1) {
+					const newLayers: Record<string, Layer> = {};
+					for (const [layerId, layer] of Object.entries(persistedState.layers)) {
+						const newEvents: EventDataSource[] = (layer as any).data.events.map((source: any) =>
+							UtilEventSource.fromOld(source));
+						newLayers[layerId] = {
+							data: {
+								events: newEvents,
+							},
+						};
+					}
+					return {
+						layers: newLayers,
+					};
+				} else {
+					return persistedState;
+				}
+			},
 		},
 	),
 );

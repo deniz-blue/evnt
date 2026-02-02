@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router";
 import { useEventDetailsModal } from "../../../hooks/app/useEventDetailsModal";
-import { UtilEventSource } from "../../../db/models/event-source";
 
 export const LinkOpenHandler = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -24,7 +23,7 @@ export const LinkOpenHandler = () => {
 				const url = searchParams.get("url");
 				if (url) {
 					const newParams = new URLSearchParams();
-					newParams.set(eventDetailsKey, UtilEventSource.getKey({ type: "remote", url }));
+					newParams.set(eventDetailsKey, url);
 					newParams.delete("action");
 					newParams.delete("url");
 					setSearchParams(newParams);

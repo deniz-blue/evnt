@@ -10,33 +10,30 @@ export class EventActions {
 			title: "Creating local event",
 			notify: true,
 		}, async () => {
-			const source = UtilEventSource.newLocal();
-			await DataDB.put(UtilEventSource.getKey(source), { data });
+			const source = UtilEventSource.localRandom();
+			await DataDB.put(source, { data });
 			useLayersStore.getState().addEventSource(source, layerId);
 		});
 	}
 
+	static async createEventFromSource(source: EventDataSource, layerId?: string) {
+		useTasksStore.getState().addTask({
+			title: "Creating event from source",
+			notify: true,
+		}, async () => {
+			useLayersStore.getState().addEventSource(source, layerId);
+		});
+	}
+
+	/// @deprecated
 	static async createRemoteEventFromUrl(url: string, layerId?: string) {
-		useTasksStore.getState().addTask({
-			title: "Creating remote event from URL",
-			notify: true,
-		}, async () => {
-			// TODO: validation
-			const source = UtilEventSource.newRemote(url);
-			useLayersStore.getState().addEventSource(source, layerId);
-		});
+		return this.createEventFromSource(UtilEventSource.as(url), layerId);
 	}
 
+	// @deprecated
 	static async createRemoteEvent(url: string, data: EventData, layerId?: string) {
-		useTasksStore.getState().addTask({
-			title: "Creating remote event",
-			notify: true,
-		}, async () => {
-			const source = UtilEventSource.newRemote(url);
-			await DataDB.put(UtilEventSource.getKey(source), { data });
-			useLayersStore.getState().addEventSource(source, layerId);
-			console.log("Created remote event:", source);
-		});
+		this.createEventFromSource(UtilEventSource.as(url), layerId);
+		await DataDB.put(UtilEventSource.as(url), { data });
 	}
 
 	static async deleteEvent(source: EventDataSource, layerId?: string) {

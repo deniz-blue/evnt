@@ -1,72 +1,59 @@
+import { isCanonicalResourceUri, type CanonicalResourceUri, type Did, type Nsid, type RecordKey } from "@atcute/lexicons";
 import z from "zod";
 
-export type EventDataSource = z.infer<typeof EventSourceSchema>;
-export const EventSourceSchema = z.discriminatedUnion("type", [
-	z.object({
-		type: z.literal("local"),
-		uuid: z.uuid(),
-	}),
-	z.object({
-		type: z.literal("remote"),
-		url: z.url(),
-	}),
+export type EventDataSourceType = "local" | "http" | "https" | "at";
+export type EventDataSource = `${"local" | "http" | "https"}://${string}` | CanonicalResourceUri;
+export const EventDataSourceSchema = z.union([
+	z.url({ protocol: /^(https?|local)$/ }) as z.ZodType<`${"http" | "https" | "local"}://${string}`>,
+	z.string().refine(s => isCanonicalResourceUri(s), { message: "Invalid at URI" }),
 ]);
 
 export class UtilEventSource {
-	static isLocal(source: EventDataSource): source is Extract<EventDataSource, { type: "local" }> {
-		return source.type === "local";
+	static is(str: string): str is EventDataSource {
+		try {
+			EventDataSourceSchema.parse(str);
+			return true;
+		} catch {
+			return false;
+		}
 	}
 
-	static isRemote(source: EventDataSource): source is Extract<EventDataSource, { type: "remote" }> {
-		return source.type === "remote";
+	static as(str: string): EventDataSource {
+		return EventDataSourceSchema.parse(str);
 	}
 
-	static getKey(source: EventDataSource): string {
-		if (this.isLocal(source)) {
-			return `local::${source.uuid}`;
+	static local(uuid: string): EventDataSource {
+		return `local://${uuid}`;
+	}
+
+	static localRandom(): EventDataSource {
+		return this.local(crypto.randomUUID());
+	}
+
+	static https(url: string): EventDataSource {
+		return `https://${url}`;
+	}
+
+	static at(did: Did, collection: Nsid, rkey: RecordKey): EventDataSource {
+		return `at://${did}/${collection}/${rkey}`;
+	}
+
+	static isFromNetwork(source: EventDataSource): boolean {
+		return source.startsWith("http://")
+			|| source.startsWith("https://")
+			|| source.startsWith("at://");
+	}
+
+	static getType(source: EventDataSource): EventDataSourceType {
+		return source.split("://", 1)[0] as EventDataSourceType;
+	}
+
+	static fromOld(source: { type: "local"; uuid: string } | { type: "remote"; url: string }): EventDataSource {
+		if (source.type === "local") {
+			return this.local(source.uuid);
 		} else {
-			return `remote::${source.url}`;
-		};
-	}
-
-	static fromKey(key: string): EventDataSource | null {
-		const [type, value] = key.split("::", 2);
-		if (!type || !value) return null;
-		if (type === "local") {
-			return {
-				type: "local",
-				uuid: value,
-			};
+			return source.url as EventDataSource;
 		}
-		if (type === "remote") {
-			return {
-				type: "remote",
-				url: value,
-			};
-		}
-		return null;
-	}
-
-	static isValidKey(key: string): boolean {
-		return this.fromKey(key) !== null;
-	}
-
-	static equals(a: EventDataSource, b: EventDataSource): boolean {
-		return this.getKey(a) === this.getKey(b);
-	}
-
-	static newLocal(): EventDataSource {
-		return {
-			type: "local",
-			uuid: crypto.randomUUID(),
-		};
-	}
-
-	static newRemote(url: string): EventDataSource {
-		return {
-			type: "remote",
-			url,
-		};
 	}
 };
 

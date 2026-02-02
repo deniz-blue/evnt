@@ -7,14 +7,13 @@ import { AsyncAction } from "../../../data/AsyncAction";
 export const LayerImportSection = ({ source }: { source: EventDataSource }) => {
 	const layerDefaultSources = useLayersStore((store) => store.layers.default?.data.events);
 
-	const isOnDefault = layerDefaultSources?.some(x => UtilEventSource.equals(x, source));
+	const isOnDefault = layerDefaultSources?.includes(source);
 
 	return (
 		<Stack>
 			{!isOnDefault && (
 				<AsyncAction action={async () => {
-					if (source.type != "remote") return;
-					await EventActions.createRemoteEventFromUrl(source.url);
+					await EventActions.createRemoteEventFromUrl(source);
 				}}>
 					{({ loading, onClick }) => (
 						<Button

@@ -23,16 +23,31 @@ export const useHomeStore = create<HomeState & HomeActions>()(
 				}
 			}),
 			unpinEvent: (source: EventDataSource) => set((state) => {
-				const index = state.pinnedEvents.findIndex((e) =>
-					UtilEventSource.equals(e, source)
-				);
+				const index = state.pinnedEvents.findIndex((e) => e == source);
 				if (index === -1) return;
 				state.pinnedEvents.splice(index, 1);
 			}),
 		})),
 		{
 			name: LOCALSTORAGE_KEYS.home,
-			version: 1,
-		}
+			version: 2,
+			migrate: (persistedState: any, version) => {
+				if (version === 1) {
+					return {
+						...persistedState,
+						pinnedEvents: (persistedState.pinnedEvents as ({
+							type: "local";
+							uuid: string;
+						} | {
+							type: "remote";
+							url: string;
+						})[]).map((source) =>
+							UtilEventSource.fromOld(source)
+						),
+					};
+				}
+				return persistedState;
+			},
+		},
 	),
 );

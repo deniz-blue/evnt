@@ -38,16 +38,10 @@ type SyncInfo = {
 
 ## `EventSource`
 
-An `EventSource` is an object that represents the source of an event.
+An `EventSource` is an URI that represents the source of an event.
 
 ```ts
-type EventSource = {
-	type: "local";
-	uuid: string; // UUID of the event saved in local storage
-} | {
-	type: "remote";
-	url: string; // URL (https:// or at://) of the remote event source
-};
+type EventSource = `${"http" | "https" | "at"}://${string}`;
 ```
 
 Applications can use this structure to identify and manage different event sources, whether they are local or remote.

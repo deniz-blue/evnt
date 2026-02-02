@@ -13,7 +13,7 @@ export class Logger {
 
 	styledChild(name: string, color: string): Logger {
 		return new Logger((...args: any[]) => {
-			this.print(`%c ${name} `, `background-color: ${color}; color: white; font-weight: bold; border-radius: 5px;`, ...args);
+			this.print(`%c ${name} `, `background-color: ${color}; color: black; font-weight: bold; border-radius: 5px;`, ...args);
 		});
 	}
 

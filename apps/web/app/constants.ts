@@ -1,11 +1,12 @@
 export const EVENT_REDIRECTOR_URL = "https://event.nya.pub" as const;
-export const ATPROTO_NSID = "blue.deniz.atproto.event" as const;
+export const BlueDenizEvent = "blue.deniz.event" as const;
 
 export const LOCALSTORAGE_PREFIX = "event-app:" as const;
 export const LOCALSTORAGE_KEYS = {
 	locale: `${LOCALSTORAGE_PREFIX}locale`,
 	home: `${LOCALSTORAGE_PREFIX}home`,
 	layers: `${LOCALSTORAGE_PREFIX}userdata`,
+	jetstreamCursor: `${LOCALSTORAGE_PREFIX}jetstream-cursor`,
 } as const;
 
 export const DATABASE_NAME = `${LOCALSTORAGE_PREFIX}events-db` as const;

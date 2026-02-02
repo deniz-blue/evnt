@@ -4,15 +4,15 @@ import { type EventData } from "@evnt/schema";
 import { useMemo } from "react";
 import { EventDataResolver } from "../lib/resolve/resolve";
 
-export const eventDataQueryKey = (key: string) => {
-	return ["event-data", key] as const;
+export const eventDataQueryKey = (source: EventDataSource) => {
+	return ["event-data", source] as const;
 };
 
 export const eventDataQueryOptions = (source: EventDataSource) => {
 	return queryOptions({
-		queryKey: eventDataQueryKey(UtilEventSource.getKey(source)),
+		queryKey: eventDataQueryKey(source),
 		networkMode: "always",
-		refetchOnReconnect: UtilEventSource.isRemote(source),
+		refetchOnReconnect: UtilEventSource.isFromNetwork(source),
 		queryFn: async (): Promise<EventData> => {
 			return await EventDataResolver.getDataWithCache(source);
 		},

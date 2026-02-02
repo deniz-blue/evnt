@@ -7,21 +7,22 @@ import { parseCanonicalResourceUri } from "@atcute/lexicons/syntax";
 
 export class EventDataResolver {
 	static async getDataWithCache(source: EventDataSource): Promise<EventData> {
-		const key = UtilEventSource.getKey(source)!;
-		const cached = await DataDB.get(key);
+		const cached = await DataDB.get(source);
 		if (cached != null) return cached.data;
 		const data = await this.fetch(source);
-		await DataDB.put(key, { data });
+		await DataDB.put(source, { data });
 		return data;
 	}
 
 	static async fetch(source: EventDataSource): Promise<EventData> {
-		switch (source.type) {
+		switch (UtilEventSource.getType(source)) {
 			case "local":
 				throw new Error("Cannot fetch data for local event source");
-			case "remote":
-				if (source.url.startsWith("at://")) return await this.fetchAtProto(source.url);
-				return await this.fetchRemote(source.url);
+			case "http":
+			case "https":
+				return await this.fetchRemote(source);
+			case "at":
+				return await this.fetchAtProto(source);
 		}
 	}
 
@@ -49,7 +50,7 @@ export class EventDataResolver {
 			},
 		});
 
-		if(!res.ok) throw new Error(res.data.message || res.data.error || "Failed to fetch at-uri record");
+		if (!res.ok) throw new Error(res.data.message || res.data.error || "Failed to fetch at-uri record");
 
 		const data = EventDataSchema.parse(res.data.value);
 

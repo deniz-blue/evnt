@@ -5,7 +5,7 @@ import { SmallTitle } from "../../base/SmallTitle";
 import { snippetInstance, snippetVenue, venueGoogleMapsLink, venueOpenStreetMapsLink } from "@evnt/pretty";
 import { Snippet } from "../../Snippet";
 import { MarkdownTranslations } from "../../base/MarkdownTranslations";
-import type { EventDataSource } from "../../../../db/models/event-source";
+import { UtilEventSource, type EventDataSource } from "../../../../db/models/event-source";
 import { LayerImportSection } from "./LayerImportSection";
 import { EventLinkButton } from "../components/EventLinkButton";
 import { ExternalLink } from "../../base/ExternalLink";
@@ -103,21 +103,23 @@ export const EventDetailsContent = ({
 
 			<Stack gap={0}>
 				<Text c="dimmed" fz="xs">
-					{source?.type == "local" ? (
+					{source && ["http", "https"].includes(UtilEventSource.getType(source)) && (
+						<Text span inherit>
+							Source: <ExternalLink href={source} />
+						</Text>
+					)}
+
+					{source && UtilEventSource.getType(source) == "at" && (
+						<Text span inherit>
+							Source: <Code>{source}</Code>
+						</Text>
+					)}
+
+					{source && UtilEventSource.getType(source) == "local" && (
 						<Text span inherit>
 							Source: Locally saved
 						</Text>
-					) : source?.type == "remote" ? (
-						source.url.startsWith("at://") ? (
-							<Text span inherit>
-								Source: <Code>{source.url}</Code>
-							</Text>
-						) : (
-							<Text span inherit>
-								Source: <ExternalLink href={source.url} />
-							</Text>
-						)
-					) : null}
+					)}
 				</Text>
 			</Stack>
 		</Stack >

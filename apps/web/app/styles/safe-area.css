@@ -3,7 +3,8 @@
 	--safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-.mantine-Drawer-content, .mantine-Modal-content {
+.mantine-Drawer-content,
+.mantine-Modal-content {
 	padding-top: var(--safe-area-inset-top);
 	padding-bottom: var(--safe-area-inset-bottom);
 }
