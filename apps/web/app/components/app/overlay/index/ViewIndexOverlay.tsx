@@ -1,5 +1,5 @@
 import { BaseOverlay } from "../base/BaseOverlay";
-import { useEventQueries } from "../../../../db/useEventDataQuery";
+import { useEventQueries } from "../../../../db/useEventQuery";
 import { type EventSource } from "../../../../db/models/event-source";
 import { Button, Code, Group, Loader, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { RQResult } from "../../../data/RQResult";
@@ -9,6 +9,7 @@ import { fetchValidate } from "../../../../lib/util/fetchValidate";
 import z from "zod";
 import { EventCard } from "../../../content/event/EventCard";
 import { EventContextMenu } from "../../../content/event/EventContextMenu";
+import { EventsGrid } from "../../../content/event-grid/EventsGrid";
 
 export const ViewIndexOverlay = () => {
 	const { isOpen, close, value: uri } = useViewIndexModal();
@@ -77,27 +78,7 @@ export const ViewIndexOverlay = () => {
 					</Text>
 				)}
 
-				<SimpleGrid
-					type="container"
-					cols={{ base: 1, "680px": 2, "1400px": 3, "1800px": 4 }}
-				>
-					{filtered.map(({ query, source }, index) => (
-						<RQResult
-							key={index}
-							query={query}
-						>
-							{({ data }) => data && (
-								<EventCard
-									key={index}
-									value={data}
-									variant="card"
-									source={source}
-									menu={<EventContextMenu source={source} />}
-								/>
-							)}
-						</RQResult>
-					))}
-				</SimpleGrid>
+				<EventsGrid queries={filtered} />
 			</Stack>
 		</BaseOverlay>
 	)

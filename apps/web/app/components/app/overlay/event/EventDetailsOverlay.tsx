@@ -1,7 +1,7 @@
 import { useEventDetailsModal } from "../../../../hooks/app/useEventDetailsModal";
 import { BaseOverlay } from "../base/BaseOverlay";
 import { EventDetailsContent } from "../../../content/event/details/EventDetailsContent";
-import { useEventDataQuery } from "../../../../db/useEventDataQuery";
+import { useEventQuery } from "../../../../db/useEventQuery";
 import { UtilEventSource, type EventSource } from "../../../../db/models/event-source";
 import { Code, Stack, Text } from "@mantine/core";
 import { RQResult } from "../../../data/RQResult";
@@ -28,14 +28,16 @@ export const EventDetailsOverlay = () => {
 };
 
 export const EventDetailsOverlayHandler = ({ source }: { source: EventSource }) => {
-	const query = useEventDataQuery(source);
+	const query = useEventQuery(source);
 
 	return (
 		<RQResult query={query}>
-			{(data) => (
+			{({ data, err }) => data && (
 				<EventDetailsContent
 					data={data}
 					source={source}
+					err={err}
+					loading={query.isLoading}
 				/>
 			)}
 		</RQResult>

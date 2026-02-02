@@ -1,16 +1,14 @@
-import { ActionIcon, Button, Group, Menu, SimpleGrid, Stack, TextInput } from "@mantine/core";
+import { Button, Group, Menu, Stack, TextInput } from "@mantine/core";
 import { useState } from "react";
 import { EventDataSchema } from "@evnt/schema";
 import { openImportJSONModal } from "../components/app/modal/ImportJSONModal";
 import { IconBraces, IconLink, IconPlus } from "@tabler/icons-react";
-import { EventCard } from "../components/content/event/EventCard";
 import { openEventImportURLModal } from "../components/app/modal/ImportURLModal";
-import { useEventQueries } from "../db/useEventDataQuery";
-import { RQResult } from "../components/data/RQResult";
+import { useEventQueries } from "../db/useEventQuery";
 import { EventActions } from "../lib/actions/events";
-import { EventContextMenu } from "../components/content/event/EventContextMenu";
 import { useLayersStore } from "../db/useLayersStore";
 import { applyEventFilters, EventFilters } from "../lib/filter/event-filters";
+import { EventsGrid } from "../components/content/event-grid/EventsGrid";
 
 export default function List() {
 	const defaultLayerSources = useLayersStore(store => store.layers["default"]?.data.events ?? []);
@@ -58,8 +56,8 @@ export default function List() {
 									leftSection={<IconLink />}
 									onClick={() => {
 										openEventImportURLModal({
-											onSubmit: (url, data) => {
-												EventActions.createRemoteEvent(url, data);
+											onSubmit: (source) => {
+												EventActions.createEventFromSource(source);
 											},
 										});
 									}}
@@ -72,27 +70,7 @@ export default function List() {
 				</Group>
 			</Stack>
 
-			<SimpleGrid
-				type="container"
-				cols={{ base: 1, "680px": 2, "1400px": 3, "1800px": 4 }}
-			>
-				{filtered.map(({ query, source }, index) => (
-					<RQResult
-						key={index}
-						query={query}
-					>
-						{({ data }) => data && (
-							<EventCard
-								key={index}
-								value={data}
-								variant="card"
-								source={source}
-								menu={<EventContextMenu source={source} />}
-							/>
-						)}
-					</RQResult>
-				))}
-			</SimpleGrid>
+			<EventsGrid queries={filtered} />
 		</Stack>
 	);
 };

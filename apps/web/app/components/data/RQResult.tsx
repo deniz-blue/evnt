@@ -1,4 +1,6 @@
 import type { UseQueryResult } from "@tanstack/react-query";
+import { CenteredLoader } from "../content/base/CenteredLoader";
+import { Text } from "@mantine/core";
 
 export const RQResult = <TData,>({
 	query,
@@ -7,12 +9,12 @@ export const RQResult = <TData,>({
 	query: UseQueryResult<TData>;
 	children: (data: TData, query: UseQueryResult<TData>) => React.ReactNode;
 }) => {
-	if (query.isLoading) {
-		return <div>Loading...</div>;
+	if (!query.data && query.isLoading) {
+		return <CenteredLoader />;
 	}
-	
+
 	if (query.isError) {
-		return <div>Error: {(query.error as Error).message}</div>;
+		return <Text c="red">Error: {(query.error as Error).message}</Text>;
 	}
 
 	return <>{children(query.data!, query)}</>;

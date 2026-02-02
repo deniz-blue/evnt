@@ -4,13 +4,13 @@ import { useMemo } from "react";
 import { EventResolver } from "./resolve/resolve";
 import type { EventEnvelope } from "./models/event-envelope";
 
-export const eventDataQueryKey = (source: EventSource) => {
+export const eventQueryKey = (source: EventSource) => {
 	return ["event-data", source] as const;
 };
 
-export const eventDataQueryOptions = (source: EventSource) => {
+export const eventQueryOptions = (source: EventSource) => {
 	return queryOptions({
-		queryKey: eventDataQueryKey(source),
+		queryKey: eventQueryKey(source),
 		networkMode: "always",
 		refetchOnReconnect: UtilEventSource.isFromNetwork(source),
 		queryFn: async (): Promise<EventEnvelope> => {
@@ -19,20 +19,20 @@ export const eventDataQueryOptions = (source: EventSource) => {
 	});
 };
 
-export const useEventDataQuery = (source: EventSource) => {
-	const query = useQuery(eventDataQueryOptions(source));
+export const useEventQuery = (source: EventSource) => {
+	const query = useQuery(eventQueryOptions(source));
 	return query;
 };
 
-export type EventDataQueryResult = {
+export type EventQueryResult = {
 	query: ReturnType<typeof useQuery<EventEnvelope>>;
 	source: EventSource;
 };
 
-export const useEventQueries = (sources: EventSource[]): EventDataQueryResult[] => {
+export const useEventQueries = (sources: EventSource[]): EventQueryResult[] => {
 	const queries = useQueries({
 		queries: sources.map((source) => (
-			eventDataQueryOptions(source)
+			eventQueryOptions(source)
 		)),
 	});
 

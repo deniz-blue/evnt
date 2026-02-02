@@ -4,7 +4,7 @@ import { useLayersStore } from "../../../db/useLayersStore";
 import { useEffect } from "react";
 import { useWindowEvent } from "@mantine/hooks";
 import { DataDB } from "../../../db/data-db";
-import { eventDataQueryKey } from "../../../db/useEventDataQuery";
+import { eventQueryKey } from "../../../db/useEventQuery";
 import { JetstreamSubscription } from "@atcute/jetstream";
 import { BlueDenizEvent, LOCALSTORAGE_KEYS } from "../../../constants";
 import { UtilEventSource } from "../../../db/models/event-source";
@@ -18,7 +18,7 @@ export const Initializers = () => {
 
 	useEffect(() => {
 		return DataDB.onUpdate((source) => {
-			queryClient.invalidateQueries({ queryKey: [eventDataQueryKey(source), "event-data-keys"] });
+			queryClient.invalidateQueries({ queryKey: eventQueryKey(source) });
 		});
 	}, [queryClient]);
 

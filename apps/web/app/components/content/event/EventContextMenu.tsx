@@ -13,10 +13,13 @@ import type { EventData } from "@evnt/schema";
 import { EventActions } from "../../../lib/actions/events";
 import { QRCode } from "../../../lib/util/qrcode";
 import { useMediaQuery } from "@mantine/hooks";
+import { useQueryClient } from "@tanstack/react-query";
+import { eventQueryKey } from "../../../db/useEventQuery";
 
 export const EventContextMenu = ({ source }: { source: EventSource }) => {
 	const noHover = useMediaQuery("(hover: none)");
 	const isPinned = useHomeStore((state) => state.pinnedEvents.includes(source));
+	const queryClient = useQueryClient();
 
 	const getShareLink = () => {
 		const shareLink = `${EVENT_REDIRECTOR_URL}/?${new URLSearchParams({
@@ -67,7 +70,9 @@ export const EventContextMenu = ({ source }: { source: EventSource }) => {
 			),
 		}),
 		Refetch: async () => {
-			// useEventStore.getState().refetchEvent(event.id!);
+			await queryClient.invalidateQueries({
+				queryKey: eventQueryKey(source),
+			});
 		},
 		CopySourceURL: handleCopy(source, "Event Data URL copied to clipboard"),
 		Delete: withConfirmation("Are you sure you want to delete this event?", () => EventActions.deleteEvent(source)),

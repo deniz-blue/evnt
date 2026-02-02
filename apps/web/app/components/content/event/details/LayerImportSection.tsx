@@ -13,7 +13,7 @@ export const LayerImportSection = ({ source }: { source: EventSource }) => {
 		<Stack>
 			{!isOnDefault && (
 				<AsyncAction action={async () => {
-					await EventActions.createRemoteEventFromUrl(source);
+					await EventActions.createEventFromSource(source);
 				}}>
 					{({ loading, onClick }) => (
 						<Button

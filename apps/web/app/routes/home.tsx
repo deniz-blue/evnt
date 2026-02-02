@@ -1,7 +1,7 @@
 import { EventCard } from "../components/content/event/EventCard";
 import { EventContextMenu } from "../components/content/event/EventContextMenu";
 import { RQResult } from "../components/data/RQResult";
-import { useEventQueries } from "../db/useEventDataQuery";
+import { useEventQueries } from "../db/useEventQuery";
 import { useHomeStore } from "../stores/useHomeStore";
 import { Container, Group, ScrollArea, Stack, Text, Title } from "@mantine/core";
 

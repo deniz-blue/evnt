@@ -9,21 +9,26 @@ import { UtilEventSource, type EventSource } from "../../../../db/models/event-s
 import { LayerImportSection } from "./LayerImportSection";
 import { EventLinkButton } from "../components/EventLinkButton";
 import { ExternalLink } from "../../base/ExternalLink";
-import type { UseQueryResult } from "@tanstack/react-query";
+import type { EventEnvelope } from "../../../../db/models/event-envelope";
+import { EventActions } from "../../../../lib/actions/events";
+import { VantageCopyButton } from "../../../app/VantageCopyButton";
+import { IconJson, IconLink, IconShare } from "@tabler/icons-react";
 
 export const EventDetailsContent = ({
 	data,
 	source,
-	query,
+	err,
+	loading,
 }: {
 	data: EventData;
 	source?: EventSource;
-	query?: UseQueryResult<EventData, unknown>;
+	loading?: boolean;
+	err?: EventEnvelope.Error;
 }) => {
 	return (
 		<Stack>
 			<Group gap={4}>
-				{query?.isLoading && (
+				{loading && (
 					<Loader />
 				)}
 				<Title flex="1">
@@ -35,6 +40,33 @@ export const EventDetailsContent = ({
 			</Group>
 
 			{source && <LayerImportSection source={source} />}
+
+			<Stack align="end">
+				<Group gap={4}>
+					<VantageCopyButton
+						value={JSON.stringify(data, null, 2)}
+						labelCopy="Copy event JSON"
+						labelCopied="Event JSON copied to clipboard"
+						icon={<IconJson />}
+					/>
+					{source && UtilEventSource.isFromNetwork(source) && (
+						<VantageCopyButton
+							value={source}
+							labelCopied="Source copied to clipboard"
+							labelCopy="Copy source URL"
+							icon={<IconLink />}
+						/>
+					)}
+					{source && UtilEventSource.isFromNetwork(source) && (
+						<VantageCopyButton
+							value={EventActions.getShareLink(source)}
+							labelCopied="Share link copied to clipboard"
+							labelCopy="Copy share link"
+							icon={<IconShare />}
+						/>
+					)}
+				</Group>
+			</Stack>
 
 			<Stack gap={0}>
 				<SmallTitle padLeft>
