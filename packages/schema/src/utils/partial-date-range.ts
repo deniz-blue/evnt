@@ -49,13 +49,6 @@ export class UtilPartialDateRange {
         }
         let currentDate = UtilPartialDate.toDate(range.start);
         const endDate = UtilPartialDate.toDate(range.end);
-        // me: hey copilot is this while function safe?
-        // copilot: yes, because we check isRange above
-        // me: thanks copilot <3
-        // copilot: you're welcome!
-        // me: what if start is after end?
-        // copilot: then the while loop will not execute and an empty array will be returned
-        // me: oh okay thank u
         while (currentDate.getTime() <= endDate.getTime()) {
             dates.push(currentDate.toISOString().slice(0, 10) as PartialDate);
             currentDate.setDate(currentDate.getDate() + 1);
