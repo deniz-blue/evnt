@@ -58,7 +58,6 @@ export default function List() {
 									leftSection={<IconLink />}
 									onClick={() => {
 										openEventImportURLModal({
-											schema: EventDataSchema,
 											onSubmit: (url, data) => {
 												EventActions.createRemoteEvent(url, data);
 											},

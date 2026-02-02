@@ -1,7 +1,7 @@
 {
   "name": "@evnt/dev",
-  "description": "Tools for @evnt related stuff",
-  "version": "0.0.8",
+  "description": "Build static files of events",
+  "version": "0.0.9",
   "type": "module",
   "author": "deniz.blue",
   "keywords": [],

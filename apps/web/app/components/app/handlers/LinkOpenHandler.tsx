@@ -1,17 +1,13 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router";
 import { useEventDetailsModal } from "../../../hooks/app/useEventDetailsModal";
+import { useViewIndexModal } from "../../../hooks/app/useViewIndexModal";
 
 export const LinkOpenHandler = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const { key: eventDetailsKey } = useEventDetailsModal();
+	const { key: viewIndexKey } = useViewIndexModal();
 	const lastRef = useRef<string | null>(null);
-
-	const clearParams = useCallback((params: string[]) => {
-		const newParams = new URLSearchParams(searchParams);
-		params.forEach(p => newParams.delete(p));
-		setSearchParams(newParams);
-	}, [searchParams]);
 
 	useEffect(() => {
 		if (lastRef.current === searchParams.toString()) return;
@@ -24,6 +20,15 @@ export const LinkOpenHandler = () => {
 				if (url) {
 					const newParams = new URLSearchParams();
 					newParams.set(eventDetailsKey, url);
+					newParams.delete("action");
+					newParams.delete("url");
+					setSearchParams(newParams);
+				}
+			} else if (action === "view-index") {
+				const indexUrl = searchParams.get("index");
+				if (indexUrl) {
+					const newParams = new URLSearchParams();
+					newParams.set(viewIndexKey, indexUrl.startsWith("http") ? indexUrl : ("https://" + indexUrl));
 					newParams.delete("action");
 					newParams.delete("url");
 					setSearchParams(newParams);

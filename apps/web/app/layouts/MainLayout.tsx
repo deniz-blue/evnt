@@ -1,4 +1,4 @@
-import { ActionIcon, AppShell, Box, Button, Group, Loader, NavLink, type ButtonProps } from "@mantine/core";
+import { ActionIcon, AppShell, Box, Button, Group, Loader, type ButtonProps } from "@mantine/core";
 import { Link, Outlet } from "react-router";
 import { LinkOpenHandler } from "../components/app/handlers/LinkOpenHandler";
 import { EventDetailsOverlay } from "../components/app/overlay/event/EventDetailsOverlay";
@@ -7,6 +7,7 @@ import { SettingsOverlay, useSettingsOverlay } from "../components/app/overlay/s
 import { useHotkeys } from "@mantine/hooks";
 import { useTasksStore } from "../stores/useTasksStore";
 import { Initializers } from "../components/app/handlers/Initializers";
+import { ViewIndexOverlay } from "../components/app/overlay/index/ViewIndexOverlay";
 
 export default function MainLayout() {
 	const { toggle: toggleSettings } = useSettingsOverlay();
@@ -60,6 +61,7 @@ export default function MainLayout() {
 			</AppShell.Header>
 			<AppShell.Main>
 				<Outlet />
+				<ViewIndexOverlay />
 				<EventDetailsOverlay />
 				<SettingsOverlay />
 			</AppShell.Main>

@@ -1,5 +1,5 @@
 import type { EventData } from "@evnt/schema";
-import { Code, Group, Modal, Stack, Text, Title } from "@mantine/core";
+import { Code, Group, Loader, Modal, Stack, Text, Title } from "@mantine/core";
 import { Trans } from "../Trans";
 import { SmallTitle } from "../../base/SmallTitle";
 import { snippetInstance, snippetVenue, venueGoogleMapsLink, venueOpenStreetMapsLink } from "@evnt/pretty";
@@ -9,17 +9,23 @@ import { UtilEventSource, type EventDataSource } from "../../../../db/models/eve
 import { LayerImportSection } from "./LayerImportSection";
 import { EventLinkButton } from "../components/EventLinkButton";
 import { ExternalLink } from "../../base/ExternalLink";
+import type { UseQueryResult } from "@tanstack/react-query";
 
 export const EventDetailsContent = ({
 	data,
 	source,
+	query,
 }: {
 	data: EventData;
 	source?: EventDataSource;
+	query?: UseQueryResult<EventData, unknown>;
 }) => {
 	return (
 		<Stack>
 			<Group gap={4}>
+				{query?.isLoading && (
+					<Loader />
+				)}
 				<Title flex="1">
 					<Trans t={data.name} />
 				</Title>

@@ -1,7 +1,5 @@
-import { useState } from "react";
 import { useEventDetailsModal } from "../../../../hooks/app/useEventDetailsModal";
 import { BaseOverlay } from "../base/BaseOverlay";
-import { type EventData } from "@evnt/schema";
 import { EventDetailsContent } from "../../../content/event/details/EventDetailsContent";
 import { useEventDataQuery } from "../../../../db/useEventDataQuery";
 import { UtilEventSource, type EventDataSource } from "../../../../db/models/event-source";
@@ -30,8 +28,6 @@ export const EventDetailsOverlay = () => {
 };
 
 export const EventDetailsOverlayHandler = ({ source }: { source: EventDataSource }) => {
-	const [data, setData] = useState<EventData | null>(null);
-
 	const query = useEventDataQuery(source);
 
 	return (
