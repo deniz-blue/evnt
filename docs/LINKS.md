@@ -23,33 +23,33 @@ graph LR
 
 Application Links use **URL search parameters** to define the action to be performed.
 
-The operations are differentiated by the `action` parameter:
+The operations are differentiated by the `action` parameter.
 
-- `view-event`: View a single event
+## `?action=view-event`
   
-  **Parameters:**
-  - `url`: If defined, the event is fetched from this URL (should be a direct link to a raw event JSON)
+**Parameters:**
+- `url`: [EventSource](./SOURCE.md)
 
-  _Example usage:_
-  
-  ```
-  https://event.nya.pub/?action=view-event&url=https://example.com/event.json
-  ```
+**Examples:**
 
-  _Test link:_ [FOSDEM26](<https://event.nya.pub/?action=view-event&url=https%3A%2F%2Fdeniz.blue%2Fevents-data%2Fevents%2F2026%2Ffoss%2Ffosdem26.json>)
+- [Link to FOSDEM 2026](<https://event.nya.pub/?action=view-event&url=https%3A%2F%2Fdeniz.blue%2Fevents-data%2Fevents%2F2026%2Ffoss%2Ffosdem26.json>)
+
+## `?action=view-index`
+
+Views an `.index.json`.
+
+**Parameters:**
+- `url`: URL of the `.index.json` file
 
 ## Special Parameters
+
+**Parameters:**
 
 - `?setInstanceUrl=<url>` sets the instance url
 - `?clearInstanceUrl` clears the instance url
 - `?popup` to close the popup after operation
 
-Example usage:
+**Examples:**
 
-```
-https://event.nya.pub/?setInstanceUrl=https://example.com/
-```
-
-_Test link:_ [Set Instance URL to 127.0.0.1:5173](https://event.nya.pub/?setInstanceUrl=http://127.0.0.1:5173/)
-
-_Test link:_ [Clear Instance URL](https://event.nya.pub/?clearInstanceUrl)
+- [Set Instance URL to 127.0.0.1:5173](https://event.nya.pub/?setInstanceUrl=http://127.0.0.1:5173/)
+- [Clear Instance URL](https://event.nya.pub/?clearInstanceUrl)

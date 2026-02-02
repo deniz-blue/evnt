@@ -36,12 +36,3 @@ type SyncInfo = {
 };
 ```
 
-## `EventSource`
-
-An `EventSource` is an URI that represents the source of an event.
-
-```ts
-type EventSource = `${"http" | "https" | "at"}://${string}`;
-```
-
-Applications can use this structure to identify and manage different event sources, whether they are local or remote.
