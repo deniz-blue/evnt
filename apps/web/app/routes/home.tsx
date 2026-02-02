@@ -24,7 +24,7 @@ export default function Home() {
 					<Group wrap="nowrap">
 						{pinnedEvents.map(({ query, source }, index) => (
 							<RQResult key={index} query={query}>
-								{(data) => (
+								{({ data }) => data && (
 									<EventCard
 										value={data}
 										source={source}

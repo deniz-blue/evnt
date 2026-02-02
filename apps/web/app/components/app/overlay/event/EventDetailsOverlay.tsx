@@ -2,7 +2,7 @@ import { useEventDetailsModal } from "../../../../hooks/app/useEventDetailsModal
 import { BaseOverlay } from "../base/BaseOverlay";
 import { EventDetailsContent } from "../../../content/event/details/EventDetailsContent";
 import { useEventDataQuery } from "../../../../db/useEventDataQuery";
-import { UtilEventSource, type EventDataSource } from "../../../../db/models/event-source";
+import { UtilEventSource, type EventSource } from "../../../../db/models/event-source";
 import { Code, Stack, Text } from "@mantine/core";
 import { RQResult } from "../../../data/RQResult";
 
@@ -27,7 +27,7 @@ export const EventDetailsOverlay = () => {
 	)
 };
 
-export const EventDetailsOverlayHandler = ({ source }: { source: EventDataSource }) => {
+export const EventDetailsOverlayHandler = ({ source }: { source: EventSource }) => {
 	const query = useEventDataQuery(source);
 
 	return (

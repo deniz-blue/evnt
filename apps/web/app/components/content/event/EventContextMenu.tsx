@@ -6,7 +6,7 @@ import { useHomeStore } from "../../../stores/useHomeStore";
 import { EVENT_REDIRECTOR_URL } from "../../../constants";
 import { handleAsyncCopy, handleCopy } from "../../../lib/util/copy";
 import { withConfirmation } from "../../../lib/util/confirm";
-import { UtilEventSource, type EventDataSource } from "../../../db/models/event-source";
+import { UtilEventSource, type EventSource } from "../../../db/models/event-source";
 import { DataDB } from "../../../db/data-db";
 import { AsyncLoader } from "../../data/AsyncLoader";
 import type { EventData } from "@evnt/schema";
@@ -14,7 +14,7 @@ import { EventActions } from "../../../lib/actions/events";
 import { QRCode } from "../../../lib/util/qrcode";
 import { useMediaQuery } from "@mantine/hooks";
 
-export const EventContextMenu = ({ source }: { source: EventDataSource }) => {
+export const EventContextMenu = ({ source }: { source: EventSource }) => {
 	const noHover = useMediaQuery("(hover: none)");
 	const isPinned = useHomeStore((state) => state.pinnedEvents.includes(source));
 

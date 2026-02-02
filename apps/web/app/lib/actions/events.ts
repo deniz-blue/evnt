@@ -1,6 +1,6 @@
 import type { EventData } from "@evnt/schema";
 import { useLayersStore } from "../../db/useLayersStore";
-import { UtilEventSource, type EventDataSource } from "../../db/models/event-source";
+import { UtilEventSource, type EventSource } from "../../db/models/event-source";
 import { DataDB } from "../../db/data-db";
 import { useTasksStore } from "../../stores/useTasksStore";
 
@@ -16,7 +16,7 @@ export class EventActions {
 		});
 	}
 
-	static async createEventFromSource(source: EventDataSource, layerId?: string) {
+	static async createEventFromSource(source: EventSource, layerId?: string) {
 		useTasksStore.getState().addTask({
 			title: "Creating event from source",
 			notify: true,
@@ -36,7 +36,7 @@ export class EventActions {
 		await DataDB.put(UtilEventSource.as(url), { data });
 	}
 
-	static async deleteEvent(source: EventDataSource, layerId?: string) {
+	static async deleteEvent(source: EventSource, layerId?: string) {
 		useTasksStore.getState().addTask({
 			title: "Deleting event from layer",
 			notify: true,

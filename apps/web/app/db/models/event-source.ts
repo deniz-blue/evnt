@@ -1,15 +1,23 @@
 import { isCanonicalResourceUri, type CanonicalResourceUri, type Did, type Nsid, type RecordKey } from "@atcute/lexicons";
 import z from "zod";
 
-export type EventDataSourceType = "local" | "http" | "https" | "at";
-export type EventDataSource = `${"local" | "http" | "https"}://${string}` | CanonicalResourceUri;
+export namespace EventSource {
+	export type Type = "local" | "http" | "https" | "at";
+	export type Local = `local://${string}`;
+	export type Http = `http://${string}`;
+	export type Https = `https://${string}`;
+	export type At = CanonicalResourceUri;
+};
+
+export type EventSource = `${"local" | "http" | "https"}://${string}` | CanonicalResourceUri;
+
 export const EventDataSourceSchema = z.union([
-	z.url({ protocol: /^(https?|local)$/ }) as z.ZodType<`${"http" | "https" | "local"}://${string}`>,
+	z.url({ protocol: /^(https?)$/ }) as z.ZodType<`${"http" | "https"}://${string}`>,
 	z.string().refine(s => isCanonicalResourceUri(s), { message: "Invalid at URI" }),
 ]);
 
 export class UtilEventSource {
-	static is(str: string): str is EventDataSource {
+	static is(str: string): str is EventSource {
 		try {
 			EventDataSourceSchema.parse(str);
 			return true;
@@ -18,41 +26,57 @@ export class UtilEventSource {
 		}
 	}
 
-	static as(str: string): EventDataSource {
+	static as(str: string): EventSource {
 		return EventDataSourceSchema.parse(str);
 	}
 
-	static local(uuid: string): EventDataSource {
+	static local(uuid: string): EventSource.Local {
 		return `local://${uuid}`;
 	}
 
-	static localRandom(): EventDataSource {
+	static localRandom(): EventSource.Local {
 		return this.local(crypto.randomUUID());
 	}
 
-	static https(url: string): EventDataSource {
+	static https(url: string): EventSource.Https {
 		return `https://${url}`;
 	}
 
-	static at(did: Did, collection: Nsid, rkey: RecordKey): EventDataSource {
+	static at(did: Did, collection: Nsid, rkey: RecordKey): EventSource.At {
 		return `at://${did}/${collection}/${rkey}`;
 	}
 
-	static isFromNetwork(source: EventDataSource): boolean {
+	static isAt(source: EventSource): source is EventSource.At {
+		return source.startsWith("at://");
+	}
+
+	static isHttp(source: EventSource): source is EventSource.Http {
+		return source.startsWith("http://");
+	}
+
+	static isHttps(source: EventSource): source is EventSource.Https {
+		return source.startsWith("https://");
+	}
+
+	static isLocal(source: EventSource): source is EventSource.Local {
+		return source.startsWith("local://");
+	}
+
+	static isFromNetwork(source: EventSource): source is EventSource.Http | EventSource.Https | EventSource.At {
 		return source.startsWith("http://")
 			|| source.startsWith("https://")
 			|| source.startsWith("at://");
 	}
 
-	static getType(source: EventDataSource): EventDataSourceType {
-		return source.split("://", 1)[0] as EventDataSourceType;
+	static getType(source: EventSource): EventSource.Type {
+		return source.split("://", 1)[0] as EventSource.Type;
 	}
 
-	static fromOld(source: { type: "local"; uuid: string } | { type: "remote"; url: string }): EventDataSource {
+	static fromOld(source: { type: "local"; uuid: string } | { type: "remote"; url: string }): EventSource {
 		if (source.type === "local") {
 			return this.local(source.uuid);
 		} else {
-			return source.url as EventDataSource;
+			return source.url as EventSource;
 		}
 	}
 };

@@ -1,10 +1,10 @@
 import { Button, Stack } from "@mantine/core";
 import { useLayersStore } from "../../../../db/useLayersStore";
-import { UtilEventSource, type EventDataSource } from "../../../../db/models/event-source";
+import { UtilEventSource, type EventSource } from "../../../../db/models/event-source";
 import { EventActions } from "../../../../lib/actions/events";
 import { AsyncAction } from "../../../data/AsyncAction";
 
-export const LayerImportSection = ({ source }: { source: EventDataSource }) => {
+export const LayerImportSection = ({ source }: { source: EventSource }) => {
 	const layerDefaultSources = useLayersStore((store) => store.layers.default?.data.events);
 
 	const isOnDefault = layerDefaultSources?.includes(source);

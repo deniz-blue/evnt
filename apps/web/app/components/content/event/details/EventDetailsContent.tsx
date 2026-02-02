@@ -5,7 +5,7 @@ import { SmallTitle } from "../../base/SmallTitle";
 import { snippetInstance, snippetVenue, venueGoogleMapsLink, venueOpenStreetMapsLink } from "@evnt/pretty";
 import { Snippet } from "../../Snippet";
 import { MarkdownTranslations } from "../../base/MarkdownTranslations";
-import { UtilEventSource, type EventDataSource } from "../../../../db/models/event-source";
+import { UtilEventSource, type EventSource } from "../../../../db/models/event-source";
 import { LayerImportSection } from "./LayerImportSection";
 import { EventLinkButton } from "../components/EventLinkButton";
 import { ExternalLink } from "../../base/ExternalLink";
@@ -17,7 +17,7 @@ export const EventDetailsContent = ({
 	query,
 }: {
 	data: EventData;
-	source?: EventDataSource;
+	source?: EventSource;
 	query?: UseQueryResult<EventData, unknown>;
 }) => {
 	return (

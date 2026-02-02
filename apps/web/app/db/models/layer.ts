@@ -1,7 +1,7 @@
-import type { EventDataSource } from "./event-source";
+import type { EventSource } from "./event-source";
 
 export interface LayerData {
-	events: EventDataSource[];
+	events: EventSource[];
 };
 
 export interface Layer {

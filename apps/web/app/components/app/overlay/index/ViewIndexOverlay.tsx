@@ -1,6 +1,6 @@
 import { BaseOverlay } from "../base/BaseOverlay";
 import { useEventQueries } from "../../../../db/useEventDataQuery";
-import { type EventDataSource } from "../../../../db/models/event-source";
+import { type EventSource } from "../../../../db/models/event-source";
 import { Button, Code, Group, Loader, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { RQResult } from "../../../data/RQResult";
 import { useViewIndexModal } from "../../../../hooks/app/useViewIndexModal";
@@ -32,7 +32,7 @@ export const ViewIndexOverlay = () => {
 
 	const allQueries = useEventQueries(index.data?.events.map(entry => (
 		uri?.replace(/\/[^\/]*$/, "") + "/" + entry.path
-	) as EventDataSource) ?? []);
+	) as EventSource) ?? []);
 
 	const filtered = allQueries; // No filters for now
 
@@ -86,7 +86,7 @@ export const ViewIndexOverlay = () => {
 							key={index}
 							query={query}
 						>
-							{(data) => (
+							{({ data }) => data && (
 								<EventCard
 									key={index}
 									value={data}

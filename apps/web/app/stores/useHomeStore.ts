@@ -2,27 +2,27 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { persist } from "zustand/middleware";
 import { LOCALSTORAGE_KEYS } from "../constants";
-import { UtilEventSource, type EventDataSource } from "../db/models/event-source";
+import { UtilEventSource, type EventSource } from "../db/models/event-source";
 
 interface HomeState {
-	pinnedEvents: EventDataSource[];
+	pinnedEvents: EventSource[];
 }
 
 interface HomeActions {
-	pinEvent: (source: EventDataSource) => void;
-	unpinEvent: (source: EventDataSource) => void;
+	pinEvent: (source: EventSource) => void;
+	unpinEvent: (source: EventSource) => void;
 }
 
 export const useHomeStore = create<HomeState & HomeActions>()(
 	persist(
 		immer((set) => ({
 			pinnedEvents: [],
-			pinEvent: (source: EventDataSource) => set((state) => {
+			pinEvent: (source: EventSource) => set((state) => {
 				if (!state.pinnedEvents.includes(source)) {
 					state.pinnedEvents.push(source);
 				}
 			}),
-			unpinEvent: (source: EventDataSource) => set((state) => {
+			unpinEvent: (source: EventSource) => set((state) => {
 				const index = state.pinnedEvents.findIndex((e) => e == source);
 				if (index === -1) return;
 				state.pinnedEvents.splice(index, 1);

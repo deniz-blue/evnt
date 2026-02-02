@@ -1,18 +1,15 @@
 import { openDB, type IDBPDatabase } from "idb";
 import { DATABASE_NAME } from "../constants";
-import type { EventData } from "@evnt/schema";
 import { Logger } from "../lib/util/logger";
-import { UtilEventSource, type EventDataSource } from "./models/event-source";
+import { UtilEventSource, type EventSource } from "./models/event-source";
+import type { EventEnvelope } from "./models/event-envelope";
 
 const logger = Logger.main.styledChild("DataDB", "#a6d189");
 const loggerBroadcast = Logger.main.styledChild("DataDB > Broadcast", "#81a1c1");
 
 export namespace DataDB {
-	export type Key = EventDataSource;
-
-	export interface Value {
-		data: EventData;
-	}
+	export type Key = EventSource;
+	export type Value = EventEnvelope;
 
 	export type StoreNames = {
 		data: {

@@ -42,7 +42,7 @@ export const EventFilters = {
 
 export const applyEventFilters = (queries: EventDataQueryResult[], filters: EventFilter[]): EventDataQueryResult[] => {
 	return queries.filter(({ query }) => {
-		if (!query.data) return true;
-		return filters.every((filter) => filter(query.data!));
+		if (!query.data || !query.data.data) return true;
+		return filters.every((filter) => filter(query.data.data!));
 	});
 };

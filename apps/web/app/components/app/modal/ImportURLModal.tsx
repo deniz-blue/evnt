@@ -2,11 +2,10 @@ import { Button, Stack, TextInput } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { randomId } from "@mantine/hooks";
 import { useState } from "react";
-import { EventDataResolver } from "../../../lib/resolve/resolve";
-import type { EventData } from "@evnt/schema";
+import { EventDataSourceSchema, type EventSource } from "../../../db/models/event-source";
 
 export interface EventImportURLModalProps {
-	onSubmit: (url: string, data: EventData) => void;
+	onSubmit: (source: EventSource) => void;
 };
 
 export const openEventImportURLModal = (props: EventImportURLModalProps) => {
@@ -17,8 +16,8 @@ export const openEventImportURLModal = (props: EventImportURLModalProps) => {
 		modalId,
 		children: (
 			<EventImportURLModal
-				onSubmit={(url, data) => {
-					props.onSubmit(url, data);
+				onSubmit={(source) => {
+					props.onSubmit(source);
 					modals.close(modalId);
 				}}
 			/>
@@ -51,8 +50,7 @@ export const EventImportURLModal = ({
 					setLoading(true);
 					setError(null);
 					try {
-						const data = await EventDataResolver.fetch({ type: "remote", url });
-						onSubmit(url, data);
+						onSubmit(EventDataSourceSchema.parse(url))
 					} catch (error) {
 						setError("" + error);
 					} finally {

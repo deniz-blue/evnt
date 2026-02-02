@@ -4,7 +4,7 @@ import type { EventData } from "@evnt/schema";
 import { EventInstanceList } from "./EventInstanceList";
 import { SubtleLink } from "../base/SubtleLink";
 import { useEventDetailsModal } from "../../../hooks/app/useEventDetailsModal";
-import { type EventDataSource } from "../../../db/models/event-source";
+import { type EventSource } from "../../../db/models/event-source";
 
 export const EventCard = ({
 	variant = "card",
@@ -14,7 +14,7 @@ export const EventCard = ({
 }: {
 	variant?: "horizontal" | "card";
 	value: EventData;
-	source?: EventDataSource;
+	source?: EventSource;
 	menu?: React.ReactNode;
 }) => {
 	const { openLink } = useEventDetailsModal();

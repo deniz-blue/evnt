@@ -81,7 +81,7 @@ export default function List() {
 						key={index}
 						query={query}
 					>
-						{(data) => (
+						{({ data }) => data && (
 							<EventCard
 								key={index}
 								value={data}

@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { LOCALSTORAGE_KEYS } from "../constants";
 import type { Layer } from "./models/layer";
-import { UtilEventSource, type EventDataSource } from "./models/event-source";
+import { UtilEventSource, type EventSource } from "./models/event-source";
 
 export interface LayersState {
 	layers: Record<string, Layer>;
@@ -14,8 +14,8 @@ export interface LayersActions {
 	updateLayer: (id: string, layer: Partial<Layer>) => void;
 	removeLayer: (id: string) => void;
 
-	addEventSource: (source: EventDataSource, layerId?: string) => void;
-	removeEventSource: (source: EventDataSource, layerId?: string) => void;
+	addEventSource: (source: EventSource, layerId?: string) => void;
+	removeEventSource: (source: EventSource, layerId?: string) => void;
 };
 
 export type LayersStore = LayersState & LayersActions;
@@ -47,7 +47,7 @@ export const useLayersStore = create<LayersStore>()(
 					delete state.layers[id];
 				}),
 
-			addEventSource: (source: EventDataSource, layerId = "default") =>
+			addEventSource: (source: EventSource, layerId = "default") =>
 				set((state) => {
 					if (!state.layers[layerId]) {
 						state.layers[layerId] = { data: { events: [] } };
@@ -55,7 +55,7 @@ export const useLayersStore = create<LayersStore>()(
 					state.layers[layerId].data.events.push(source);
 				}),
 
-			removeEventSource: (source: EventDataSource, layerId = "default") =>
+			removeEventSource: (source: EventSource, layerId = "default") =>
 				set((state) => {
 					if (!state.layers[layerId]) return;
 					const index = state.layers[layerId].data.events.findIndex((e) => e === source);
@@ -70,7 +70,7 @@ export const useLayersStore = create<LayersStore>()(
 				if (version < 2) {
 					const newLayers: Record<string, Layer> = {};
 					for (const [layerId, layer] of Object.entries(persistedState.layers)) {
-						const newEvents: EventDataSource[] = (layer as any).data.events.map((source: any) =>
+						const newEvents: EventSource[] = (layer as any).data.events.map((source: any) =>
 							UtilEventSource.fromOld(source));
 						newLayers[layerId] = {
 							data: {
