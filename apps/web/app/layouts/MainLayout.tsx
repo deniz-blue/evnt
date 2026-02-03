@@ -8,6 +8,7 @@ import { useHotkeys } from "@mantine/hooks";
 import { useTasksStore } from "../stores/useTasksStore";
 import { Initializers } from "../components/app/handlers/Initializers";
 import { ViewIndexOverlay } from "../components/app/overlay/index/ViewIndexOverlay";
+import { useIsFetching } from "@tanstack/react-query";
 
 export default function MainLayout() {
 	const { toggle: toggleSettings } = useSettingsOverlay();
@@ -73,12 +74,13 @@ export default function MainLayout() {
 };
 
 export const DatabaseStateView = () => {
+	const isFetching = useIsFetching();
 	const tasks = useTasksStore((state) => state.tasks);
 
 	return (
 		<Box>
-			{!!tasks.length && <Loader size="xs" />}
-			{!!tasks.length && ` Running ${tasks.length} task(s)`}
+			{(!!tasks.length || !!isFetching) && <Loader size="xs" />}
+			{(!!tasks.length || !!isFetching) && ` Running ${tasks.length + (isFetching ? 1 : 0)} task(s)`}
 		</Box>
 	);
 };

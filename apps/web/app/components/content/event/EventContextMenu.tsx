@@ -21,15 +21,6 @@ export const EventContextMenu = ({ source }: { source: EventSource }) => {
 	const isPinned = useHomeStore((state) => state.pinnedEvents.includes(source));
 	const queryClient = useQueryClient();
 
-	const getShareLink = () => {
-		const shareLink = `${EVENT_REDIRECTOR_URL}/?${new URLSearchParams({
-			action: "view-event",
-			url: source,
-		}).toString()}`;
-
-		return shareLink
-	}
-
 	const getData = async () => (await DataDB.get(source!))?.data ?? null;
 
 	const actions = {
@@ -47,12 +38,12 @@ export const EventContextMenu = ({ source }: { source: EventSource }) => {
 			}
 		},
 
-		ShareLink: handleCopy(getShareLink()!, "Share link copied to clipboard"),
-		ShareLinkMarkdown: handleCopy(`[Event](<${getShareLink()!}>)`, "Share link copied to clipboard"),
+		ShareLink: handleCopy(EventActions.getShareLink(source), "Share link copied to clipboard"),
+		ShareLinkMarkdown: handleCopy(`[Event](<${EventActions.getShareLink(source)!}>)`, "Share link copied to clipboard"),
 		QRCode: () => modals.open({
 			size: "md",
 			children: (
-				<QRCode value={getShareLink() || ""} />
+				<QRCode value={EventActions.getShareLink(source)} />
 			),
 		}),
 		CopyJSON: handleAsyncCopy(async () => JSON.stringify(await getData(), null, 2), "Event JSON copied to clipboard"),

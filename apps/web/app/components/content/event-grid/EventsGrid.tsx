@@ -27,6 +27,7 @@ export const EventsGrid = ({
 								variant="card"
 								source={source}
 								err={err}
+								loading={query.isFetching}
 								menu={<EventContextMenu source={source} />}
 							/>
 						)}

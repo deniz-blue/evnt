@@ -24,7 +24,7 @@ export const EventDetailsOverlay = () => {
 				</Stack>
 			)}
 		</BaseOverlay>
-	)
+	);
 };
 
 export const EventDetailsOverlayHandler = ({ source }: { source: EventSource }) => {
@@ -37,7 +37,7 @@ export const EventDetailsOverlayHandler = ({ source }: { source: EventSource }) 
 					data={data}
 					source={source}
 					err={err}
-					loading={query.isLoading}
+					loading={query.isFetching}
 				/>
 			)}
 		</RQResult>
