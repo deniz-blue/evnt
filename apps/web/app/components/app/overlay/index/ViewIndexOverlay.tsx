@@ -2,13 +2,10 @@ import { BaseOverlay } from "../base/BaseOverlay";
 import { useEventQueries } from "../../../../db/useEventQuery";
 import { type EventSource } from "../../../../db/models/event-source";
 import { Button, Code, Group, Loader, SimpleGrid, Stack, Text, Title } from "@mantine/core";
-import { RQResult } from "../../../data/RQResult";
 import { useViewIndexModal } from "../../../../hooks/app/useViewIndexModal";
 import { useQuery } from "@tanstack/react-query";
 import { fetchValidate } from "../../../../lib/util/fetchValidate";
 import z from "zod";
-import { EventCard } from "../../../content/event/EventCard";
-import { EventContextMenu } from "../../../content/event/EventContextMenu";
 import { EventsGrid } from "../../../content/event-grid/EventsGrid";
 
 export const ViewIndexOverlay = () => {

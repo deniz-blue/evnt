@@ -1,6 +1,4 @@
-import { EventCard } from "../components/content/event/EventCard";
-import { EventContextMenu } from "../components/content/event/EventContextMenu";
-import { RQResult } from "../components/data/RQResult";
+import { EventsGrid } from "../components/content/event-grid/EventsGrid";
 import { useEventQueries } from "../db/useEventQuery";
 import { useHomeStore } from "../stores/useHomeStore";
 import { Container, Group, ScrollArea, Stack, Text, Title } from "@mantine/core";
@@ -22,17 +20,7 @@ export default function Home() {
 			<Stack>
 				<ScrollArea.Autosize maw="100%" scrollbars="x" offsetScrollbars p={4}>
 					<Group wrap="nowrap">
-						{pinnedEvents.map(({ query, source }, index) => (
-							<RQResult key={index} query={query}>
-								{({ data }) => data && (
-									<EventCard
-										value={data}
-										source={source}
-										menu={<EventContextMenu source={source} />}
-									/>
-								)}
-							</RQResult>
-						))}
+						<EventsGrid queries={pinnedEvents} />
 					</Group>
 				</ScrollArea.Autosize>
 			</Stack>

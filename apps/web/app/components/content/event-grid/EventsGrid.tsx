@@ -1,6 +1,5 @@
 import { SimpleGrid, Stack } from "@mantine/core";
 import type { EventQueryResult } from "../../../db/useEventQuery";
-import { RQResult } from "../../data/RQResult";
 import { EventCard } from "../event/EventCard";
 import { EventContextMenu } from "../event/EventContextMenu";
 
@@ -16,22 +15,15 @@ export const EventsGrid = ({
 				cols={{ base: 1, "680px": 2, "1400px": 3, "1800px": 4 }}
 			>
 				{queries.map(({ query, source }, index) => (
-					<RQResult
+					<EventCard
 						key={index}
-						query={query}
-					>
-						{({ data, err }) => data && (
-							<EventCard
-								key={index}
-								value={data}
-								variant="card"
-								source={source}
-								err={err}
-								loading={query.isFetching}
-								menu={<EventContextMenu source={source} />}
-							/>
-						)}
-					</RQResult>
+						variant="card"
+						source={source}
+						loading={query.isFetching}
+						menu={<EventContextMenu source={source} />}
+						{...query.data}
+						data={query.data?.data ?? null}
+					/>
 				))}
 			</SimpleGrid>
 		</Stack>
