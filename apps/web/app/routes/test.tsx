@@ -1,13 +1,20 @@
 import { ActionIcon, SimpleGrid, Stack, Text } from "@mantine/core";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { EventCard } from "../components/content/event/EventCard";
-import { EventDataSchema, type EventData } from "@evnt/schema";
+import { EventDataSchema, type EventData, type Translations } from "@evnt/schema";
 import { IconDotsVertical } from "@tabler/icons-react";
 import type { EventEnvelope } from "../db/models/event-envelope";
 import { Fragment } from "react/jsx-runtime";
+import { useState } from "react";
+import { TranslationsInput } from "../components/base/input/TranslationsInput";
 
 export default function Test() {
 	const [toggled, { toggle }] = useDisclosure();
+	const [translations, setTranslations] = useState<Translations>({
+		en: "Hello",
+		tr: "Merhaba",
+		lt: "Labas",
+	});
 
 	useHotkeys([["Space", () => toggle()]]);
 
@@ -39,6 +46,11 @@ export default function Test() {
 			</Text>
 
 			<SimpleGrid cols={2}>
+				<TranslationsInput
+					value={translations}
+					onChange={setTranslations}
+					label="Translations Input"
+				/>
 				<EventCard
 					data={null}
 					loading={toggled}
@@ -65,14 +77,12 @@ export default function Test() {
 				] as EventEnvelope.Error[]).map((err, index) => (
 					<Fragment key={index}>
 						<EventCard
-							key={index}
 							data={null}
 							loading={toggled}
 							menu={dummyMenu}
 							err={err}
 						/>
 						<EventCard
-							key={index}
 							data={testData1}
 							loading={toggled}
 							menu={dummyMenu}

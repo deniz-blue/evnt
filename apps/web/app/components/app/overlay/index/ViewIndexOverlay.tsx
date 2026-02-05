@@ -11,8 +11,6 @@ import { EventsGrid } from "../../../content/event-grid/EventsGrid";
 export const ViewIndexOverlay = () => {
 	const { isOpen, close, value: uri } = useViewIndexModal();
 
-	console.log("ViewIndexOverlay URI:", uri);
-
 	const index = useQuery({
 		queryKey: ["fetch", uri ?? null],
 		queryFn: async () => {

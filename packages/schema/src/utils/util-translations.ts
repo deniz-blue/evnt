@@ -1,19 +1,19 @@
 import type { Translations } from "../types/Translations";
 
 export class UtilTranslations {
-	static createTranslator(locale?: string) {
-		return (t: Translations | undefined) => {
-			if (!t) return "";
-			return t[locale || "en"] || t["en"] || "";
-		};
+	static createTranslator(langs?: string | string[]) {
+		return (t?: Translations | null) => this.translate(t, langs);
 	};
 
-	static translate(t: Translations | undefined, locale?: string): string {
+	static translate(t?: Translations | null, langs?: string | string[]): string {
 		if (!t) return "";
-		return t[locale || "en"] || t["en"] || "";
+		let pref = Array.isArray(langs) ? langs : [langs || "en"];
+		for (const lang of pref)
+			if (lang && t[lang]) return t[lang]!;
+		return Object.values(t).find(v => typeof v === "string") || "";
 	};
 
-	static merge(...translations: (Translations | undefined)[]): Translations {
+	static merge(...translations: (Translations | undefined | null)[]): Translations {
 		const result: Translations = {};
 		for (const t of translations) {
 			if (!t) continue;
@@ -24,7 +24,7 @@ export class UtilTranslations {
 		return result;
 	}
 
-	static isEmpty(t?: Translations): boolean {
+	static isEmpty(t?: Translations | null): boolean {
 		if (!t) return true;
 		return Object.values(t).every((value) => !value || value.trim() === "");
 	}
@@ -35,7 +35,7 @@ export class UtilTranslations {
 	 * @param query Search query
 	 * @returns Matched text
 	 */
-	static search(t?: Translations, query: string = ""): Translations | null {
+	static search(t?: Translations | null, query: string = ""): Translations | null {
 		// TODO: fuzzy search
 		// TODO: string normalize NFD
 		// TODO: diacritic insensitive search

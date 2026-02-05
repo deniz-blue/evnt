@@ -12,7 +12,7 @@ export class UtilLanguageCode {
 	}
 
 	static toEmoji(lang: LanguageKey): string {
-		if(lang === "en") return "🇬🇧"; // Special case for English
+		if(lang === "en") return "🌐"; // Special case for English
 		const countryCode = this.toCountryCode(lang);
 		if (!countryCode) return "�";
 		return UtilCountryCode.toEmoji(countryCode);

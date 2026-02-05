@@ -18,6 +18,7 @@ import.meta.glob("./styles/**/*.css", { eager: true });
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
+import { contextModals } from "./components/app/modals/modals";
 
 export const meta: Route.MetaFunction = () => [
 	{ title: "Vantage Events Viewer" },
@@ -63,7 +64,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 					})}
 				>
 					<Notifications />
-					<ModalsProvider>
+					<ModalsProvider modals={contextModals}>
 						{children}
 					</ModalsProvider>
 				</MantineProvider>

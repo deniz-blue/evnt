@@ -2,13 +2,15 @@ import { Button, Group, Menu, Stack, TextInput } from "@mantine/core";
 import { useState } from "react";
 import { EventDataSchema } from "@evnt/schema";
 import { openImportJSONModal } from "../components/app/modal/ImportJSONModal";
-import { IconBraces, IconLink, IconPlus } from "@tabler/icons-react";
+import { IconBraces, IconEdit, IconLink, IconPlus } from "@tabler/icons-react";
 import { openEventImportURLModal } from "../components/app/modal/ImportURLModal";
 import { useEventQueries } from "../db/useEventQuery";
 import { EventActions } from "../lib/actions/events";
 import { useLayersStore } from "../db/useLayersStore";
 import { applyEventFilters, EventFilters } from "../lib/filter/event-filters";
 import { EventsGrid } from "../components/content/event-grid/EventsGrid";
+import { modals } from "@mantine/modals";
+import { Link } from "react-router";
 
 export default function List() {
 	const defaultLayerSources = useLayersStore(store => store.layers["default"]?.data.events ?? []);
@@ -63,6 +65,13 @@ export default function List() {
 									}}
 								>
 									From URL
+								</Menu.Item>
+								<Menu.Item
+									leftSection={<IconEdit />}
+									component={Link}
+									to="/new"
+								>
+									From Editor
 								</Menu.Item>
 							</Menu.Dropdown>
 						</Menu>
