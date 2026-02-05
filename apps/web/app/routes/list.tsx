@@ -9,7 +9,6 @@ import { EventActions } from "../lib/actions/events";
 import { useLayersStore } from "../db/useLayersStore";
 import { applyEventFilters, EventFilters } from "../lib/filter/event-filters";
 import { EventsGrid } from "../components/content/event-grid/EventsGrid";
-import { modals } from "@mantine/modals";
 import { Link } from "react-router";
 
 export default function List() {
