@@ -38,7 +38,7 @@ export default function NewEventPage() {
 	return (
 		<Container>
 			<EditEvent
-				atom={dataAtom}
+				data={dataAtom}
 			/>
 
 			<JsonInput

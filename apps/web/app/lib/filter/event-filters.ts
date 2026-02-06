@@ -1,4 +1,4 @@
-import type { EventData, EventInstance, Venue } from "@evnt/schema";
+import type { EventData, EventInstance, Venue, VenueType } from "@evnt/schema";
 import { UtilPartialDate, UtilTranslations } from "@evnt/schema/utils";
 import type { EventQueryResult } from "../../db/useEventQuery";
 
@@ -21,7 +21,7 @@ export const EventFilters = {
 		};
 	},
 
-	HasVenueType: (venueType: string): EventFilter => (data) => data.venues?.some(venue => venue.venueType === venueType) || false,
+	HasVenueType: (venueType: VenueType): EventFilter => (data) => data.venues?.some(venue => venue.venueType === venueType) || false,
 
 	BeforeDate: (date: Date): EventFilter => {
 		return EventFilters.SomeInstances((instance) => {

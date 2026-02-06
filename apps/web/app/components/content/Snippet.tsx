@@ -3,7 +3,7 @@ import { Anchor, Box, Group, Stack, Text, Tooltip } from "@mantine/core";
 import { useCallback, useMemo, type PropsWithChildren, type ReactNode } from "react";
 import { Trans } from "./event/Trans";
 import { AddressSnippetLabel } from "./address/AddressSnippetLabel";
-import { IconCalendar, IconClock, IconExternalLink, IconMapPin, IconWorld, IconWorldPin } from "@tabler/icons-react";
+import { IconCalendar, IconClock, IconExternalLink, IconLocationQuestion, IconMapPin, IconWorld, IconWorldPin } from "@tabler/icons-react";
 import { TimeSnippetLabel } from "./datetime/TimeSnippetLabel";
 import { PartialDateSnippetLabel } from "./datetime/PartialDateSnippetLabel";
 import { TimeRangeSnippetLabel } from "./datetime/TimeRangeSnippetLabel";
@@ -15,6 +15,7 @@ export const Snippet = ({ snippet }: { snippet: TSnippet }) => {
         "venue-physical": <IconMapPin />,
         "venue-online": <IconWorld />,
         "venue-mixed": <IconWorldPin />,
+		"venue-unknown": <IconLocationQuestion />,
         calendar: <IconCalendar />,
         clock: <IconClock />,
         _: null,

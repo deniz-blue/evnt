@@ -6,7 +6,7 @@ import type { EventData } from "@evnt/schema";
 import { focusAtom } from "jotai-optics";
 import { Deatom } from "../edit-atom";
 
-export const EditEventDetails = ({ atom }: { atom: WritableAtom<EventData, [EventData], void> }) => {
+export const EditEventDetails = ({ data }: { data: WritableAtom<EventData, [EventData], void> }) => {
 	return (
 		<Stack>
 			<Title order={3}>
@@ -15,14 +15,14 @@ export const EditEventDetails = ({ atom }: { atom: WritableAtom<EventData, [Even
 
 			<Deatom
 				component={TranslationsInput}
-				atom={focusAtom(atom, (o) => o.prop("name"))}
+				atom={focusAtom(data, (o) => o.prop("name"))}
 				label="Event Name"
 				required
 			/>
 
 			<Deatom
 				component={TranslationsInput}
-				atom={focusAtom(atom, (o) => o.prop("description").valueOr({}))}
+				atom={focusAtom(data, (o) => o.prop("description").valueOr({}))}
 				label="Event Description"
 			/>
 
@@ -32,7 +32,7 @@ export const EditEventDetails = ({ atom }: { atom: WritableAtom<EventData, [Even
 				</Stack>
 				<Deatom
 					component={EventStatusPicker}
-					atom={focusAtom(atom, (o) => o.prop("status").valueOr("planned"))}
+					atom={focusAtom(data, (o) => o.prop("status").valueOr("planned"))}
 				/>
 			</Group>
 		</Stack>

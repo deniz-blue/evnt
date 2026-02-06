@@ -19,6 +19,7 @@ export type SnippetIcon =
 	| "venue-online"
 	| "venue-physical"
 	| "venue-mixed"
+	| "venue-unknown"
 	| "calendar"
 	| "clock"
 
