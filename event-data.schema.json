@@ -131,6 +131,9 @@
         },
         {
           "$ref": "#/$defs/OnlineVenue"
+        },
+        {
+          "$ref": "#/$defs/UnknownVenue"
         }
       ],
       "id": "Venue"
@@ -235,6 +238,30 @@
       ],
       "additionalProperties": false,
       "id": "OnlineVenue"
+    },
+    "UnknownVenue": {
+      "type": "object",
+      "properties": {
+        "venueType": {
+          "type": "string",
+          "const": "unknown"
+        },
+        "venueId": {
+          "type": "string",
+          "description": "ID of the venue to be used in Event Instances"
+        },
+        "venueName": {
+          "description": "The name of the venue",
+          "$ref": "#/$defs/Translations"
+        }
+      },
+      "required": [
+        "venueType",
+        "venueId",
+        "venueName"
+      ],
+      "additionalProperties": false,
+      "id": "UnknownVenue"
     },
     "EventInstance": {
       "type": "object",

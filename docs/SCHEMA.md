@@ -195,7 +195,7 @@ A multilingual string
 _Object record with dynamic keys:_
 
 - _keys of type_ [LanguageKey](#languagekey)
-- _values of type_ `string`
+- _values of type_ `string` (_optional_)
 
 ## Venue
 
@@ -203,6 +203,7 @@ _Union of the following possible types:_
 
 - [PhysicalVenue](#physicalvenue)
 - [OnlineVenue](#onlinevenue)
+- _Object with properties:_<ul><li>**`venueType`** (\*): `'unknown'`</li><li>**`venueId`** (\*): `string` - ID of the venue to be used in Event Instances</li><li>**`venueName`** (\*): [Translations](#translations) - The name of the venue</li></ul>
 
 ## VenueType
 
@@ -210,3 +211,4 @@ _Enum, one of the following possible values:_
 
 - `'physical'`
 - `'online'`
+- `'unknown'`
