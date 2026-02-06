@@ -1,5 +1,13 @@
 import type { PartialDate } from "../types/PartialDate";
 
+export interface PartialDateComponents {
+	year?: number;
+	month?: number;
+	day?: number;
+	hour?: number;
+	minute?: number;
+};
+
 interface IntlStringOptions {
 	locale?: string;
 	timezone?: string;
@@ -31,11 +39,11 @@ export class UtilPartialDate {
 		return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value);
 	}
 
-	static hasCompleteDate(value: PartialDate): value is PartialDate.DateOnly | PartialDate.Full {
+	static hasCompleteDate(value: PartialDate): value is PartialDate.Day | PartialDate.Full {
 		return /^\d{4}-\d{2}-\d{2}/.test(value);
 	}
 
-	static hasMonth(value: PartialDate): value is PartialDate.YearMonth | PartialDate.DateOnly | PartialDate.Full {
+	static hasMonth(value: PartialDate): value is PartialDate.Month | PartialDate.Day | PartialDate.Full {
 		return /^\d{4}-\d{2}/.test(value);
 	}
 
@@ -48,8 +56,8 @@ export class UtilPartialDate {
 		return value.slice(-5);
 	}
 
-	static getDatePart(value: PartialDate): PartialDate.YearOnly | PartialDate.YearMonth | PartialDate.DateOnly {
-		return value.slice(0, 10) as PartialDate.YearOnly | PartialDate.YearMonth | PartialDate.DateOnly;
+	static getDatePart(value: PartialDate): PartialDate.Year | PartialDate.Month | PartialDate.Day {
+		return value.slice(0, 10) as PartialDate.Year | PartialDate.Month | PartialDate.Day;
 	}
 
 	static toIntlString(value: PartialDate, {
@@ -87,6 +95,39 @@ export class UtilPartialDate {
 			second: undefined,
 		};
 		return date.toLocaleTimeString(options.locale || "en", timeOptions);
+	}
+
+	static now(): PartialDate {
+		return this.fromDate(new Date());
+	}
+
+	static today(): PartialDate.Day {
+		return new Date().toISOString().slice(0, 10) as PartialDate.Day;
+	}
+
+	static toComponents(value: PartialDate): PartialDateComponents {
+		const components: PartialDateComponents = {};
+		if (this.hasMonth(value)) {
+			components.year = parseInt(value.slice(0, 4));
+			components.month = parseInt(value.slice(5, 7));
+		}
+		if (this.hasCompleteDate(value)) {
+			components.day = parseInt(value.slice(8, 10));
+		}
+		if (this.hasTime(value)) {
+			components.hour = parseInt(value.slice(11, 13));
+			components.minute = parseInt(value.slice(14, 16));
+		}
+		return components;
+	}
+
+	static fromComponents(components: PartialDateComponents): PartialDate {
+		let value = "";
+		if (components.year) value += components.year.toString().padStart(4, "0");
+		if (components.month) value += "-" + components.month.toString().padStart(2, "0");
+		if (components.day) value += "-" + components.day.toString().padStart(2, "0");
+		if (components.hour !== undefined && components.minute !== undefined) value += "T" + components.hour.toString().padStart(2, "0") + ":" + components.minute.toString().padStart(2, "0");
+		return value as PartialDate;
 	}
 
 	static compare(a: PartialDate, b: PartialDate): number {

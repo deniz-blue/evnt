@@ -1,5 +1,6 @@
-import { Box, Button, CloseButton, Group } from "@mantine/core";
+import { Box, Button, CloseButton, Group, type ButtonProps } from "@mantine/core";
 import { useAtom, type WritableAtom } from "jotai";
+import type { ReactNode } from "react";
 
 export type EditAtom<T> = WritableAtom<T, [T | ((prev: T) => T)], void>;
 
@@ -15,15 +16,27 @@ export const Deatom = <Data, Props,>({
 	return <Component {...(props as Props)} value={value} onChange={onChange} />;
 };
 
+export interface DeatomableComponentProps<Data> {
+	value: Data;
+	onChange: (value: Data) => void;
+	onDelete: () => void;
+};
+
 export const DeatomOptional = <Data, Props>({
 	atom,
 	component: Component,
 	set,
+	setLabel = "Set",
+	setButtonProps,
+	withDeleteButton = true,
 	...props
-}: Omit<Props, "value" | "onChange" | "onDelete" | "set"> & {
-	component: React.ComponentType<Props & { value: Data; onChange: (value: Data) => void; onDelete: () => void }>;
+}: Omit<Props, keyof DeatomableComponentProps<Data> | "set"> & {
+	component: React.ComponentType<Props & DeatomableComponentProps<Data>>;
 	atom: EditAtom<Data | undefined>;
 	set: Data | (() => Data);
+	setLabel?: ReactNode;
+	setButtonProps?: Omit<ButtonProps, "onClick">;
+	withDeleteButton?: boolean;
 }) => {
 	const [value, onChange] = useAtom(atom);
 
@@ -31,8 +44,9 @@ export const DeatomOptional = <Data, Props>({
 		return (
 			<Button
 				onClick={() => onChange(typeof set === "function" ? (set as () => Data)() : set)}
+				{...setButtonProps}
 			>
-				Set
+				{setLabel}
 			</Button>
 		);
 	}
@@ -40,9 +54,9 @@ export const DeatomOptional = <Data, Props>({
 	return (
 		<Group flex="1" gap={4}>
 			<Box flex="1">
-				<Component {...(props as Props)} value={value} onChange={onChange} onDelete={() => onChange(undefined as Data)} />
+				<Component {...(props as unknown as Props)} value={value} onChange={onChange} onDelete={() => onChange(undefined as Data)} />
 			</Box>
-			<CloseButton onClick={() => onChange(undefined as Data)} />
+			{withDeleteButton && <CloseButton onClick={() => onChange(undefined as Data)} />}
 		</Group>
 	);
 };

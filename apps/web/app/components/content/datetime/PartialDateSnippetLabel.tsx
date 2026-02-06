@@ -8,7 +8,7 @@ export const PartialDateSnippetLabel = ({ value }: { value: PartialDate }) => {
 	const timezone = useLocaleStore(store => store.timezone);
 
     return (
-        <Text span inline>
+        <Text span inline inherit>
             {UtilPartialDate.toIntlString(value, {
 				locale: language,
 				timezone,

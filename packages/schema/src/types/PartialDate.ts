@@ -2,13 +2,13 @@ import z from "zod";
 import { UtilPartialDate } from "../utils/partial-date";
 
 export namespace PartialDate {
-	export type YearOnly = `${number}`;
-	export type YearMonth = `${number}-${number}`;
-	export type DateOnly = `${number}-${number}-${number}`;
+	export type Year = `${number}`;
+	export type Month = `${number}-${number}`;
+	export type Day = `${number}-${number}-${number}`;
 	export type Full = `${number}-${number}-${number}T${number}:${number}`;
 }
 
-export type PartialDate = PartialDate.YearOnly | PartialDate.YearMonth | PartialDate.DateOnly | PartialDate.Full;
+export type PartialDate = PartialDate.Year | PartialDate.Month | PartialDate.Day | PartialDate.Full;
 
 export const PartialDateSchema = z.string()
 	.refine((val) => UtilPartialDate.validate(val), { error: "Invalid PartialDate format" })
