@@ -1,20 +1,20 @@
 import { ActionIcon, Code, Menu } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
-import { IconCopy, IconDotsVertical, IconJson, IconPinned, IconPinnedOff, IconQrcode, IconReload, IconShare, IconTrash } from "@tabler/icons-react";
+import { IconCopy, IconDotsVertical, IconEdit, IconJson, IconPinned, IconPinnedOff, IconQrcode, IconReload, IconShare, IconTrash } from "@tabler/icons-react";
 import { useHomeStore } from "../../../stores/useHomeStore";
-import { EVENT_REDIRECTOR_URL } from "../../../constants";
 import { handleAsyncCopy, handleCopy } from "../../../lib/util/copy";
 import { withConfirmation } from "../../../lib/util/confirm";
 import { UtilEventSource, type EventSource } from "../../../db/models/event-source";
 import { DataDB } from "../../../db/data-db";
 import { AsyncLoader } from "../../data/AsyncLoader";
 import type { EventData } from "@evnt/schema";
-import { EventActions } from "../../../lib/actions/events";
+import { EventActions } from "../../../lib/actions/event-actions";
 import { QRCode } from "../../../lib/util/qrcode";
 import { useMediaQuery } from "@mantine/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { eventQueryKey } from "../../../db/useEventQuery";
+import { Link } from "react-router";
 
 export const EventContextMenu = ({ source }: { source: EventSource }) => {
 	const noHover = useMediaQuery("(hover: none)");
@@ -153,7 +153,15 @@ export const EventContextMenu = ({ source }: { source: EventSource }) => {
 						Copy Event Data URL
 					</Menu.Item>
 				)}
-
+				{source && UtilEventSource.getType(source) === "local" && (
+					<Menu.Item
+						component={Link}
+						leftSection={<IconEdit size={14} />}
+						to={`/edit?uuid=${source.slice("local://".length)}`}
+					>
+						Edit
+					</Menu.Item>
+				)}
 				{source && (
 					<Menu.Item
 						leftSection={<IconTrash size={14} />}

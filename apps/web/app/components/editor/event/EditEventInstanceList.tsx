@@ -1,5 +1,5 @@
 import type { EventData, EventInstance, Venue } from "@evnt/schema";
-import { Button, Combobox, Group, Popover, Stack, Title, useCombobox } from "@mantine/core";
+import { Button, Combobox, Divider, Group, Paper, Popover, Stack, Text, Title, useCombobox } from "@mantine/core";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { EditEventInstance } from "./EditEventInstance";
 import { focusAtom } from "jotai-optics";
@@ -14,50 +14,11 @@ export const EditEventInstanceList = ({ data }: { data: EditAtom<EventData> }) =
 	const setData = useSetAtom(data);
 
 	return (
-		<Stack>
-			<Title order={3}>
-				Instances ({length})
-			</Title>
-
-			{new Array(length).fill(0).map((_, i) => (
-				<EditEventInstance
-					key={i}
-					data={data}
-					instance={focusAtom(data, o => o.prop("instances").valueOr([]).at(i)) as EditAtom<EventInstance>}
-					onDelete={() => setData(prev => ({
-						...prev,
-						instances: (prev.instances ?? []).filter((_, index) => index !== i),
-					}))}
-					// venues={(
-					// 	<EditVenuesList
-					// 		title={() => null}
-					// 		onAddUpdate={(d, newVenue) => ({
-					// 			...d,
-					// 			instances: d.instances?.map((instance, index) => (
-					// 				index === i ? ({
-					// 					...instance,
-					// 					venueIds: [...(instance.venueIds ?? []), newVenue.venueId],
-					// 				}) : instance
-					// 			)),
-					// 		})}
-					// 		data={data}
-					// 		filter={(venue, data) => (
-					// 			// filter by venues that are in this instance and are not in any other instance
-					// 			(data.instances?.filter(instance => instance.venueIds?.includes(venue.venueId)).length ?? 0) === 1 &&
-					// 			data.instances![i]!.venueIds?.includes(venue.venueId)
-					// 		)}
-					// 		buttons={(
-					// 			<EditEventInstanceListAddExistingVenueButton
-					// 				data={data}
-					// 				instance={focusAtom(data, o => o.prop("instances").valueOr([]).at(i)) as EditAtom<EventInstance>}
-					// 			/>
-					// 		)}
-					// 	/>
-					// )}
-				/>
-			))}
-
-			<Group justify="end">
+		<Stack gap={4}>
+			<Group gap={4} justify="space-between">
+				<Title order={3}>
+					Instances ({length})
+				</Title>
 				<Button
 					onClick={() => {
 						const newInstance: EventInstance = {
@@ -73,9 +34,63 @@ export const EditEventInstanceList = ({ data }: { data: EditAtom<EventData> }) =
 					Add Instance
 				</Button>
 			</Group>
+
+			{length === 0 && (
+				<Paper bg="dark" p="md" py="xl" ta="center">
+					<Stack h="100%" align="center" justify="center">
+						<Text c="dimmed">
+							No instances added yet!
+						</Text>
+						<Text c="dimmed" fz="xs">
+							Instances represent different occurrences of the event. You can assign different venues to each instance.
+						</Text>
+					</Stack>
+				</Paper>
+			)}
+
+			<Stack>
+				{new Array(length).fill(0).map((_, i) => (
+					<EditEventInstance
+						key={i}
+						data={data}
+						instance={focusAtom(data, o => o.prop("instances").valueOr([]).at(i)) as EditAtom<EventInstance>}
+						onDelete={() => setData(prev => ({
+							...prev,
+							instances: (prev.instances ?? []).filter((_, index) => index !== i),
+						}))}
+					/>
+				))}
+			</Stack>
 		</Stack>
 	);
 };
+
+// venues={(
+// 	<EditVenuesList
+// 		title={() => null}
+// 		onAddUpdate={(d, newVenue) => ({
+// 			...d,
+// 			instances: d.instances?.map((instance, index) => (
+// 				index === i ? ({
+// 					...instance,
+// 					venueIds: [...(instance.venueIds ?? []), newVenue.venueId],
+// 				}) : instance
+// 			)),
+// 		})}
+// 		data={data}
+// 		filter={(venue, data) => (
+// 			// filter by venues that are in this instance and are not in any other instance
+// 			(data.instances?.filter(instance => instance.venueIds?.includes(venue.venueId)).length ?? 0) === 1 &&
+// 			data.instances![i]!.venueIds?.includes(venue.venueId)
+// 		)}
+// 		buttons={(
+// 			<EditEventInstanceListAddExistingVenueButton
+// 				data={data}
+// 				instance={focusAtom(data, o => o.prop("instances").valueOr([]).at(i)) as EditAtom<EventInstance>}
+// 			/>
+// 		)}
+// 	/>
+// )}
 
 // holy hell long name
 // export const EditEventInstanceListAddExistingVenueButton = ({

@@ -14,7 +14,7 @@ export const EventDetailsOverlay = () => {
 			opened={isOpen}
 			onClose={close}
 		>
-			{source && UtilEventSource.is(source) ? (
+			{source && UtilEventSource.is(source, true) ? (
 				<EventDetailsOverlayHandler source={source} />
 			) : (
 				<Stack>

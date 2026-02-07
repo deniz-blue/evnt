@@ -55,6 +55,7 @@ export const EventStatusPicker = ({
 			clearable={value !== "planned"}
 			data={EventStatusSchema.options.map((status) => ({ value: status.value, label: status.value[0]?.toUpperCase() + status.value.slice(1) }))}
 			leftSection={<Icon color={value == "planned" ? undefined : colors[value]} />}
+			leftSectionPointerEvents="none"
 			renderOption={renderOption}
 			comboboxProps={{
 				width: "max-content",

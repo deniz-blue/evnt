@@ -1,22 +1,22 @@
 import type { EventData, Venue, VenueType } from "@evnt/schema";
 import { Deatom, type EditAtom } from "../edit-atom";
-import { CloseButton, Group, Input, Paper, SegmentedControl, Stack, Text, type SegmentedControlProps } from "@mantine/core";
+import { Button, CloseButton, Group, Input, Paper, SegmentedControl, Stack, Text, type SegmentedControlProps } from "@mantine/core";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useMemo, type ReactNode } from "react";
-import { IconMapPin } from "@tabler/icons-react";
+import { IconGlobe, IconMapPin, IconQuestionMark, IconWorld } from "@tabler/icons-react";
 import { TranslationsInput } from "../../base/input/TranslationsInput";
 import { focusAtom } from "jotai-optics";
 import { EditVenuePhysical } from "./EditVenuePhysical";
 import { EditVenueOnline } from "./EditVenueOnline";
+import { Snippet } from "../../content/Snippet";
+import { snippetVenue } from "@evnt/pretty";
 
 export const EditVenue = ({
 	venue,
 	data,
-	controls,
 }: {
 	data: EditAtom<EventData>;
 	venue: EditAtom<Venue>;
-	controls?: ReactNode;
 }) => {
 	const venueId = useAtomValue(useMemo(() => atom((get) => get(venue).venueId), [venue]));
 	const venueType = useAtomValue(useMemo(() => atom((get) => get(venue).venueType), [venue]));
@@ -68,8 +68,7 @@ export const EditVenue = ({
 				<Stack>
 					<Group justify="space-between">
 						<Group gap={4} align="center" c="dimmed">
-							<IconMapPin />
-							<Text inherit span fw="bold">Venue</Text>
+							<VenueAtomDisplay venue={venue} />
 						</Group>
 						<Group gap={4}>
 							<CloseButton onClick={onDelete} />
@@ -80,15 +79,38 @@ export const EditVenue = ({
 						component={TranslationsInput}
 						atom={focusAtom(venue, o => o.prop("venueName"))}
 						label="Venue Name"
+						description="Place name, URL description, etc."
 					/>
 
-					<Stack gap={0}>
-						<Input.Label>Venue Type</Input.Label>
+					<Group gap={4} grow>
+						<Stack gap={0}>
+							<Input.Label>Venue Type</Input.Label>
+							<Input.Description>
+								Type of the venue, which can affect how it's displayed and what additional information is needed.
+							</Input.Description>
+						</Stack>
 						<VenueTypePicker
 							value={venueType}
 							onChange={setVenueType}
 						/>
-					</Stack>
+					</Group>
+
+					<Group gap={4} justify="space-between">
+						<Text fw="bold">Venue ID: {venueId}</Text>
+						<Button size="xs"
+							onClick={() => {
+								const newVenueId = prompt("Enter new Venue ID", venueId);
+								if (newVenueId && newVenueId !== venueId) {
+									const success = changeVenueId({ fromVenueId: venueId, toVenueId: newVenueId });
+									if (!success) {
+										alert("Venue ID already exists. Please choose a different one.");
+									}
+								}
+							}}	
+						>
+							Change Venue ID
+						</Button>
+					</Group>
 
 					{venueType === "physical" && (
 						<EditVenuePhysical data={venue as EditAtom<Venue & { venueType: "physical" }>} />
@@ -114,13 +136,27 @@ export const VenueTypePicker = ({
 	return (
 		<SegmentedControl
 			data={[
-				{ label: "Unknown", value: "unknown" },
-				{ label: "Physical", value: "physical" },
-				{ label: "Online", value: "online" },
+				{ label: <Group gap={4} justify="center"><IconQuestionMark />Unknown</Group>, value: "unknown" },
+				{ label: <Group gap={4} justify="center"><IconMapPin />Physical</Group>, value: "physical" },
+				{ label: <Group gap={4} justify="center"><IconWorld />Online</Group>, value: "online" },
 			]}
 			value={value}
 			onChange={onChange as any}
 			{...props}
 		/>
+	);
+};
+
+export const VenueAtomDisplay = ({
+	venue,
+}: {
+	venue: EditAtom<Venue>;
+}) => {
+	const snippet = useAtomValue(useMemo(() => atom((get) => {
+		return snippetVenue(get(venue));
+	}), [venue]));
+
+	return (
+		<Snippet snippet={snippet} />
 	);
 };

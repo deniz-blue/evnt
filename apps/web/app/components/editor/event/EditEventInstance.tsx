@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { Snippet } from "../../content/Snippet";
 import { snippetVenue } from "@evnt/pretty";
+import { VenueAtomDisplay } from "./EditVenue";
 
 export const EditEventInstance = ({
 	data,
@@ -32,20 +33,20 @@ export const EditEventInstance = ({
 						/>
 					</Group>
 
-					<Stack gap={4}>
-						<Text fw="bold">Venues</Text>
-						<Stack>
-							<EditEventInstanceVenues
-								data={data}
-								instance={instance}
-							/>
-						</Stack>
-					</Stack>
+					<EditEventInstanceVenues
+						data={data}
+						instance={instance}
+					/>
 
 					<SimpleGrid type="container" cols={{ base: 1, "450px": 2 }}>
 						{(["start", "end"] as const).map((field) => (
-							<Stack gap={0} key={field}>
-								<Input.Label>{field == "start" ? "Start Date & Time" : "End Date & Time"}</Input.Label>
+							<Stack gap={4} key={field}>
+								<Stack gap={0}>
+									<Input.Label>{field == "start" ? "Start Date & Time" : "End Date & Time"}</Input.Label>
+									<Input.Description>
+										{field == "start" ? "When the event instance starts" : "When the event instance ends"}
+									</Input.Description>
+								</Stack>
 								<DeatomOptional
 									component={PartialDateInput}
 									atom={focusAtom(instance, o => o.prop(field))}
@@ -69,12 +70,7 @@ export const EditEventInstanceVenues = ({
 	instance: EditAtom<EventInstance>;
 }) => {
 	const venueIdsAtom = useMemo(() => focusAtom(instance, o => o.prop("venueIds")), [instance]);
-
-	const venues = useAtomValue(useMemo(() => atom((get) => {
-		const venueIds = get(venueIdsAtom);
-		const snap = get(data);
-		return (snap.venues ?? []).filter((venue) => venueIds.includes(venue.venueId));
-	}), [data, venueIdsAtom]));
+	const venueIds = useAtomValue(venueIdsAtom);
 
 	const removeVenueId = useSetAtom(useMemo(() => atom(null, (get, set, venueId: string) => {
 		set(venueIdsAtom, (prev) => prev?.filter((id) => id !== venueId) ?? []);
@@ -87,28 +83,28 @@ export const EditEventInstanceVenues = ({
 	}), [venueIdsAtom]));
 
 	return (
-		<Stack>
+		<Stack gap={4}>
+			<Text fw="bold">Venues ({venueIds.length})</Text>
 			<Stack gap={4}>
-				{venues.map((venue) => (
+				{venueIds.map((venueId) => (
 					<Group
-						key={venue.venueId}
+						key={venueId}
+						gap={4}
 					>
-						<Box flex="1">
-							<Snippet
-								snippet={snippetVenue(venue)}
-							/>
-						</Box>
 						<CloseButton
-							onClick={() => removeVenueId(venue.venueId)}
+							onClick={() => removeVenueId(venueId)}
 						/>
+						<Box flex="1">
+							<VenueAtomDisplay venue={focusAtom(data, o => o.prop("venues").valueOr([]).find((v) => v.venueId === venueId)) as EditAtom<Venue>} />
+						</Box>
 					</Group>
 				))}
 			</Stack>
 			<Group>
 				<VenueIdPicker
 					data={data}
-					filter={(venue) => !venues.map((v) => v.venueId).includes(venue.venueId)}
-					label="Add Existing Venue"
+					filter={(venue) => !venueIds.includes(venue.venueId)}
+					label="Add"
 					onSelect={(venueId) => addVenueId(venueId)}
 				/>
 			</Group>
@@ -144,10 +140,13 @@ export const VenueIdPicker = ({
 		</Combobox.Option>
 	));
 
+	if (!venues.length) return null;
+
 	return (
 		<Combobox
 			store={combobox}
 			onOptionSubmit={onSelect}
+			width="max-content"
 		>
 			<Combobox.Target>
 				<Button

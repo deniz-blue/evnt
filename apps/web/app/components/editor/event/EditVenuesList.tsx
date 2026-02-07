@@ -1,6 +1,6 @@
 import type { EventData, Venue } from "@evnt/schema";
 import type { EditAtom } from "../edit-atom";
-import { Button, Group, Stack, Title } from "@mantine/core";
+import { Button, Center, Group, Paper, Stack, Text, Title } from "@mantine/core";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useMemo, type ReactNode } from "react";
 import { EditVenue } from "./EditVenue";
@@ -9,7 +9,6 @@ import { focusAtom } from "jotai-optics";
 export const EditVenuesList = ({
 	data,
 	filter,
-	title,
 	onAddUpdate,
 	addLabel = "Add Venue",
 	buttons,
@@ -17,7 +16,6 @@ export const EditVenuesList = ({
 	data: EditAtom<EventData>,
 	filter?: (venue: Venue, data: EventData) => boolean;
 	onAddUpdate?: (v: EventData, newVenue: Venue) => EventData;
-	title?: (amt: number) => ReactNode;
 	addLabel?: ReactNode;
 	buttons?: ReactNode;
 }) => {
@@ -50,32 +48,39 @@ export const EditVenuesList = ({
 		});
 	}), [data, onAddUpdate]));
 
-
 	return (
-		<Stack>
-			{indexes.length > 0 && (
-				<Stack>
-					{title ? title(indexes.length) : (
-						<Title order={3}>Venues ({indexes.length})</Title>
-					)}
-					{indexes.map((i) => (
-						<EditVenue
-							key={i}
-							data={data}
-							venue={focusAtom(data, o => o.prop("venues").valueOr([]).at(i)) as EditAtom<Venue>}
-						/>
-					))}
-				</Stack>
-			)}
-
-			<Group justify="end">
-				{buttons}
+		<Stack gap={4}>
+			<Group gap={4} justify="space-between">
+				<Title order={3}>
+					Venues ({indexes.length})
+				</Title>
 				<Button
 					onClick={addVenue}
 				>
 					{addLabel}
 				</Button>
 			</Group>
+			{indexes.length === 0 && (
+				<Paper bg="dark" p="md" py="xl" ta="center">
+					<Stack h="100%" align="center" justify="center">
+						<Text c="dimmed">
+							No venues added yet!
+						</Text>
+						<Text c="dimmed" fz="xs">
+							Venues define where the event takes place; physical or online. You can add multiple venues for different locations.
+						</Text>
+					</Stack>
+				</Paper>
+			)}
+			<Stack>
+				{indexes.map((i) => (
+					<EditVenue
+						key={i}
+						data={data}
+						venue={focusAtom(data, o => o.prop("venues").valueOr([]).at(i)) as EditAtom<Venue>}
+					/>
+				))}
+			</Stack>
 		</Stack>
 	);
 };

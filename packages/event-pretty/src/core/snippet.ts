@@ -2,8 +2,13 @@ import type { Address, PartialDate, Translations } from "@evnt/schema";
 
 export type Range<T> = { start: T; end: T };
 
+export type PlaceholderHint =
+	| "unknown"
+	| "unnamed" // Used for venues without names
+
 export type SnippetLabel =
 	| { type: "text"; value: string }
+	| { type: "placeholder"; hint: PlaceholderHint }
 	| { type: "translations"; value: Translations }
 	| { type: "external-link"; url: string; name?: string }
 	| { type: "address"; value: Address }

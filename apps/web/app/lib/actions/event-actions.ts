@@ -28,6 +28,17 @@ export class EventActions {
 		});
 	}
 
+	static async updateLocalEvent(source: EventSource, data: EventData) {
+		return await useTasksStore.getState().addTask({
+			title: "Updating local event",
+			notify: true,
+		}, async () => {
+			if (!UtilEventSource.isLocal(source)) throw new Error("Can only update local events");
+			await DataDB.put(source, { data });
+			return source;
+		});
+	}
+
 	static async deleteEvent(source: EventSource, layerId?: string) {
 		return await useTasksStore.getState().addTask({
 			title: "Deleting event from layer",

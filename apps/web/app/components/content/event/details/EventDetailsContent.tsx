@@ -1,5 +1,5 @@
 import type { EventData } from "@evnt/schema";
-import { Code, Group, Loader, Modal, Stack, Text, Title } from "@mantine/core";
+import { ActionIcon, Code, Group, Loader, Modal, Stack, Text, Title, Tooltip } from "@mantine/core";
 import { Trans } from "../Trans";
 import { SmallTitle } from "../../base/SmallTitle";
 import { snippetInstance, snippetVenue, venueGoogleMapsLink, venueOpenStreetMapsLink } from "@evnt/pretty";
@@ -10,9 +10,11 @@ import { LayerImportSection } from "./LayerImportSection";
 import { EventLinkButton } from "../components/EventLinkButton";
 import { ExternalLink } from "../../base/ExternalLink";
 import type { EventEnvelope } from "../../../../db/models/event-envelope";
-import { EventActions } from "../../../../lib/actions/events";
+import { EventActions } from "../../../../lib/actions/event-actions";
 import { VantageCopyButton } from "../../../app/VantageCopyButton";
-import { IconJson, IconLink, IconShare } from "@tabler/icons-react";
+import { IconEdit, IconJson, IconLink, IconShare } from "@tabler/icons-react";
+import { Link } from "react-router";
+import { EnvelopeErrorBadge } from "../envelope/EnvelopeErrorBadge";
 
 export const EventDetailsContent = ({
 	data,
@@ -28,15 +30,16 @@ export const EventDetailsContent = ({
 	return (
 		<Stack>
 			<Group gap={4}>
-				{loading && (
-					<Loader />
-				)}
-				<Title flex="1">
-					<Trans t={data.name} />
-				</Title>
-				<Group gap={4}>
-					<Modal.CloseButton />
+				<Group flex="1" gap={4}>
+					{loading && (
+						<Loader />
+					)}
+					<Title>
+						<Trans t={data.name} />
+					</Title>
+					<EnvelopeErrorBadge err={err} />
 				</Group>
+				<Modal.CloseButton />
 			</Group>
 
 			{source && <LayerImportSection source={source} />}
@@ -49,6 +52,21 @@ export const EventDetailsContent = ({
 						labelCopied="Event JSON copied to clipboard"
 						icon={<IconJson />}
 					/>
+					{source && UtilEventSource.getType(source) === "at" && (
+						<Tooltip label={"View on PDSls"} withArrow>
+							<ActionIcon
+								size="input-md"
+								color="gray"
+								component="a"
+								href={`https://pds.ls/${source}`}
+								target="_blank"
+							>
+								<Text span inline inherit fz="xs">
+									PDS
+								</Text>
+							</ActionIcon>
+						</Tooltip>
+					)}
 					{source && UtilEventSource.isFromNetwork(source) && (
 						<VantageCopyButton
 							value={source}
@@ -64,6 +82,18 @@ export const EventDetailsContent = ({
 							labelCopy="Copy share link"
 							icon={<IconShare />}
 						/>
+					)}
+					{source && UtilEventSource.getType(source) == "local" && (
+						<Tooltip label={"Edit"} withArrow>
+							<ActionIcon
+								size="input-md"
+								color="gray"
+								component={Link}
+								to={`/edit?${new URLSearchParams({ uuid: source.slice("local://".length) })}`}
+							>
+								<IconEdit />
+							</ActionIcon>
+						</Tooltip>
 					)}
 				</Group>
 			</Stack>

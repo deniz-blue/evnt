@@ -1,5 +1,5 @@
-import { ActionIcon, AppShell, Box, Button, Group, Loader, type ButtonProps } from "@mantine/core";
-import { Link, Outlet } from "react-router";
+import { ActionIcon, AppShell, Box, Button, Group, Loader, Space, type ButtonProps } from "@mantine/core";
+import { isRouteErrorResponse, Link, Outlet, useRouteError } from "react-router";
 import { LinkOpenHandler } from "../components/app/handlers/LinkOpenHandler";
 import { EventDetailsOverlay } from "../components/app/overlay/event/EventDetailsOverlay";
 import { IconSettings } from "@tabler/icons-react";
@@ -65,6 +65,7 @@ export default function MainLayout() {
 				<ViewIndexOverlay />
 				<EventDetailsOverlay />
 				<SettingsOverlay />
+				<Space h="30rem" />
 			</AppShell.Main>
 
 			<LinkOpenHandler />

@@ -1,6 +1,6 @@
 import type { EventData, EventInstance, Venue } from "@evnt/schema";
 import type { SnippetLabel, TSnippet } from "./snippet";
-import { UtilPartialDate, UtilPartialDateRange } from "@evnt/schema/utils";
+import { UtilPartialDate, UtilPartialDateRange, UtilTranslations } from "@evnt/schema/utils";
 
 export const snippetEvent = (data: EventData, opts?: {
 	maxVenues?: number;
@@ -66,7 +66,7 @@ export const snippetVenue = (venue: Venue): TSnippet => {
 
 	return {
 		icon: venue.venueType === "physical" ? "venue-physical" : venue.venueType === "online" ? "venue-online" : "venue-unknown",
-		label: { type: "translations", value: venue.venueName },
+		label: UtilTranslations.isEmpty(venue.venueName) ? { type: "placeholder", hint: "unnamed" } : { type: "translations", value: venue.venueName },
 		sublabel,
 	};
 };

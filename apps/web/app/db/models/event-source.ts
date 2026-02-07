@@ -16,18 +16,19 @@ export const EventDataSourceSchema = z.union([
 	z.string().refine(s => isCanonicalResourceUri(s), { message: "Invalid at URI" }),
 ]);
 
+export const EventDataSourceWithLocalSchema = z.union([
+	EventDataSourceSchema,
+	z.string().refine(s => s.startsWith("local://"), { message: "Invalid local URI" }) as z.ZodType<EventSource.Local>,
+]);
+
 export class UtilEventSource {
-	static is(str: string): str is EventSource {
+	static is(str: string, client: boolean): str is EventSource {
 		try {
-			EventDataSourceSchema.parse(str);
+			(client ? EventDataSourceWithLocalSchema : EventDataSourceSchema).parse(str);
 			return true;
 		} catch {
 			return false;
 		}
-	}
-
-	static as(str: string): EventSource {
-		return EventDataSourceSchema.parse(str);
 	}
 
 	static local(uuid: string): EventSource.Local {

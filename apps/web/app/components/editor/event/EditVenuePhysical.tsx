@@ -23,6 +23,8 @@ export const EditVenuePhysical = ({ data }: { data: EditAtom<PhysicalVenue> }) =
 
 	return (
 		<Stack>
+			<Text fw="bold">Physical Venue Details</Text>
+
 			{hasAddress ? (
 				<EditAddress
 					data={focusAtom(data, o => o.prop("address").valueOr({})) as EditAtom<Address>}
