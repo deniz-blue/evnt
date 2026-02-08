@@ -3,6 +3,7 @@ import { Anchor, Input, Select, Stack } from "@mantine/core";
 import languages from "../../../../lib/resources/languages.json";
 import { UtilLanguageCode } from "../../../../lib/util/language-code";
 import { useState } from "react";
+import { LanguageIcon } from "../../../content/LanguageIcon";
 
 export const LanguageSelect = ({
 	value,
@@ -28,13 +29,11 @@ export const LanguageSelect = ({
 				onSearchChange={setSearchValue}
 				onFocus={() => setSearchValue("")}
 				clearable={value !== "en"}
-				leftSection={UtilLanguageCode.toEmoji(value)}
+				leftSection={<LanguageIcon language={value} />}
 				renderOption={({ option, checked }) => {
-					const emoji = UtilLanguageCode.toEmoji(option.value as LanguageKey);
-
 					return (
 						<span>
-							{checked ? "✅" : ""} {emoji} {UtilLanguageCode.getLabel(option.value as LanguageKey)}
+							{checked ? "✅" : ""} <LanguageIcon language={option.value as LanguageKey} tooltipDisabled /> {UtilLanguageCode.getLabel(option.value as LanguageKey)}
 						</span>
 					);
 				}}

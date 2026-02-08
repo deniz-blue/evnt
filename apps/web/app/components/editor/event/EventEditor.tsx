@@ -1,6 +1,6 @@
 import { EventDataSchema, type EventData } from "@evnt/schema";
 import type { EditAtom } from "../edit-atom";
-import { Button, Group, JsonInput, Stack, Tabs, Text, Textarea } from "@mantine/core";
+import { Button, Container, Group, JsonInput, Stack, Tabs, Text, Textarea } from "@mantine/core";
 import { EditEvent } from "./EditEvent";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { EventCard } from "../../content/event/EventCard";

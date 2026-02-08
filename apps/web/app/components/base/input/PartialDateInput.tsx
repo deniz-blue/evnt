@@ -112,6 +112,7 @@ export const PartialDateInput = ({
 			onChange={setOpened}
 			onClose={() => setOpened(false)}
 			onDismiss={() => setOpened(false)}
+			shadow="xl"
 		>
 			<Popover.Target>
 				<Stack gap={0}>

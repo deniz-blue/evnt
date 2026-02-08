@@ -1,9 +1,10 @@
 import type { LanguageKey, Translations } from "@evnt/schema";
 import { useLocaleStore, useTranslations } from "../../../stores/useLocaleStore";
-import { Accordion, ActionIcon, CloseButton, Combobox, Group, Indicator, Input, Popover, Stack, Text, TextInput, Tooltip, type TextInputProps } from "@mantine/core";
+import { Accordion, ActionIcon, Box, CloseButton, Combobox, Group, Indicator, Input, Popover, Stack, Text, TextInput, Tooltip, type TextInputProps } from "@mantine/core";
 import { useMemo, useRef, useState } from "react";
 import { UtilLanguageCode } from "../../../lib/util/language-code";
 import { useDisclosure } from "@mantine/hooks";
+import { LanguageIcon } from "../../content/LanguageIcon";
 
 export interface TranslationsInputProps extends Pick<TextInputProps, "disabled" | "error" | "required" | "label" | "placeholder" | "description"> {
 	value: Translations;
@@ -44,6 +45,7 @@ export const TranslationsInput = ({
 				position="bottom"
 				closeOnClickOutside
 				closeOnEscape
+				shadow="xl"
 			>
 				<Popover.Target>
 					<TextInput
@@ -59,41 +61,40 @@ export const TranslationsInput = ({
 						rightSectionWidth="auto"
 						rightSection={(
 							<Group gap={4} pr={4} wrap="nowrap">
-								<Indicator
-									label={Object.keys(filteredValue).length}
-									position="bottom-end"
-									color="transparent"
-									offset={4}
-									styles={{ indicator: { pointerEvents: "none" } }}
-									disabled={Object.keys(filteredValue).length === 0 || (Object.keys(filteredValue).length === 1 && typeof filteredValue[selectedLanguage] === "string")}
-								>
-									<Tooltip label={UtilLanguageCode.getLabel(selectedLanguage)}>
+								<LanguageIcon
+									language={selectedLanguage}
+									onClick={() => {
+										setSelectedLanguage(prev => {
+											const currentIndex = listLanguages.indexOf(prev);
+											const nextIndex = (currentIndex + 1) % listLanguages.length;
+											return listLanguages[nextIndex] || prev;
+										});
+									}}
+								/>
+								<Tooltip label="Show all translations">
+									<Indicator
+										inline
+										disabled={(Object.keys(filteredValue).length === 0 || (Object.keys(filteredValue).length === 1 && typeof filteredValue[selectedLanguage] === "string"))}
+										size={16}
+										label={(
+											<Box>
+												{Object.keys(filteredValue).length}
+											</Box>
+										)}
+										style={{ opacity: 0.8 }}
+										color="gray"
+									>
 										<ActionIcon
 											variant="subtle"
 											color="gray"
-											onClick={() => {
-												setSelectedLanguage(prev => {
-													const currentIndex = listLanguages.indexOf(prev);
-													const nextIndex = (currentIndex + 1) % listLanguages.length;
-													return listLanguages[nextIndex] || prev;
-												});
-											}}
+											onClick={open}
 										>
-											{UtilLanguageCode.toEmoji(selectedLanguage)}
+											<Accordion.Chevron style={{
+												transform: popoverOpened ? "rotate(180deg)" : "rotate(0deg)",
+												transition: "transform 150ms ease",
+											}} />
 										</ActionIcon>
-									</Tooltip>
-								</Indicator>
-								<Tooltip label="Show all translations">
-									<ActionIcon
-										variant="subtle"
-										color="gray"
-										onClick={open}
-									>
-										<Accordion.Chevron style={{
-											transform: popoverOpened ? "rotate(180deg)" : "rotate(0deg)",
-											transition: "transform 150ms ease",
-										}} />
-									</ActionIcon>
+									</Indicator>
 								</Tooltip>
 								{onDelete && (
 									<Tooltip label="Remove value">
@@ -111,14 +112,9 @@ export const TranslationsInput = ({
 								No translations yet. Add one using the inputs below.
 							</Text>
 						)}
-						{Object.entries(filteredValue).map(([lang, text]) => (
+						{Object.entries(filteredValue).sort(([a], [b]) => a.localeCompare(b)).map(([lang, text]) => (
 							<Group gap={4} key={lang}>
-								<ActionIcon
-									variant="transparent"
-									component="span"
-								>
-									{UtilLanguageCode.toEmoji(lang)}
-								</ActionIcon>
+								<LanguageIcon language={lang} />
 								<TextInput
 									key={`input-${lang}`}
 									placeholder={t(filteredValue) || props.placeholder || "Translation..."}
@@ -166,7 +162,7 @@ export const TranslationsInput = ({
 							/>
 						</Group>
 						<Input.Description>
-							Type the two-letter language code in Lang
+							Type the IETF BCP 47 language code in Lang. (e.g. "en", "fr", "zh-CN")
 						</Input.Description>
 					</Stack>
 				</Popover.Dropdown>

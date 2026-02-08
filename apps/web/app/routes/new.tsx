@@ -1,4 +1,4 @@
-import { Button, Container, Group, Stack, Title } from "@mantine/core";
+import { Button, Container, Group, Stack, Text, Title } from "@mantine/core";
 import { useMemo, useState } from "react";
 import type { EventData } from "@evnt/schema";
 import { atom, useSetAtom } from "jotai";
@@ -22,12 +22,17 @@ export default function NewEventPage() {
 	}), [dataAtom, setLoading]));
 
 	return (
-		<Container>
+		<Container p={0}>
 			<Stack gap={0}>
-				<Group justify="space-between" align="center">
-					<Title order={2}>
-						New Event
-					</Title>
+				<Group justify="space-between" align="start" wrap="nowrap">
+					<Stack gap={0}>
+						<Title order={2}>
+							New Event
+						</Title>
+						<Text size="sm" c="dimmed">
+							Will be saved locally
+						</Text>
+					</Stack>
 					<Group>
 						<Button
 							color="green"

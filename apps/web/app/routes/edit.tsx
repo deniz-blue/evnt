@@ -1,4 +1,4 @@
-import { Button, Container, Group, Stack, Title } from "@mantine/core";
+import { Button, Container, Group, Stack, Text, Title } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import type { EventData } from "@evnt/schema";
 import { atom, useAtomValue, useSetAtom } from "jotai";
@@ -48,12 +48,17 @@ export default function EditEventPage() {
 	}, [searchParams]);
 
 	return (
-		<Container>
+		<Container p={0}>
 			<Stack gap={0}>
-				<Group justify="space-between" align="center">
-					<Title order={2}>
-						Edit Event
-					</Title>
+				<Group justify="space-between" align="start" wrap="nowrap">
+					<Stack gap={0}>
+						<Title order={2}>
+							Edit Event
+						</Title>
+						<Text size="sm" c="dimmed">
+							Edit an existing event saved locally
+						</Text>
+					</Stack>
 					<Group>
 						<Button
 							color="green"
