@@ -20,6 +20,8 @@ import.meta.glob("./styles/**/*.css", { eager: true });
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
+import { useLocaleStore } from "./stores/useLocaleStore";
+import { DatesProvider } from "@mantine/dates";
 
 export const meta: Route.MetaFunction = () => [
 	{ title: "Vantage Events Viewer" },
@@ -78,10 +80,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
 	const [queryClient] = useState(() => new QueryClient());
+	const userLanguage = useLocaleStore(store => store.language);
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<Outlet />
+			<DatesProvider settings={{
+				locale: userLanguage,
+				consistentWeeks: true,
+				firstDayOfWeek: 1,
+			}}>
+				<Outlet />
+			</DatesProvider>
 		</QueryClientProvider>
 	);
 }

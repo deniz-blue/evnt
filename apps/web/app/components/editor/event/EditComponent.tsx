@@ -5,11 +5,12 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useMemo, type ComponentType } from "react";
 import { EditComponentLink } from "./EditComponentLink";
 import { focusAtom } from "jotai-optics";
-import { IconLink } from "@tabler/icons-react";
+import { IconExternalLink, IconLink } from "@tabler/icons-react";
+import { EditComponentSource } from "./EditComponentSource";
 
 const componentTypeLabels: Record<EventComponent["type"], [ComponentType, string]> = {
 	link: [IconLink, "Link Component"],
-	source: [IconLink, "Source Component"],
+	source: [IconExternalLink, "Source Component"],
 };
 
 export const EditComponent = ({ component, data }: {
@@ -47,6 +48,10 @@ export const EditComponent = ({ component, data }: {
 
 					{type === "link" && (
 						<EditComponentLink data={focusAtom(component, o => o.prop("data"))} />
+					)}
+
+					{type === "source" && (
+						<EditComponentSource data={focusAtom(component, o => o.prop("data"))} />
 					)}
 				</Stack>
 			</Paper>

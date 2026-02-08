@@ -1,8 +1,8 @@
 import type { EventData, Venue, VenueType } from "@evnt/schema";
 import { Deatom, type EditAtom } from "../edit-atom";
-import { Button, CloseButton, Group, Input, Paper, SegmentedControl, Stack, Text, type SegmentedControlProps } from "@mantine/core";
+import { Button, CloseButton, Group, Input, Paper, SegmentedControl, SimpleGrid, Stack, Text, type SegmentedControlProps } from "@mantine/core";
 import { atom, useAtomValue, useSetAtom } from "jotai";
-import { useMemo, type ReactNode } from "react";
+import { useMemo, type ComponentType, type ReactNode } from "react";
 import { IconGlobe, IconMapPin, IconQuestionMark, IconWorld } from "@tabler/icons-react";
 import { TranslationsInput } from "../../base/input/TranslationsInput";
 import { focusAtom } from "jotai-optics";
@@ -82,11 +82,11 @@ export const EditVenue = ({
 						description="Place name, URL description, etc."
 					/>
 
-					<Group gap={4} grow>
+					<Group gap={4} justify="space-between">
 						<Stack gap={0}>
 							<Input.Label>Venue Type</Input.Label>
 							<Input.Description>
-								Type of the venue, which can affect how it's displayed and what additional information is needed.
+								For hybrid events, create multiple venues
 							</Input.Description>
 						</Stack>
 						<VenueTypePicker
@@ -106,7 +106,7 @@ export const EditVenue = ({
 										alert("Venue ID already exists. Please choose a different one.");
 									}
 								}
-							}}	
+							}}
 						>
 							Change Venue ID
 						</Button>
@@ -133,13 +133,21 @@ export const VenueTypePicker = ({
 	value: VenueType;
 	onChange: (value: VenueType) => void;
 }) => {
+	const label = (Icon: ComponentType<{ size: number }>, label: string) => (
+		<Group gap={4} wrap="nowrap" py={4}>
+			<Icon size={16} />
+			<Text inline inherit>{label}</Text>
+		</Group>
+	);
+
 	return (
 		<SegmentedControl
 			data={[
-				{ label: <Group gap={4} justify="center"><IconQuestionMark />Unknown</Group>, value: "unknown" },
-				{ label: <Group gap={4} justify="center"><IconMapPin />Physical</Group>, value: "physical" },
-				{ label: <Group gap={4} justify="center"><IconWorld />Online</Group>, value: "online" },
+				{ label: label(IconQuestionMark, "Unknown"), value: "unknown" },
+				{ label: label(IconMapPin, "Physical"), value: "physical" },
+				{ label: label(IconWorld, "Online"), value: "online" },
 			]}
+			style={{  }}
 			value={value}
 			onChange={onChange as any}
 			{...props}

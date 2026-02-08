@@ -1,10 +1,13 @@
 import type { Address, PhysicalVenue } from "@evnt/schema";
 import { Deatom, DeatomOptional, type EditAtom } from "../edit-atom";
-import { Button, CloseButton, Group, Stack, Text } from "@mantine/core";
+import { Button, CloseButton, Grid, Group, Input, Select, SimpleGrid, Stack, Text, Tooltip } from "@mantine/core";
 import { ClearableTextInput } from "../../base/input/ClearableTextInput";
 import { focusAtom } from "jotai-optics";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useMemo } from "react";
+import COUNTRY_CODES from "../../../lib/resources/country-codes.json";
+import { UtilCountryCode } from "../../../lib/util/country-code";
+import { useLocaleStore } from "../../../stores/useLocaleStore";
 
 export const EditVenuePhysical = ({ data }: { data: EditAtom<PhysicalVenue> }) => {
 	const hasAddress = useAtomValue(useMemo(() => atom((get) => !!get(data).address), [data]));
@@ -50,24 +53,49 @@ export const EditAddress = ({
 				<Text fw="bold">Address</Text>
 				{onDelete && <CloseButton onClick={onDelete} />}
 			</Group>
-			<Deatom
-				component={CountryCodePicker}
-				atom={focusAtom(data, o => o.prop("countryCode"))}
-			/>
-			<DeatomOptional
-				component={ClearableTextInput}
-				atom={focusAtom(data, o => o.prop("addr"))}
-				set={() => ""}
-				setLabel="Add Address Line"
-				label="Address Line"
-			/>
-			<DeatomOptional
-				component={ClearableTextInput}
-				atom={focusAtom(data, o => o.prop("postalCode"))}
-				set={() => ""}
-				setLabel="Add Postal Code"
-				label="Postal Code"
-			/>
+
+			<Grid>
+				<Grid.Col span={6}>
+					<Deatom
+						component={CountryCodePicker}
+						atom={focusAtom(data, o => o.prop("countryCode"))}
+					/>
+				</Grid.Col>
+				<Grid.Col span={6}>
+					<Stack gap={4}>
+						<Stack gap={0}>
+							<Input.Label>Postal Code</Input.Label>
+							<Input.Description>
+								Postal code or ZIP code
+							</Input.Description>
+						</Stack>
+						<DeatomOptional
+							component={ClearableTextInput}
+							atom={focusAtom(data, o => o.prop("postalCode"))}
+							set={() => ""}
+							setLabel="Set Postal Code"
+							placeholder="12345"
+						/>
+					</Stack>
+				</Grid.Col>
+			</Grid>
+
+
+			<Stack gap={4}>
+				<Stack gap={0}>
+					<Input.Label>Address Line</Input.Label>
+					<Input.Description>
+						Street address, city, state/province, etc.
+					</Input.Description>
+				</Stack>
+				<DeatomOptional
+					component={ClearableTextInput}
+					atom={focusAtom(data, o => o.prop("addr"))}
+					set={() => ""}
+					setLabel="Set Address Line"
+					placeholder="123 Main St, Anytown, NY 12345"
+				/>
+			</Stack>
 		</Stack>
 	)
 };
@@ -79,7 +107,27 @@ export const CountryCodePicker = ({
 	value: string | undefined;
 	onChange: (value: string | undefined) => void;
 }) => {
+	const userLanguage = useLocaleStore(store => store.language);
+
 	return (
-		<div />
+		<Stack gap={4}>
+			<Stack gap={0}>
+				<Input.Label>Country Code</Input.Label>
+				<Input.Description>
+					Country of the venue
+				</Input.Description>
+			</Stack>
+			<Select
+				data={COUNTRY_CODES.map(code => ({
+					value: code,
+					label: `${UtilCountryCode.toEmoji(code)} ${UtilCountryCode.getLabel(code, userLanguage)}`,
+				}))}
+				value={value ?? null}
+				onChange={v => onChange(v || undefined)}
+				placeholder="Set Country Code"
+				searchable
+				clearable
+			/>
+		</Stack>
 	);
 };

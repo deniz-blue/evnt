@@ -3,7 +3,7 @@ import { useMemo, type ComponentType, type ReactNode } from "react";
 import type { EditAtom } from "../edit-atom";
 import type { EventComponent, EventData } from "@evnt/schema";
 import { Button, Group, Input, Menu, Paper, Stack, Text, Title } from "@mantine/core";
-import { IconChevronDown, IconLink } from "@tabler/icons-react";
+import { IconChevronDown, IconExternalLink, IconLink } from "@tabler/icons-react";
 import { EditComponent } from "./EditComponent";
 import { focusAtom } from "jotai-optics";
 
@@ -16,8 +16,14 @@ const componentTypes: {
 		{
 			icon: IconLink,
 			label: "Link",
-			desc: "Registration page, livestream, social media page or any relevant link.",
+			desc: "Registration page, livestream, competition forms etc.",
 			data: { type: "link", data: { url: "" } },
+		},
+		{
+			icon: IconExternalLink,
+			label: "Source",
+			desc: "Canonical source of the event; official website, social media page etc.",
+			data: { type: "source", data: { url: "" } },
 		},
 	];
 
@@ -45,7 +51,8 @@ export const EditComponentsList = ({ data }: { data: EditAtom<EventData> }) => {
 							Add
 						</Button>
 					</Menu.Target>
-					<Menu.Dropdown>
+					<Menu.Dropdown maw="400px">
+						<Menu.Label>Add component with type...</Menu.Label>
 						{componentTypes.map(({ icon: Icon, data, label, desc }, i) => (
 							<Menu.Item
 								key={i}
