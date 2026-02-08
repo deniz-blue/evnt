@@ -54,4 +54,10 @@ export class EventActions {
 			url: source,
 		}).toString()}`;
 	}
+
+	static getEmbedLink(source: EventSource) {
+		return `${window.location.origin}/embed?${new URLSearchParams({
+			source,
+		}).toString()}`;
+	}
 };

@@ -7,6 +7,7 @@ import { UtilEventSource, type EventSource } from "../../../db/models/event-sour
 import type { EventEnvelope } from "../../../db/models/event-envelope";
 import { EnvelopeErrorBadge } from "./envelope/EnvelopeErrorBadge";
 import { UtilTranslations } from "@evnt/schema/utils";
+import { EventActions } from "../../../lib/actions/event-actions";
 
 const loaderTransition: MantineTransition = {
 	in: { opacity: 1, width: "1.5rem" },
@@ -20,6 +21,15 @@ const loadingTextTransition: MantineTransition = {
 	transitionProperty: "opacity, height, margin-left",
 } as const;
 
+export interface EventCardProps extends Omit<EventEnvelope, "draft"> {
+	variant?: "horizontal" | "card";
+	source?: EventSource;
+	menu?: React.ReactNode;
+	loading?: boolean;
+	isDraft?: boolean;
+	embed?: boolean;
+};
+
 export const EventCard = ({
 	variant = "card",
 	data,
@@ -27,12 +37,9 @@ export const EventCard = ({
 	source,
 	err,
 	loading,
-}: {
-	variant?: "horizontal" | "card";
-	source?: EventSource;
-	menu?: React.ReactNode;
-	loading?: boolean;
-} & EventEnvelope) => {
+	isDraft,
+	embed,
+}: EventCardProps) => {
 	const { openLink } = useEventDetailsModal();
 
 	return (
@@ -54,7 +61,7 @@ export const EventCard = ({
 									>
 										{(styles) => <Loader size="xs" style={styles} />}
 									</Transition>
-									<SubtleLink if={!!source} to={openLink(source!)}>
+									<SubtleLink to={source && (embed ? EventActions.getShareLink(source) : openLink(source))} newTab={embed}>
 										<Text fw="bold" span>
 											{!!data ? (
 												UtilTranslations.isEmpty(data.name) ? (
@@ -95,7 +102,7 @@ export const EventCard = ({
 						<EventInstanceList value={data} />
 					)}
 				</Stack>
-				
+
 				{/* Bottom section */}
 				<Stack>
 					<Group>
@@ -104,6 +111,9 @@ export const EventCard = ({
 						)}
 						{source && UtilEventSource.getType(source) === "at" && (
 							<Badge color="blue" size="xs" variant="outline" children="atproto" />
+						)}
+						{isDraft && (
+							<Badge color="yellow" size="xs" variant="outline" children="draft" />
 						)}
 					</Group>
 				</Stack>

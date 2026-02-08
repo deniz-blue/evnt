@@ -38,6 +38,7 @@ export namespace EventEnvelope {
 
 export interface EventEnvelope {
 	data: EventData | null;
+	draft?: EventData;
 	rev?: EventEnvelope.Rev;
 	err?: EventEnvelope.Error;
 };

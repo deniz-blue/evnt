@@ -64,7 +64,10 @@ export const useATProtoAuthStore = create<ATProtoAuthStore>((set, get) => ({
 	},
 
 	signOut: async () => {
-
+		const { agent } = get();
+		if (!agent) return;
+		await agent.signOut();
+		set({ session: null, agent: null, rpc: null });
 	},
 
 	createEventRecord: async (data: EventData) => {

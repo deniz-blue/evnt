@@ -21,8 +21,10 @@ export const EventsGrid = ({
 						source={source}
 						loading={query.isFetching}
 						menu={<EventContextMenu source={source} />}
-						{...query.data}
-						data={query.data?.data ?? null}
+						err={query.data?.err}
+						rev={query.data?.rev}
+						data={query.data?.draft ?? query.data?.data ?? null}
+						isDraft={!!query.data?.draft}
 					/>
 				))}
 			</SimpleGrid>

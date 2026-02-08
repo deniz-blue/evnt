@@ -1,12 +1,10 @@
 import { ActionIcon, AppShell, Box, Button, Group, Loader, Space, type ButtonProps } from "@mantine/core";
-import { isRouteErrorResponse, Link, Outlet, useRouteError } from "react-router";
-import { LinkOpenHandler } from "../components/app/handlers/LinkOpenHandler";
+import { Link, Outlet } from "react-router";
 import { EventDetailsOverlay } from "../components/app/overlay/event/EventDetailsOverlay";
 import { IconSettings } from "@tabler/icons-react";
 import { SettingsOverlay, useSettingsOverlay } from "../components/app/overlay/settings/SettingsOverlay";
 import { useHotkeys } from "@mantine/hooks";
 import { useTasksStore } from "../stores/useTasksStore";
-import { Initializers } from "../components/app/handlers/Initializers";
 import { ViewIndexOverlay } from "../components/app/overlay/index/ViewIndexOverlay";
 import { useIsFetching } from "@tanstack/react-query";
 
@@ -67,9 +65,6 @@ export default function MainLayout() {
 				<SettingsOverlay />
 				<Space h="30rem" />
 			</AppShell.Main>
-
-			<LinkOpenHandler />
-			<Initializers />
 		</AppShell>
 	);
 };

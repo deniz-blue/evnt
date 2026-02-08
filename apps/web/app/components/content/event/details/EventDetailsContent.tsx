@@ -12,7 +12,7 @@ import { ExternalLink } from "../../base/ExternalLink";
 import type { EventEnvelope } from "../../../../db/models/event-envelope";
 import { EventActions } from "../../../../lib/actions/event-actions";
 import { VantageCopyButton } from "../../../app/VantageCopyButton";
-import { IconEdit, IconJson, IconLink, IconShare } from "@tabler/icons-react";
+import { IconCode, IconEdit, IconJson, IconLink, IconShare } from "@tabler/icons-react";
 import { Link } from "react-router";
 import { EnvelopeErrorBadge } from "../envelope/EnvelopeErrorBadge";
 
@@ -66,6 +66,14 @@ export const EventDetailsContent = ({
 								</Text>
 							</ActionIcon>
 						</Tooltip>
+					)}
+					{source && UtilEventSource.isFromNetwork(source) && (
+						<VantageCopyButton
+							value={EventActions.getEmbedLink(source)}
+							labelCopied="Embed link copied to clipboard"
+							labelCopy="Copy embed link"
+							icon={<IconCode />}
+						/>
 					)}
 					{source && UtilEventSource.isFromNetwork(source) && (
 						<VantageCopyButton
