@@ -27,7 +27,7 @@ export const PartialDateRangeSnippetLabel = ({ value }: { value: Range<PartialDa
 					minute: UtilPartialDate.hasTime(value.start) ? "numeric" : undefined,
 					hour12: false,
 					timeZone,
-                }).formatRange(UtilPartialDate.toDate(value.start), UtilPartialDate.toDate(value.end))}
+                }).formatRange(UtilPartialDate.toLowDate(value.start), UtilPartialDate.toLowDate(value.end))}
             </Text>
         </Tooltip>
     )

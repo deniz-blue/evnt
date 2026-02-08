@@ -26,7 +26,7 @@ export const EventFilters = {
 	BeforeDate: (date: Date): EventFilter => {
 		return EventFilters.SomeInstances((instance) => {
 			if (!instance.start) return false;
-			const instanceDate = UtilPartialDate.toDate(instance.start);
+			const instanceDate = UtilPartialDate.toLowDate(instance.start);
 			return instanceDate < date;
 		});
 	},
@@ -34,7 +34,7 @@ export const EventFilters = {
 	AfterDate: (date: Date): EventFilter => {
 		return EventFilters.SomeInstances((instance) => {
 			if (!instance.start) return false;
-			const instanceDate = UtilPartialDate.toDate(instance.start);
+			const instanceDate = UtilPartialDate.toHighDate(instance.start);
 			return instanceDate > date;
 		});
 	},

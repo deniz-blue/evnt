@@ -4,7 +4,7 @@ import { EditEventInstanceList } from "./EditEventInstanceList";
 import type { EventData } from "../../../../../../packages/schema/src/schemas/EventData";
 import type { EditAtom } from "../edit-atom";
 import { EditVenuesList } from "./EditVenuesList";
-import { EventComponentsList } from "./EventComponentsList";
+import { EditComponentsList } from "./EditComponentsList";
 
 export const EditEvent = ({ data }: { data: EditAtom<EventData> }) => {
 	return (
@@ -12,7 +12,7 @@ export const EditEvent = ({ data }: { data: EditAtom<EventData> }) => {
 			<EditEventDetails data={data} />
 			<EditEventInstanceList data={data} />
 			<EditVenuesList data={data} />
-			<EventComponentsList data={data} />
+			<EditComponentsList data={data} />
 
 			{/* Shared Venues (in more than one instances) */}
 			{/* <EditVenuesList

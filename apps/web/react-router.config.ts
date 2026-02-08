@@ -1,5 +1,7 @@
 import type { Config } from "@react-router/dev/config";
 
 export default {
-  ssr: false,
+	ssr: false,
+	routeDiscovery: { mode: "initial" },
+	future: { v8_viteEnvironmentApi: true },
 } satisfies Config;

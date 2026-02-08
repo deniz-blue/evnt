@@ -20,6 +20,7 @@ export default defineConfig({
 		{
 			name: "oauth",
 			config(_conf, { command }) {
+				process.env.VITE_OAUTH_SCOPE = metadata.scope;
 				if (command === 'build') {
 					process.env.VITE_OAUTH_CLIENT_ID = metadata.client_id;
 					process.env.VITE_OAUTH_REDIRECT_URI = metadata.redirect_uris[0];
@@ -30,7 +31,6 @@ export default defineConfig({
 						`&scope=${encodeURIComponent(metadata.scope)}`;
 					process.env.VITE_OAUTH_REDIRECT_URI = redirectUri;
 				}
-				process.env.VITE_OAUTH_SCOPE = metadata.scope;
 			},
 		},
 		VitePWA({

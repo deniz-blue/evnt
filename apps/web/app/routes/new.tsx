@@ -24,9 +24,9 @@ export default function NewEventPage() {
 	return (
 		<Container>
 			<Stack gap={0}>
-				<Group justify="space-between">
-					<Title order={2} mb="md">
-						Create New Event
+				<Group justify="space-between" align="center">
+					<Title order={2}>
+						New Event
 					</Title>
 					<Group>
 						<Button

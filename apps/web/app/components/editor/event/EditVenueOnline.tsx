@@ -14,7 +14,6 @@ export const EditVenueOnline = ({ data }: { data: EditAtom<OnlineVenue> }) => {
 				atom={focusAtom(data, o => o.prop("url"))}
 				set={() => ""}
 				setLabel="Add URL"
-				withDeleteButton={false}
 				label="URL"
 			/>
 		</Stack>

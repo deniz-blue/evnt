@@ -1,4 +1,4 @@
-import { Button, Group, Menu, Stack, TextInput } from "@mantine/core";
+import { ActionIcon, Button, Group, Menu, Stack, TextInput, Tooltip } from "@mantine/core";
 import { useState } from "react";
 import { EventDataSchema } from "@evnt/schema";
 import { openImportJSONModal } from "../components/app/modal/ImportJSONModal";
@@ -10,13 +10,25 @@ import { useLayersStore } from "../db/useLayersStore";
 import { applyEventFilters, EventFilters } from "../lib/filter/event-filters";
 import { EventsGrid } from "../components/content/event-grid/EventsGrid";
 import { Link } from "react-router";
+import { useSet } from "@mantine/hooks";
+import { useShallow } from "zustand/shallow";
 
 export default function List() {
-	const defaultLayerSources = useLayersStore(store => store.layers["default"]?.data.events ?? []);
+	const selectedLayerIds = useSet<string>(["default"]);
+
+	const layerIds = useLayersStore(
+		useShallow(store => Object.keys(store.layers))
+	);
+
+	const sources = useLayersStore(
+		useShallow(store => Array.from(new Set(
+			Array.from(selectedLayerIds).map(id => store.layers[id]?.data.events || []).flat()
+		)))
+	);
 
 	const [search, setSearch] = useState("");
 
-	const allQueries = useEventQueries(defaultLayerSources);
+	const allQueries = useEventQueries(sources);
 	const filtered = applyEventFilters(allQueries, [
 		(search && search.length > 0) ? EventFilters.Search(search) : EventFilters.None,
 	]);
@@ -35,9 +47,11 @@ export default function List() {
 					<Group gap={4}>
 						<Menu>
 							<Menu.Target>
-								<Button leftSection={<IconPlus />}>
-									Add
-								</Button>
+								<Tooltip label="Add from...">
+									<ActionIcon size="input-sm">
+										<IconPlus />
+									</ActionIcon>
+								</Tooltip>
 							</Menu.Target>
 							<Menu.Dropdown>
 								<Menu.Item

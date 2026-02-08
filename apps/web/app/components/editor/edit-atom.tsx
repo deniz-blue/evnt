@@ -1,6 +1,7 @@
 import { Box, Button, CloseButton, Group, type ButtonProps } from "@mantine/core";
 import { useAtom, type WritableAtom } from "jotai";
-import type { ReactNode } from "react";
+import type React from "react";
+import { useCallback, useEffect, useRef, type ReactNode } from "react";
 
 export type EditAtom<T> = WritableAtom<T, [T | ((prev: T) => T)], void>;
 
@@ -9,11 +10,15 @@ export const Deatom = <Data, Props,>({
 	component: Component,
 	...props
 }: Omit<Props, "value" | "onChange"> & {
-	component: React.ComponentType<Props & { value: Data; onChange: (value: Data) => void }>;
+	component: React.ComponentType<Props & { value: Data; onChange: (value: Data | React.ChangeEvent<HTMLInputElement>) => void }>;
 	atom: EditAtom<Data>;
 }) => {
 	const [value, onChange] = useAtom(atom);
-	return <Component {...(props as Props)} value={value} onChange={onChange} />;
+	const handleChange = useCallback((v: Data | React.ChangeEvent<HTMLInputElement>) => {
+		if (v && typeof v === "object" && "currentTarget" in v) onChange((v as React.ChangeEvent<HTMLInputElement>).currentTarget.value as unknown as Data);
+		else onChange(v as Data);
+	}, [onChange]);
+	return <Component {...(props as Props)} value={value} onChange={handleChange} />;
 };
 
 export interface DeatomableComponentProps<Data> {
@@ -28,10 +33,10 @@ export const DeatomOptional = <Data, Props>({
 	set,
 	setLabel = "Set",
 	setButtonProps,
-	withDeleteButton = true,
+	withDeleteButton = false,
 	...props
 }: Omit<Props, keyof DeatomableComponentProps<Data> | "set"> & {
-	component: React.ComponentType<Props & DeatomableComponentProps<Data>>;
+	component: React.ComponentType<Props & DeatomableComponentProps<Data> & { ref?: React.Ref<any> }>;
 	atom: EditAtom<Data | undefined>;
 	set: Data | (() => Data);
 	setLabel?: ReactNode;
@@ -39,11 +44,19 @@ export const DeatomOptional = <Data, Props>({
 	withDeleteButton?: boolean;
 }) => {
 	const [value, onChange] = useAtom(atom);
+	const ref = useRef<any>(null);
+
+	useEffect(() => {
+		if (ref.current && "focus" in ref.current && typeof ref.current.focus === "function") {
+			(ref.current.focus as () => void)();
+		}
+	}, [value]);
 
 	if (value === undefined) {
 		return (
 			<Button
 				onClick={() => onChange(typeof set === "function" ? (set as () => Data)() : set)}
+				color="gray"
 				{...setButtonProps}
 			>
 				{setLabel}
@@ -54,7 +67,7 @@ export const DeatomOptional = <Data, Props>({
 	return (
 		<Group flex="1" gap={4}>
 			<Box flex="1">
-				<Component {...(props as unknown as Props)} value={value} onChange={onChange} onDelete={() => onChange(undefined as Data)} />
+				<Component {...(props as unknown as Props)} value={value} onChange={onChange} onDelete={() => onChange(undefined as Data)} ref={ref} />
 			</Box>
 			{withDeleteButton && <CloseButton onClick={() => onChange(undefined as Data)} />}
 		</Group>

@@ -8,11 +8,13 @@ import { useDisclosure } from "@mantine/hooks";
 export interface TranslationsInputProps extends Pick<TextInputProps, "disabled" | "error" | "required" | "label" | "placeholder" | "description"> {
 	value: Translations;
 	onChange: (value: Translations) => void;
+	onDelete?: () => void;
 }
 
 export const TranslationsInput = ({
 	value,
 	onChange,
+	onDelete,
 	...props
 }: TranslationsInputProps) => {
 	const userLanguage = useLocaleStore((state) => state.language);
@@ -93,6 +95,11 @@ export const TranslationsInput = ({
 										}} />
 									</ActionIcon>
 								</Tooltip>
+								{onDelete && (
+									<Tooltip label="Remove value">
+										<CloseButton onClick={onDelete} />
+									</Tooltip>
+								)}
 							</Group>
 						)}
 					/>

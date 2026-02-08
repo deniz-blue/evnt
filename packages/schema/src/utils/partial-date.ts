@@ -21,11 +21,22 @@ export class UtilPartialDate {
 		return /^\d{4}(-\d{2}(-\d{2}(T\d{2}:\d{2})?)?)?$/.test(value);
 	}
 
-	static toDate(value: PartialDate): Date {
+	/** Converts PartialDate to Date, filling missing parts with the lowest possible values */
+	static toLowDate(value: PartialDate): Date {
 		const padded = value
 			+ (value.length == 4 ? "-01-01T00:00"
 				: value.length == 7 ? "-01T00:00"
 					: value.length == 10 ? "T00:00"
+						: "");
+		return new Date(padded + "Z");
+	}
+
+	/** Converts PartialDate to Date, filling missing parts with the highest possible values */
+	static toHighDate(value: PartialDate): Date {
+		const padded = value
+			+ (value.length == 4 ? "-12-31T23:59"
+				: value.length == 7 ? "-31T23:59"
+					: value.length == 10 ? "T23:59"
 						: "");
 		return new Date(padded + "Z");
 	}
@@ -73,7 +84,7 @@ export class UtilPartialDate {
 	}
 
 	static toIntlDateString(value: PartialDate, options: IntlStringOptions = {}): string {
-		const date = this.toDate(value);
+		const date = this.toLowDate(value);
 		const dateOptions: Intl.DateTimeFormatOptions = {
 			timeZone: options.timezone || "UTC",
 			year: options.noCurrentYear && new Date().getFullYear() === parseInt(value.slice(0, 4)) ? undefined : "numeric",
@@ -86,7 +97,7 @@ export class UtilPartialDate {
 
 	static toIntlTimeString(value: PartialDate, options: IntlStringOptions = {}): string {
 		if (!this.hasTime(value)) return "";
-		const date = this.toDate(value);
+		const date = this.toLowDate(value);
 		const timeOptions: Intl.DateTimeFormatOptions = {
 			timeZone: options.timezone || "UTC",
 			hour12: options.hour12 || false,
@@ -103,6 +114,10 @@ export class UtilPartialDate {
 
 	static today(): PartialDate.Day {
 		return new Date().toISOString().slice(0, 10) as PartialDate.Day;
+	}
+
+	static thisMonth(): PartialDate.Month {
+		return new Date().toISOString().slice(0, 7) as PartialDate.Month;
 	}
 
 	static toComponents(value: PartialDate): PartialDateComponents {
@@ -131,8 +146,8 @@ export class UtilPartialDate {
 	}
 
 	static compare(a: PartialDate, b: PartialDate): number {
-		const dateA = this.toDate(a);
-		const dateB = this.toDate(b);
+		const dateA = this.toLowDate(a);
+		const dateB = this.toLowDate(b);
 		return dateA.getTime() - dateB.getTime();
 	}
 

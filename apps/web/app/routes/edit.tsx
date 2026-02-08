@@ -50,8 +50,8 @@ export default function EditEventPage() {
 	return (
 		<Container>
 			<Stack gap={0}>
-				<Group justify="space-between">
-					<Title order={2} mb="md">
+				<Group justify="space-between" align="center">
+					<Title order={2}>
 						Edit Event
 					</Title>
 					<Group>

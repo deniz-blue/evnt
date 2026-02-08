@@ -37,7 +37,7 @@ export class UtilPartialDateRange {
         const ONE_DAY = 86400000; // milliseconds in a day
         return UtilPartialDate.hasCompleteDate(range.start) &&
             UtilPartialDate.hasCompleteDate(range.end) &&
-            UtilPartialDate.toDate(range.start).getTime() + ONE_DAY === UtilPartialDate.toDate(range.end).getTime();
+            UtilPartialDate.toLowDate(range.start).getTime() + ONE_DAY === UtilPartialDate.toLowDate(range.end).getTime();
     }
 
     static getIncludedDates(range: PartialDateRange): PartialDate[] {
@@ -47,8 +47,8 @@ export class UtilPartialDateRange {
             if (range.end) dates.push(range.end);
             return dates;
         }
-        let currentDate = UtilPartialDate.toDate(range.start);
-        const endDate = UtilPartialDate.toDate(range.end);
+        let currentDate = UtilPartialDate.toLowDate(range.start);
+        const endDate = UtilPartialDate.toLowDate(range.end);
         while (currentDate.getTime() <= endDate.getTime()) {
             dates.push(currentDate.toISOString().slice(0, 10) as PartialDate);
             currentDate.setDate(currentDate.getDate() + 1);

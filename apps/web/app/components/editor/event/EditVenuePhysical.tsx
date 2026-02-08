@@ -59,7 +59,6 @@ export const EditAddress = ({
 				atom={focusAtom(data, o => o.prop("addr"))}
 				set={() => ""}
 				setLabel="Add Address Line"
-				withDeleteButton={false}
 				label="Address Line"
 			/>
 			<DeatomOptional
@@ -67,7 +66,6 @@ export const EditAddress = ({
 				atom={focusAtom(data, o => o.prop("postalCode"))}
 				set={() => ""}
 				setLabel="Add Postal Code"
-				withDeleteButton={false}
 				label="Postal Code"
 			/>
 		</Stack>

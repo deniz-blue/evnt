@@ -9,6 +9,7 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { Snippet } from "../../content/Snippet";
 import { snippetVenue } from "@evnt/pretty";
 import { VenueAtomDisplay } from "./EditVenue";
+import { UtilPartialDate } from "@evnt/schema/utils";
 
 export const EditEventInstance = ({
 	data,
@@ -50,8 +51,7 @@ export const EditEventInstance = ({
 								<DeatomOptional
 									component={PartialDateInput}
 									atom={focusAtom(instance, o => o.prop(field))}
-									set={() => new Date().getFullYear().toString() as PartialDate.Year}
-									withDeleteButton={false}
+									set={() => UtilPartialDate.thisMonth()}
 								/>
 							</Stack>
 						))}
