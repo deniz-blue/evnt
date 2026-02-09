@@ -10,7 +10,13 @@ import { TimeRangeSnippetLabel } from "./datetime/TimeRangeSnippetLabel";
 import { PartialDateRangeSnippetLabel } from "./datetime/PartialDateRangeSnippetLabel";
 import { ExternalLink } from "./base/ExternalLink";
 
-export const Snippet = ({ snippet }: { snippet: TSnippet }) => {
+export const Snippet = ({
+	snippet,
+	noSublabel,
+}: {
+	snippet: TSnippet;
+	noSublabel?: boolean;
+}) => {
 	const icon: ReactNode = ({
 		"venue-physical": <IconMapPin />,
 		"venue-online": <IconWorld />,
@@ -54,9 +60,11 @@ export const Snippet = ({ snippet }: { snippet: TSnippet }) => {
 	return (
 		<BaseSnippet icon={icon}>
 			{label}
-			<Text span inline inherit fz="sm" c="dimmed">
-				{sublabel}
-			</Text>
+			{!noSublabel && sublabel && (
+				<Text span inline inherit fz="sm" c="dimmed">
+					{sublabel}
+				</Text>
+			)}
 		</BaseSnippet>
 	);
 };

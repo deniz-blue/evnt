@@ -7,6 +7,7 @@ import { EditComponentLink } from "./EditComponentLink";
 import { focusAtom } from "jotai-optics";
 import { IconExternalLink, IconLink } from "@tabler/icons-react";
 import { EditComponentSource } from "./EditComponentSource";
+import { CollapsiblePaper } from "./CollapsiblePaper";
 
 const componentTypeLabels: Record<EventComponent["type"], [ComponentType, string]> = {
 	link: [IconLink, "Link Component"],
@@ -31,30 +32,18 @@ export const EditComponent = ({ component, data }: {
 	const [Icon, label] = componentTypeLabels[type];
 
 	return (
-		<Stack>
-			<Paper withBorder p="xs">
-				<Stack>
-					<Group justify="space-between">
-						<Group gap={4} align="center" c="dimmed">
-							<Icon />
-							<Text size="sm" fw="bold">
-								{label}
-							</Text>
-						</Group>
-						<Group gap={4}>
-							<CloseButton onClick={onDelete} />
-						</Group>
-					</Group>
+		<CollapsiblePaper
+			icon={<Icon />}
+			title={label}
+			onDelete={onDelete}
+		>
+			{type === "link" && (
+				<EditComponentLink data={focusAtom(component, o => o.prop("data"))} />
+			)}
 
-					{type === "link" && (
-						<EditComponentLink data={focusAtom(component, o => o.prop("data"))} />
-					)}
-
-					{type === "source" && (
-						<EditComponentSource data={focusAtom(component, o => o.prop("data"))} />
-					)}
-				</Stack>
-			</Paper>
-		</Stack>
+			{type === "source" && (
+				<EditComponentSource data={focusAtom(component, o => o.prop("data"))} />
+			)}
+		</CollapsiblePaper>
 	);
 };

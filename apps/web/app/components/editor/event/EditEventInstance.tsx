@@ -7,9 +7,10 @@ import { IconCalendar, type ReactNode } from "@tabler/icons-react";
 import { useMemo } from "react";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { Snippet } from "../../content/Snippet";
-import { snippetVenue } from "@evnt/pretty";
+import { snippetInstance, snippetVenue } from "@evnt/pretty";
 import { VenueAtomDisplay } from "./EditVenue";
 import { UtilPartialDate } from "@evnt/schema/utils";
+import { CollapsiblePaper } from "./CollapsiblePaper";
 
 export const EditEventInstance = ({
 	data,
@@ -21,44 +22,35 @@ export const EditEventInstance = ({
 	onDelete: () => void;
 }) => {
 	return (
-		<Stack>
-			<Paper withBorder p="xs">
-				<Stack>
-					<Group justify="space-between">
-						<Group gap={4} align="center" c="dimmed">
-							<IconCalendar />
-							<Text inherit span fw="bold">Event Instance</Text>
-						</Group>
-						<CloseButton
-							onClick={onDelete}
+		<CollapsiblePaper
+			onDelete={onDelete}
+			title={(
+				<InstanceAtomDisplay instance={instance} />
+			)}
+		>
+			<EditEventInstanceVenues
+				data={data}
+				instance={instance}
+			/>
+
+			<SimpleGrid type="container" cols={{ base: 1, "450px": 2 }}>
+				{(["start", "end"] as const).map((field) => (
+					<Stack gap={4} key={field}>
+						<Stack gap={0}>
+							<Input.Label>{field == "start" ? "Start Date & Time" : "End Date & Time"}</Input.Label>
+							<Input.Description>
+								{field == "start" ? "When the event instance starts" : "When the event instance ends"}
+							</Input.Description>
+						</Stack>
+						<DeatomOptional
+							component={PartialDateInput}
+							atom={focusAtom(instance, o => o.prop(field))}
+							set={() => UtilPartialDate.thisMonth()}
 						/>
-					</Group>
-
-					<EditEventInstanceVenues
-						data={data}
-						instance={instance}
-					/>
-
-					<SimpleGrid type="container" cols={{ base: 1, "450px": 2 }}>
-						{(["start", "end"] as const).map((field) => (
-							<Stack gap={4} key={field}>
-								<Stack gap={0}>
-									<Input.Label>{field == "start" ? "Start Date & Time" : "End Date & Time"}</Input.Label>
-									<Input.Description>
-										{field == "start" ? "When the event instance starts" : "When the event instance ends"}
-									</Input.Description>
-								</Stack>
-								<DeatomOptional
-									component={PartialDateInput}
-									atom={focusAtom(instance, o => o.prop(field))}
-									set={() => UtilPartialDate.thisMonth()}
-								/>
-							</Stack>
-						))}
-					</SimpleGrid>
-				</Stack>
-			</Paper>
-		</Stack>
+					</Stack>
+				))}
+			</SimpleGrid>
+		</CollapsiblePaper>
 	);
 };
 
@@ -95,7 +87,10 @@ export const EditEventInstanceVenues = ({
 							onClick={() => removeVenueId(venueId)}
 						/>
 						<Box flex="1">
-							<VenueAtomDisplay venue={focusAtom(data, o => o.prop("venues").valueOr([]).find((v) => v.venueId === venueId)) as EditAtom<Venue>} />
+							<VenueAtomDisplay
+								venue={focusAtom(data, o => o.prop("venues").valueOr([]).find((v) => v.venueId === venueId)) as EditAtom<Venue>}
+								noSublabel
+							/>
 						</Box>
 					</Group>
 				))}
@@ -159,5 +154,27 @@ export const VenueIdPicker = ({
 				{options}
 			</Combobox.Dropdown>
 		</Combobox>
+	);
+};
+
+export const InstanceAtomDisplay = ({ instance }: { instance: EditAtom<EventInstance> }) => {
+	const snippets = useAtomValue(useMemo(() => atom((get) => {
+		return snippetInstance(get(instance));
+	}), [instance]));
+
+	return (
+		<Stack gap={4}>
+			{snippets.length == 0 && (
+				<Snippet
+					snippet={{
+						icon: "calendar",
+						label: { type: "text", value: "Unknown Date" },
+					}}
+				/>
+			)}
+			{snippets.map((snippet, i) => (
+				<Snippet key={i} snippet={snippet} />
+			))}
+		</Stack>
 	);
 };

@@ -10,6 +10,7 @@ import { EditVenuePhysical } from "./EditVenuePhysical";
 import { EditVenueOnline } from "./EditVenueOnline";
 import { Snippet } from "../../content/Snippet";
 import { snippetVenue } from "@evnt/pretty";
+import { CollapsiblePaper } from "./CollapsiblePaper";
 
 export const EditVenue = ({
 	venue,
@@ -63,65 +64,57 @@ export const EditVenue = ({
 	}), [data]));
 
 	return (
-		<Stack>
-			<Paper withBorder p="xs">
-				<Stack>
-					<Group justify="space-between">
-						<Group gap={4} align="center" c="dimmed">
-							<VenueAtomDisplay venue={venue} />
-						</Group>
-						<Group gap={4}>
-							<CloseButton onClick={onDelete} />
-						</Group>
-					</Group>
+		<CollapsiblePaper
+			title={(
+				<VenueAtomDisplay venue={venue} />
+			)}
+			onDelete={onDelete}
+		>
+			<Deatom
+				component={TranslationsInput}
+				atom={focusAtom(venue, o => o.prop("venueName"))}
+				label="Venue Name"
+				description="Place name, URL description, etc."
+			/>
 
-					<Deatom
-						component={TranslationsInput}
-						atom={focusAtom(venue, o => o.prop("venueName"))}
-						label="Venue Name"
-						description="Place name, URL description, etc."
-					/>
-
-					<Group gap={4} justify="space-between">
-						<Stack gap={0}>
-							<Input.Label>Venue Type</Input.Label>
-							<Input.Description>
-								For hybrid events, create multiple venues
-							</Input.Description>
-						</Stack>
-						<VenueTypePicker
-							value={venueType}
-							onChange={setVenueType}
-						/>
-					</Group>
-
-					<Group gap={4} justify="space-between">
-						<Text fw="bold">Venue ID: {venueId}</Text>
-						<Button size="xs"
-							onClick={() => {
-								const newVenueId = prompt("Enter new Venue ID", venueId);
-								if (newVenueId && newVenueId !== venueId) {
-									const success = changeVenueId({ fromVenueId: venueId, toVenueId: newVenueId });
-									if (!success) {
-										alert("Venue ID already exists. Please choose a different one.");
-									}
-								}
-							}}
-						>
-							Change Venue ID
-						</Button>
-					</Group>
-
-					{venueType === "physical" && (
-						<EditVenuePhysical data={venue as EditAtom<Venue & { venueType: "physical" }>} />
-					)}
-
-					{venueType === "online" && (
-						<EditVenueOnline data={venue as EditAtom<Venue & { venueType: "online" }>} />
-					)}
+			<Group gap={4} justify="space-between">
+				<Stack gap={0}>
+					<Input.Label>Venue Type</Input.Label>
+					<Input.Description>
+						For hybrid events, create multiple venues
+					</Input.Description>
 				</Stack>
-			</Paper>
-		</Stack>
+				<VenueTypePicker
+					value={venueType}
+					onChange={setVenueType}
+				/>
+			</Group>
+
+			<Group gap={4} justify="space-between">
+				<Text fw="bold">Venue ID: {venueId}</Text>
+				<Button size="xs"
+					onClick={() => {
+						const newVenueId = prompt("Enter new Venue ID", venueId);
+						if (newVenueId && newVenueId !== venueId) {
+							const success = changeVenueId({ fromVenueId: venueId, toVenueId: newVenueId });
+							if (!success) {
+								alert("Venue ID already exists. Please choose a different one.");
+							}
+						}
+					}}
+				>
+					Change Venue ID
+				</Button>
+			</Group>
+
+			{venueType === "physical" && (
+				<EditVenuePhysical data={venue as EditAtom<Venue & { venueType: "physical" }>} />
+			)}
+
+			{venueType === "online" && (
+				<EditVenueOnline data={venue as EditAtom<Venue & { venueType: "online" }>} />
+			)}
+		</CollapsiblePaper>
 	);
 };
 
@@ -147,7 +140,7 @@ export const VenueTypePicker = ({
 				{ label: label(IconMapPin, "Physical"), value: "physical" },
 				{ label: label(IconWorld, "Online"), value: "online" },
 			]}
-			style={{  }}
+			style={{}}
 			value={value}
 			onChange={onChange as any}
 			{...props}
@@ -157,14 +150,16 @@ export const VenueTypePicker = ({
 
 export const VenueAtomDisplay = ({
 	venue,
+	noSublabel,
 }: {
 	venue: EditAtom<Venue>;
+	noSublabel?: boolean;
 }) => {
 	const snippet = useAtomValue(useMemo(() => atom((get) => {
 		return snippetVenue(get(venue));
 	}), [venue]));
 
 	return (
-		<Snippet snippet={snippet} />
+		<Snippet snippet={snippet} noSublabel={noSublabel} />
 	);
 };

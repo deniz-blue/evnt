@@ -22,7 +22,7 @@ export const TranslationsInput = ({
 	const t = useTranslations();
 
 	const inputRefs = useRef<Map<LanguageKey, HTMLInputElement>>(new Map());
-	const [selectedLanguage, setSelectedLanguage] = useState(userLanguage);
+	const [selectedLanguage, setSelectedLanguage] = useState<LanguageKey | null>(null); // null means userLanguage
 	const [popoverOpened, { open, close }] = useDisclosure(false);
 	const [newLang, setNewLang] = useState("");
 
@@ -31,10 +31,10 @@ export const TranslationsInput = ({
 	}, [value]);
 
 	const listLanguages = useMemo(() => {
-		const set = new Set<LanguageKey>(Object.keys(filteredValue));
-		set.add(userLanguage);
+		const set = new Set<LanguageKey | null>(Object.keys(filteredValue));
+		set.add(null);
 		return Array.from(set);
-	}, [filteredValue, userLanguage]);
+	}, [filteredValue]);
 
 	return (
 		<Stack>
@@ -50,11 +50,11 @@ export const TranslationsInput = ({
 				<Popover.Target>
 					<TextInput
 						{...props}
-						value={value[selectedLanguage] || ""}
+						value={value[selectedLanguage ?? userLanguage] || ""}
 						onChange={(event) => {
 							onChange({
 								...value,
-								[selectedLanguage]: event.currentTarget.value,
+								[selectedLanguage ?? userLanguage]: event.currentTarget.value,
 							});
 						}}
 						placeholder={t(filteredValue) || props.placeholder || "Translation..."}
@@ -62,7 +62,7 @@ export const TranslationsInput = ({
 						rightSection={(
 							<Group gap={4} pr={4} wrap="nowrap">
 								<LanguageIcon
-									language={selectedLanguage}
+									language={selectedLanguage ?? userLanguage}
 									onClick={() => {
 										setSelectedLanguage(prev => {
 											const currentIndex = listLanguages.indexOf(prev);
@@ -74,7 +74,7 @@ export const TranslationsInput = ({
 								<Tooltip label="Show all translations">
 									<Indicator
 										inline
-										disabled={(Object.keys(filteredValue).length === 0 || (Object.keys(filteredValue).length === 1 && typeof filteredValue[selectedLanguage] === "string"))}
+										disabled={(Object.keys(filteredValue).length === 0 || (Object.keys(filteredValue).length === 1 && typeof filteredValue[selectedLanguage ?? userLanguage] === "string"))}
 										size={16}
 										label={(
 											<Box>
