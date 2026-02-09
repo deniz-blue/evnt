@@ -69,6 +69,29 @@ export class EventResolver {
 		};
 	}
 
+	static async fromJsonText(jsontext: string): Promise<EventEnvelope> {
+		const [json, jsonParseError] = await tryCatchAsync(() => JSON.parse(jsontext));
+		if (jsonParseError) {
+			return {
+				data: null,
+				err: this.#EnvelopeError(jsonParseError as SyntaxError),
+			};
+		}
+
+		const result = EventDataSchema.safeParse(json);
+
+		if (!result.success) {
+			return {
+				data: null,
+				err: this.#EnvelopeError(result.error),
+			};
+		}
+
+		return {
+			data: result.data,
+		};
+	}
+
 	static async #fetchAtProto(source: EventSource.At): Promise<EventEnvelope> {
 		const parsed = parseCanonicalResourceUri(source);
 		if (!parsed.ok) throw new Error(`Invalid at-uri: ${parsed.error}`);
