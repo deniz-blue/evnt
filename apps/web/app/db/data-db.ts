@@ -75,7 +75,7 @@ export class DataDB {
 		return this.#db;
 	}
 
-	static #updated(key: DataDB.Key) {
+	static emitUpdate(key: DataDB.Key) {
 		this.channel().postMessage(key);
 		this.#dispatchUpdateEvent(key);
 	}
@@ -114,13 +114,13 @@ export class DataDB {
 		const db = await this.db();
 		await db.put(this.STORE_NAME_DATA, entry, key);
 		logger.log("Put", [key, entry]);
-		this.#updated(key);
+		this.emitUpdate(key);
 	}
 
 	static async delete(key: DataDB.Key): Promise<void> {
 		const db = await this.db();
 		await db.delete(this.STORE_NAME_DATA, key);
-		this.#updated(key);
+		this.emitUpdate(key);
 	}
 
 	static async getAllKeys(): Promise<DataDB.Key[]> {

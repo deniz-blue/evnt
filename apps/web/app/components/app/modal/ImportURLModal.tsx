@@ -2,7 +2,7 @@ import { Button, Stack, TextInput } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { randomId } from "@mantine/hooks";
 import { useState } from "react";
-import { EventDataSourceSchema, type EventSource } from "../../../db/models/event-source";
+import { UtilEventSource, type EventSource } from "../../../db/models/event-source";
 
 export interface EventImportURLModalProps {
 	onSubmit: (source: EventSource) => void;
@@ -50,7 +50,7 @@ export const EventImportURLModal = ({
 					setLoading(true);
 					setError(null);
 					try {
-						onSubmit(EventDataSourceSchema.parse(url))
+						onSubmit(UtilEventSource.parse(url, false))
 					} catch (error) {
 						setError("" + error);
 					} finally {

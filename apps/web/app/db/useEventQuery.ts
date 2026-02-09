@@ -1,7 +1,7 @@
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
 import { UtilEventSource, type EventSource } from "./models/event-source";
 import { useMemo } from "react";
-import { EventResolver } from "./resolve/resolve";
+import { EventResolver } from "./resolve";
 import type { EventEnvelope } from "./models/event-envelope";
 
 export const eventQueryKey = (source: EventSource) => {

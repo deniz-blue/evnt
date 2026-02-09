@@ -153,11 +153,11 @@ export const EventContextMenu = ({ source }: { source: EventSource }) => {
 						Copy Event Data URL
 					</Menu.Item>
 				)}
-				{source && UtilEventSource.getType(source) === "local" && (
+				{source && UtilEventSource.isEditable(source) && (
 					<Menu.Item
 						component={Link}
 						leftSection={<IconEdit size={14} />}
-						to={`/edit?uuid=${source.slice("local://".length)}`}
+						to={`/edit?${new URLSearchParams({ source })}`}
 					>
 						Edit
 					</Menu.Item>

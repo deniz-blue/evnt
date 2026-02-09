@@ -1,5 +1,5 @@
 import { Button, Container, Group, Stack, Text, Title } from "@mantine/core";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import type { EventData } from "@evnt/schema";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { EventEditor } from "../components/editor/event/EventEditor";
@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router";
 import type { EditAtom } from "../components/editor/edit-atom";
 import { CenteredLoader } from "../components/content/base/CenteredLoader";
 import { UtilEventSource } from "../db/models/event-source";
-import { EventResolver } from "../db/resolve/resolve";
+import { EventResolver } from "../db/resolve";
 
 export default function FormPage() {
 	const [searchParams] = useSearchParams();
@@ -59,29 +59,62 @@ export default function FormPage() {
 	}, [searchParams]);
 
 	return (
+		<FormPageTemplate
+			title={titleParam}
+			desc={descParam}
+			continueText={continueTextParam}
+			onContinue={save}
+			loading={loading}
+			data={dataAtom}
+		/>
+	);
+};
+
+export const FormPageTemplate = ({
+	title,
+	desc,
+	error,
+	continueText,
+	onContinue,
+	loading,
+	data,
+}: {
+	title: ReactNode;
+	desc?: ReactNode;
+	error?: ReactNode;
+	loading?: boolean;
+	continueText?: string;
+	onContinue?: () => void;
+	data: EditAtom<EventData | null>;
+}) => {
+	return (
 		<Container p={0}>
 			<Stack gap={0}>
 				<Group justify="space-between" align="start" wrap="nowrap">
 					<Stack gap={0}>
 						<Title order={2}>
-							{titleParam}
+							{title}
 						</Title>
 						<Text size="sm" c="dimmed">
-							{descParam}
+							{desc}
 						</Text>
 					</Stack>
 					<Group>
 						<Button
 							color="green"
-							onClick={save}
+							onClick={onContinue}
 							loading={loading}
 						>
-							{continueTextParam}
+							{continueText}
 						</Button>
 					</Group>
 				</Group>
+				<Text c="red">
+					{error}
+				</Text>
+				{loading && <CenteredLoader />}
 				<EditEventPageWrapper
-					data={dataAtom}
+					data={data}
 				/>
 			</Stack>
 		</Container>
@@ -89,13 +122,9 @@ export default function FormPage() {
 };
 
 export const EditEventPageWrapper = ({ data }: { data: EditAtom<EventData | null> }) => {
-	const isLoading = useAtomValue(useMemo(() => atom(get => get(data) === null), [data]));
-
-	if (isLoading) return <CenteredLoader />;
-
+	const isNull = useAtomValue(useMemo(() => atom(get => get(data) === null), [data]));
+	if (isNull) return null;
 	return (
-		<EventEditor
-			data={data as EditAtom<EventData>}
-		/>
+		<EventEditor data={data as EditAtom<EventData>} />
 	);
 };

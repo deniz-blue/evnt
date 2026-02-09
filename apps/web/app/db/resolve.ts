@@ -1,10 +1,10 @@
 import { EventDataSchema, type EventData } from "@evnt/schema";
-import { UtilEventSource, type EventSource } from "../../db/models/event-source";
-import { DataDB } from "../../db/data-db";
+import { UtilEventSource, type EventSource } from "../db/models/event-source";
+import { DataDB } from "../db/data-db";
 import { Client, simpleFetchHandler, type FailedClientResponse } from "@atcute/client";
 import { parseCanonicalResourceUri } from "@atcute/lexicons/syntax";
-import type { EventEnvelope } from "../models/event-envelope";
-import { tryCatchAsync } from "../../lib/util/trynull";
+import type { EventEnvelope } from "./models/event-envelope";
+import { tryCatchAsync } from "../lib/util/trynull";
 import { ZodError } from "zod";
 
 export class EventResolver {

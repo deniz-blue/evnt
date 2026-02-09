@@ -91,13 +91,13 @@ export const EventDetailsContent = ({
 							icon={<IconShare />}
 						/>
 					)}
-					{source && UtilEventSource.getType(source) == "local" && (
+					{source && UtilEventSource.isEditable(source) && (
 						<Tooltip label={"Edit"} withArrow>
 							<ActionIcon
 								size="input-md"
 								color="gray"
 								component={Link}
-								to={`/edit?${new URLSearchParams({ uuid: source.slice("local://".length) })}`}
+								to={`/edit?${new URLSearchParams({ source })}`}
 							>
 								<IconEdit />
 							</ActionIcon>

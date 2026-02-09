@@ -1,5 +1,6 @@
 import { isCanonicalResourceUri, type CanonicalResourceUri, type Did, type Nsid, type RecordKey } from "@atcute/lexicons";
 import z from "zod";
+import { trynull } from "../../lib/util/trynull";
 
 export namespace EventSource {
 	export type Type = "local" | "http" | "https" | "at";
@@ -11,24 +12,25 @@ export namespace EventSource {
 
 export type EventSource = `${"local" | "http" | "https"}://${string}` | CanonicalResourceUri;
 
-export const EventDataSourceSchema = z.union([
-	z.url({ protocol: /^(https?)$/ }) as z.ZodType<`${"http" | "https"}://${string}`>,
-	z.string().refine(s => isCanonicalResourceUri(s), { message: "Invalid at URI" }),
-]);
+export const EventSourceAtSchema = z.string().refine(s => isCanonicalResourceUri(s), { message: "Invalid at URI" }) as z.ZodType<EventSource.At>;
+export const EventSourceHttpSchema = z.url({ protocol: /^(https?)$/ }) as z.ZodType<EventSource.Http>;
+export const EventSourceLocalSchema = z.string().refine(s => s.startsWith("local://"), { message: "Invalid local URI" }) as z.ZodType<EventSource.Local>;
 
-export const EventDataSourceWithLocalSchema = z.union([
-	EventDataSourceSchema,
-	z.string().refine(s => s.startsWith("local://"), { message: "Invalid local URI" }) as z.ZodType<EventSource.Local>,
-]);
+export const EventSourceSchema = z.union([
+	EventSourceAtSchema,
+	EventSourceHttpSchema,
+	EventSourceLocalSchema,
+]) as z.ZodType<EventSource>;
 
 export class UtilEventSource {
+	static parse(str: string, client: boolean): EventSource {
+		const parsed = EventSourceSchema.parse(str);
+		if (!client && this.isLocal(parsed)) throw new Error("local:// not allowed in this context");
+		return parsed;
+	}
+
 	static is(str: string, client: boolean): str is EventSource {
-		try {
-			(client ? EventDataSourceWithLocalSchema : EventDataSourceSchema).parse(str);
-			return true;
-		} catch {
-			return false;
-		}
+		return trynull(() => this.parse(str, client)) != null;
 	}
 
 	static local(uuid: string): EventSource.Local {
@@ -79,6 +81,10 @@ export class UtilEventSource {
 		} else {
 			return source.url as EventSource;
 		}
+	}
+
+	static isEditable(source: EventSource): source is EventSource.Local | EventSource.At {
+		return this.isLocal(source) || this.isAt(source);
 	}
 };
 

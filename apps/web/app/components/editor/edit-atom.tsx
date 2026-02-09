@@ -46,10 +46,12 @@ export const DeatomOptional = <Data, Props>({
 	const [value, onChange] = useAtom(atom);
 	const ref = useRef<any>(null);
 
+	const prevValue = useRef<Data | undefined>(value);
 	useEffect(() => {
-		if (ref.current && "focus" in ref.current && typeof ref.current.focus === "function") {
+		if (prevValue.current === undefined && value !== undefined && ref.current && "focus" in ref.current && typeof ref.current.focus === "function") {
 			(ref.current.focus as () => void)();
 		}
+		prevValue.current = value;
 	}, [value]);
 
 	if (value === undefined) {
