@@ -1,6 +1,6 @@
 import type { EventData } from "@evnt/schema";
 import { UtilEventSource, type EventSource } from "./models/event-source";
-import { useATProtoAuthStore } from "../stores/useATProtoStore";
+import { useATProtoAuthStore } from "../lib/atproto/useATProtoStore";
 import { parseCanonicalResourceUri } from "@atcute/lexicons";
 import { BlueDenizEvent } from "../constants";
 import { DataDB } from "./data-db";

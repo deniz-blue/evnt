@@ -1,10 +1,11 @@
 import { ActionIcon, Avatar, Button, Code, Group, Input, Loader, Stack, Text, TextInput, Tooltip } from "@mantine/core";
-import { getAvatarOfDid, useATProtoAuthStore } from "../../../../stores/useATProtoStore";
+import { getAvatarOfDid, useATProtoAuthStore } from "../../../../lib/atproto/useATProtoStore";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import { IconArrowRight, IconCheck, IconExternalLink, IconX } from "@tabler/icons-react";
-import { useQuery } from "@tanstack/react-query";
 import { ExternalLink } from "../../../content/base/ExternalLink";
+import { useAtProtoHandleQuery } from "../../../../lib/atproto/useAtProtoHandleQuery";
+import type { Did } from "@atcute/lexicons";
 
 export const ATProtoSettings = () => {
 	const session = useATProtoAuthStore(store => store.session);
@@ -29,7 +30,6 @@ export const ATProtoSignedOut = () => {
 		setLoading(true);
 		await useATProtoAuthStore.getState().startAuthorization(identifier);
 		// unreachable code after redirect
-		setLoading(false);
 	};
 
 	return (
@@ -76,24 +76,9 @@ export const ATProtoSignedOut = () => {
 };
 
 export const ATProtoSignedIn = () => {
-	const agent = useATProtoAuthStore(store => store.agent);
-	const rpc = useATProtoAuthStore(store => store.rpc);
+	const agent = useATProtoAuthStore(store => store.agent)!;
+	const handle = useAtProtoHandleQuery(agent.sub as Did<"plc" | "web">);
 
-	const profile = useQuery({
-		queryKey: ['atproto', 'username', agent?.sub],
-		queryFn: async () => {
-			if (!rpc || !agent) return null;
-			const res = await rpc.get("com.atproto.repo.describeRepo", {
-				params: {
-					repo: agent.sub,
-				},
-			});
-			if (!res.ok) throw new Error(res.data.message || res.data.error || "Failed to fetch profile");
-			return res.data.handle;
-		},
-	});
-
-	if (!agent) return null;
 	return (
 		<Stack>
 			<Group gap={4} align="start">
@@ -104,17 +89,17 @@ export const ATProtoSignedIn = () => {
 				<Stack gap={4}>
 					<Text c="dimmed" fz="xs" fw="bold">Signed in as</Text>
 					<Group align="center" gap={4}>
-						{profile.isLoading ? (
+						{handle.isLoading ? (
 							<>
 								<Loader size="xs" />
 								<Text fz="xs">Fetching handle...</Text>
 							</>
-						) : profile.error ? (
+						) : handle.error ? (
 							<Text fz="xs" c="red">Error fetching handle</Text>
 						) : (
 							<ExternalLink
-								href={`https://bsky.app/profile/${profile.data}`}
-								children={`@${profile.data}`}
+								href={`https://bsky.app/profile/${handle.data}`}
+								children={`${handle.data}`}
 							/>
 						)}
 					</Group>

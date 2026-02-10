@@ -1,30 +1,9 @@
 import { create } from "zustand";
 import { configureOAuth, createAuthorizationUrl, finalizeAuthorization, getSession, listStoredSessions, OAuthUserAgent, type Session } from "@atcute/oauth-browser-client";
-import type { EventData } from "@evnt/schema";
 import { CompositeDidDocumentResolver, LocalActorResolver, PlcDidDocumentResolver, WebDidDocumentResolver, XrpcHandleResolver } from "@atcute/identity-resolver";
 import { Client } from "@atcute/client";
 import { isDid, isHandle, type Did } from "@atcute/lexicons/syntax";
-import type { } from "@atcute/atproto";
-import { persist } from "zustand/middleware";
-import { LOCALSTORAGE_KEYS } from "../constants";
-
-configureOAuth({
-	metadata: {
-		client_id: import.meta.env.VITE_OAUTH_CLIENT_ID,
-		redirect_uri: import.meta.env.VITE_OAUTH_REDIRECT_URI,
-	},
-	identityResolver: new LocalActorResolver({
-		handleResolver: new XrpcHandleResolver({
-			serviceUrl: "https://public.api.bsky.app",
-		}),
-		didDocumentResolver: new CompositeDidDocumentResolver({
-			methods: {
-				plc: new PlcDidDocumentResolver(),
-				web: new WebDidDocumentResolver(),
-			},
-		}),
-	}),
-});
+import { useLocaleStore } from "../../stores/useLocaleStore";
 
 export interface ATProtoAuthStore {
 	session: Session | null;
@@ -34,11 +13,17 @@ export interface ATProtoAuthStore {
 	initialize: () => Promise<void>;
 
 	startAuthorization: (identifier: string) => Promise<void>;
-	finishAuthorization: (params: URLSearchParams) => Promise<void>;
+	finishAuthorization: (params: URLSearchParams) => Promise<AuthorizationState>;
 	signOut: () => Promise<void>;
 
 	allSessions: () => Did[];
 }
+
+export interface AuthorizationState {
+	path: string;
+	search: string;
+	fragment: string;
+};
 
 export const useATProtoAuthStore = create<ATProtoAuthStore>((set, get) => ({
 	session: null,
@@ -65,19 +50,29 @@ export const useATProtoAuthStore = create<ATProtoAuthStore>((set, get) => ({
 				? { type: "account", identifier: input }
 				: { type: "pds", serviceUrl: input },
 			scope: import.meta.env.VITE_OAUTH_SCOPE,
+			locale: useLocaleStore.getState().language,
+			state: {
+				search: window.location.search,
+				path: window.location.pathname,
+				fragment: window.location.hash,
+			} as AuthorizationState,
 		});
 
 		// flush storage updates before redirecting
 		setTimeout(() => {
 			window.location.assign(authUrl);
 		}, 0);
+
+		// never resolve since the page will be redirected
+		return new Promise(() => { });
 	},
 
-	finishAuthorization: async (params: URLSearchParams) => {
-		const { session } = await finalizeAuthorization(params);
+	finishAuthorization: async (params: URLSearchParams): Promise<AuthorizationState> => {
+		const { session, state } = await finalizeAuthorization(params);
 		const agent = new OAuthUserAgent(session);
-		const rpc = new Client({ handler: agent })
+		const rpc = new Client({ handler: agent });
 		set({ session, agent, rpc });
+		return state as AuthorizationState;
 	},
 
 	signOut: async () => {

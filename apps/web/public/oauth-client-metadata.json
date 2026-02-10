@@ -2,6 +2,7 @@
 	"client_id": "https://vantage.deniz.blue/oauth-client-metadata.json",
 	"client_name": "Vantage Events Viewer",
 	"client_uri": "https://vantage.deniz.blue",
+	"logo_uri": "https://vantage.deniz.blue/icon.svg",
 	"scope": "atproto repo:blue.deniz.event",
 	"redirect_uris": [
 		"https://vantage.deniz.blue/oauth/callback"

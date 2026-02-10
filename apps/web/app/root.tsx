@@ -13,15 +13,16 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CenteredLoader } from "./components/content/base/CenteredLoader";
 import type { Route } from "./+types/root";
-
+import { useLocaleStore } from "./stores/useLocaleStore";
+import { DatesProvider } from "@mantine/dates";
 import { contextModals } from "./components/app/modals/modals";
+
 import "./dayjslocales";
-import.meta.glob("./styles/**/*.css", { eager: true });
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
-import { useLocaleStore } from "./stores/useLocaleStore";
-import { DatesProvider } from "@mantine/dates";
+import.meta.glob("./styles/**/*.css", { eager: true });
+import "./lib/atproto/atproto-services";
 
 export const meta: Route.MetaFunction = () => [
 	{ title: "Vantage Events Viewer" },

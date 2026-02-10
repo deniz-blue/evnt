@@ -25,7 +25,6 @@ export default function MainLayout() {
 
 	return (
 		<AppShell
-			padding="xs"
 			header={{
 				height: "calc(60px + env(safe-area-inset-top, 0px))",
 			}}
@@ -63,7 +62,6 @@ export default function MainLayout() {
 				<ViewIndexOverlay />
 				<EventDetailsOverlay />
 				<SettingsOverlay />
-				<Space h="30rem" />
 			</AppShell.Main>
 		</AppShell>
 	);

@@ -154,4 +154,12 @@ export class UtilPartialDate {
 	static equals(a: PartialDate, b: PartialDate): boolean {
 		return this.compare(a, b) === 0;
 	}
+
+	static includes(parent: PartialDate, child: PartialDate): boolean {
+		const parentLow = this.toLowDate(parent).getTime();
+		const parentHigh = this.toHighDate(parent).getTime();
+		const childLow = this.toLowDate(child).getTime();
+		const childHigh = this.toHighDate(child).getTime();
+		return parentLow <= childLow && parentHigh >= childHigh;
+	}
 };

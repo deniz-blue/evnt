@@ -1,7 +1,7 @@
 import { CenteredLoader } from "../components/content/base/CenteredLoader";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { useATProtoAuthStore } from "../stores/useATProtoStore";
+import { useATProtoAuthStore } from "../lib/atproto/useATProtoStore";
 import { Box, Stack } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
@@ -11,9 +11,9 @@ export default function OauthCallbackRoute() {
 	useEffect(() => {
 		const params = new URLSearchParams(location.hash.slice(1));
 		console.log("OAuth callback received with params:", params.toString());
-		
+
 		const keys = ["state", "iss"];
-		if(keys.some(key => !params.has(key))) {
+		if (keys.some(key => !params.has(key))) {
 			console.error("Missing required OAuth parameters. Received params:", params.toString());
 			navigate("/", { replace: true });
 			notifications.show({
@@ -24,9 +24,10 @@ export default function OauthCallbackRoute() {
 			return;
 		}
 
-		useATProtoAuthStore.getState().finishAuthorization(params).then(() => {
-			console.log("OAuth authorization finalized, navigating to home.");
-			navigate("/", { replace: true });
+		useATProtoAuthStore.getState().finishAuthorization(params).then((state) => {
+			console.log("OAuth authorization finalized, navigating...");
+			const to = (state.path || "/") + state.search + state.fragment;
+			navigate(to, { replace: true });
 		});
 	}, []);
 

@@ -10,7 +10,7 @@ import { tryCatch } from "../lib/util/trynull";
 import { EventMutator } from "../db/event-mutator";
 import { FormPageTemplate } from "./form";
 import { Alert, Button, Stack } from "@mantine/core";
-import { useATProtoAuthStore } from "../stores/useATProtoStore";
+import { useATProtoAuthStore } from "../lib/atproto/useATProtoStore";
 
 // Shitcode 101
 export default function EditEventPage() {
