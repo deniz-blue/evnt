@@ -1,3 +1,3 @@
-import { useQueryModalState } from "../base/useQueryModalState";
+import { useSearchParamKey } from "../base/useSearchParamKey";
 
-export const useViewIndexModal = () => useQueryModalState("view-index");
+export const useViewIndexModal = () => useSearchParamKey("view-index");

@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router";
 import type { EditAtom } from "../components/editor/edit-atom";
 import { CenteredLoader } from "../components/content/base/CenteredLoader";
 import { UtilEventSource } from "../db/models/event-source";
-import { EventResolver } from "../db/resolve";
+import { EventResolver } from "../db/event-resolver";
 
 export default function FormPage() {
 	const [searchParams] = useSearchParams();
@@ -77,12 +77,14 @@ export const FormPageTemplate = ({
 	continueText,
 	onContinue,
 	loading,
+	notice,
 	data,
 }: {
 	title: ReactNode;
 	desc?: ReactNode;
 	error?: ReactNode;
 	loading?: boolean;
+	notice?: ReactNode;
 	continueText?: string;
 	onContinue?: () => void;
 	data: EditAtom<EventData | null>;
@@ -112,6 +114,7 @@ export const FormPageTemplate = ({
 				<Text c="red">
 					{error}
 				</Text>
+				{notice}
 				{loading && <CenteredLoader />}
 				<EditEventPageWrapper
 					data={data}

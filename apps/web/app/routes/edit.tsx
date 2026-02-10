@@ -9,11 +9,14 @@ import { useEventQueries } from "../db/useEventQuery";
 import { tryCatch } from "../lib/util/trynull";
 import { EventMutator } from "../db/event-mutator";
 import { FormPageTemplate } from "./form";
+import { Alert, Button, Stack } from "@mantine/core";
+import { useATProtoAuthStore } from "../stores/useATProtoStore";
 
 // Shitcode 101
 export default function EditEventPage() {
 	const [searchParams] = useSearchParams();
 	const [source, sourceParseError] = tryCatch(() => UtilEventSource.parse(searchParams.get("source") || "", true));
+	const signedInDid = useATProtoAuthStore(store => store.agent?.sub);
 
 	const dataAtom = useMemo(() => atom<EventData | null>(null), []);
 	const setDataAtom = useSetAtom(dataAtom);
@@ -43,7 +46,7 @@ export default function EditEventPage() {
 		if (!source || !data) return;
 		console.log("Saving data", { source, data });
 		mutation.mutate({ data, source });
-	}), [dataAtom]));
+	}), [dataAtom, source, mutation]));
 
 	const loading = (mutation.isPending || query?.query.isLoading) && !sourceParseError;
 
@@ -56,6 +59,21 @@ export default function EditEventPage() {
 			onContinue={save}
 			loading={loading}
 			data={dataAtom}
+			notice={(
+				<Stack>
+					{source && UtilEventSource.isAt(source) && !signedInDid && (
+						<Alert
+							title="Not signed in"
+							color="yellow"
+							my="md"
+						>
+							<Stack gap={4}>
+								You are not signed in to ATProto!
+							</Stack>
+						</Alert>
+					)}
+				</Stack>
+			)}
 		/>
 	);
 };

@@ -1,3 +1,3 @@
-import { useQueryModalState } from "../base/useQueryModalState";
+import { useSearchParamKey } from "../base/useSearchParamKey";
 
-export const useEventEditModal = () => useQueryModalState("eventEdit", true);
+export const useEventEditModal = () => useSearchParamKey("eventEdit", true);

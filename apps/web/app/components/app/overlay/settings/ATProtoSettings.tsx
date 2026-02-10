@@ -21,24 +21,30 @@ export const ATProtoSettings = () => {
 }
 
 export const ATProtoSignedOut = () => {
-	const [opened, { open }] = useDisclosure(false);
+	const [opened, { open, close }] = useDisclosure(false);
 	const [identifier, setIdentifier] = useState("");
 	const [loading, setLoading] = useState(false);
 
 	const onSubmit = async () => {
 		setLoading(true);
-		await useATProtoAuthStore.getState().signIn(identifier);
+		await useATProtoAuthStore.getState().startAuthorization(identifier);
 		// unreachable code after redirect
 		setLoading(false);
 	};
 
 	return (
 		<Stack gap={4}>
+			<Stack gap={0}>
+				<Input.Label>
+					{opened ? "Identifier" : "You are not signed in"}
+				</Input.Label>
+				<Input.Description>
+					{opened ? "Your ATProto handle or email" : "To use ATProto features, please sign in with your ATProto account."}
+				</Input.Description>
+			</Stack>
 			{opened ? (
 				<Stack gap={4}>
 					<TextInput
-						label="Identifier"
-						description="Your ATProto handle or email"
 						placeholder="example.bsky.social"
 						value={identifier}
 						onChange={e => setIdentifier(e.currentTarget.value)}
@@ -56,6 +62,7 @@ export const ATProtoSignedOut = () => {
 								<IconArrowRight />
 							</ActionIcon>
 						)}
+						onBlur={close}
 					/>
 					{loading && (
 						<Input.Description>Redirecting...</Input.Description>

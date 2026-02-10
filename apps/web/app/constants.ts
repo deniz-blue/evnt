@@ -7,6 +7,7 @@ export const LOCALSTORAGE_KEYS = {
 	home: `${LOCALSTORAGE_PREFIX}home`,
 	layers: `${LOCALSTORAGE_PREFIX}userdata`,
 	jetstreamCursor: `${LOCALSTORAGE_PREFIX}jetstream-cursor`,
+	atprotoAccounts: `${LOCALSTORAGE_PREFIX}atproto-accounts`,
 } as const;
 
 export const DATABASE_NAME = `${LOCALSTORAGE_PREFIX}events-db` as const;

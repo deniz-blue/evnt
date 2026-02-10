@@ -24,7 +24,7 @@ export default function OauthCallbackRoute() {
 			return;
 		}
 
-		useATProtoAuthStore.getState().finalizeAuthorization(params).then(() => {
+		useATProtoAuthStore.getState().finishAuthorization(params).then(() => {
 			console.log("OAuth authorization finalized, navigating to home.");
 			navigate("/", { replace: true });
 		});

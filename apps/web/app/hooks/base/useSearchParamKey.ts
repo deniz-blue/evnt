@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useSearchParams } from "react-router";
 
-export const useQueryModalState = (key: string, replaceAll?: boolean) => {
+export const useSearchParamKey = (key: string, replaceAll?: boolean) => {
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	const isOpen = searchParams.has(key);
@@ -30,12 +30,16 @@ export const useQueryModalState = (key: string, replaceAll?: boolean) => {
 	}, [key, setSearchParams, replaceAll]);
 
 	const toggle = useCallback((value: string) => {
-		if (isOpen && value === value) {
-			close();
-		} else {
-			open(value);
-		}
-	}, [isOpen, value, open, close]);
+		setSearchParams(prev => {
+			const newParams = new URLSearchParams(prev);
+			if (prev.has(key) || newParams.get(key) === value) {
+				newParams.delete(key);
+			} else {
+				newParams.set(key, value);
+			}
+			return newParams;
+		});
+	}, [key, setSearchParams]);
 
 	return {
 		isOpen,

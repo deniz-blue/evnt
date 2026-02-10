@@ -1,5 +1,5 @@
 import { Button, Divider, Drawer, Group, Kbd, Stack, Text } from "@mantine/core";
-import { useQueryModalState } from "../../../../hooks/base/useQueryModalState";
+import { useSearchParamKey } from "../../../../hooks/base/useSearchParamKey";
 import { LanguageSelect } from "./LanguageSelect";
 import { useLocaleStore } from "../../../../stores/useLocaleStore";
 import { TimezoneSelect } from "./TimezoneSelect";
@@ -7,7 +7,7 @@ import { IconExternalLink, IconSettings } from "@tabler/icons-react";
 import { EVENT_REDIRECTOR_URL } from "../../../../constants";
 import { ATProtoSettings } from "./ATProtoSettings";
 
-export const useSettingsOverlay = () => useQueryModalState("settings", true);
+export const useSettingsOverlay = () => useSearchParamKey("settings", true);
 
 export const SettingsOverlay = () => {
 	const { isOpen, close } = useSettingsOverlay();
@@ -17,6 +17,7 @@ export const SettingsOverlay = () => {
 		<Drawer
 			opened={isOpen}
 			onClose={close}
+			keepMounted
 			title={(
 				<Group align="center" gap={4}>
 					<IconSettings />
@@ -38,6 +39,10 @@ export const SettingsOverlay = () => {
 
 				<TimezoneSelect />
 
+				<Divider label="ATProto" />
+
+				<ATProtoSettings />
+
 				<Divider label="event.nya.pub" />
 
 				<Button
@@ -51,10 +56,6 @@ export const SettingsOverlay = () => {
 				>
 					Set this Application as Default
 				</Button>
-
-				<Divider label="ATProto" />
-
-				<ATProtoSettings />
 			</Stack>
 		</Drawer>
 	);

@@ -1,10 +1,12 @@
 import { create } from "zustand";
-import { configureOAuth, createAuthorizationUrl, finalizeAuthorization, OAuthUserAgent, type Session } from "@atcute/oauth-browser-client";
+import { configureOAuth, createAuthorizationUrl, finalizeAuthorization, getSession, listStoredSessions, OAuthUserAgent, type Session } from "@atcute/oauth-browser-client";
 import type { EventData } from "@evnt/schema";
 import { CompositeDidDocumentResolver, LocalActorResolver, PlcDidDocumentResolver, WebDidDocumentResolver, XrpcHandleResolver } from "@atcute/identity-resolver";
 import { Client } from "@atcute/client";
 import { isDid, isHandle, type Did } from "@atcute/lexicons/syntax";
-import type {} from "@atcute/atproto";
+import type { } from "@atcute/atproto";
+import { persist } from "zustand/middleware";
+import { LOCALSTORAGE_KEYS } from "../constants";
 
 configureOAuth({
 	metadata: {
@@ -29,11 +31,13 @@ export interface ATProtoAuthStore {
 	agent: OAuthUserAgent | null;
 	rpc: Client | null;
 
-	finalizeAuthorization: (params: URLSearchParams) => Promise<void>;
-	signIn: (identifier: string) => Promise<void>;
+	initialize: () => Promise<void>;
+
+	startAuthorization: (identifier: string) => Promise<void>;
+	finishAuthorization: (params: URLSearchParams) => Promise<void>;
 	signOut: () => Promise<void>;
 
-	createEventRecord: (data: EventData) => Promise<void>;
+	allSessions: () => Did[];
 }
 
 export const useATProtoAuthStore = create<ATProtoAuthStore>((set, get) => ({
@@ -41,14 +45,19 @@ export const useATProtoAuthStore = create<ATProtoAuthStore>((set, get) => ({
 	agent: null,
 	rpc: null,
 
-	finalizeAuthorization: async (params: URLSearchParams) => {
-		const { session } = await finalizeAuthorization(params);
+	initialize: async () => {
+		const storedSessions = listStoredSessions();
+		const mostRecentSession = storedSessions[0];
+		if (!mostRecentSession) return;
+		const session = await getSession(mostRecentSession, {
+			allowStale: true,
+		});
 		const agent = new OAuthUserAgent(session);
-		const rpc = new Client({ handler: agent })
+		const rpc = new Client({ handler: agent });
 		set({ session, agent, rpc });
 	},
 
-	signIn: async (input: string) => {
+	startAuthorization: async (input: string) => {
 		console.log("Signing into atproto with input:", input);
 
 		const authUrl = await createAuthorizationUrl({
@@ -58,9 +67,17 @@ export const useATProtoAuthStore = create<ATProtoAuthStore>((set, get) => ({
 			scope: import.meta.env.VITE_OAUTH_SCOPE,
 		});
 
-		await new Promise(resolve => setTimeout(resolve, 250));
+		// flush storage updates before redirecting
+		setTimeout(() => {
+			window.location.assign(authUrl);
+		}, 0);
+	},
 
-		window.location.assign(authUrl);
+	finishAuthorization: async (params: URLSearchParams) => {
+		const { session } = await finalizeAuthorization(params);
+		const agent = new OAuthUserAgent(session);
+		const rpc = new Client({ handler: agent })
+		set({ session, agent, rpc });
 	},
 
 	signOut: async () => {
@@ -70,9 +87,7 @@ export const useATProtoAuthStore = create<ATProtoAuthStore>((set, get) => ({
 		set({ session: null, agent: null, rpc: null });
 	},
 
-	createEventRecord: async (data: EventData) => {
-
-	},
+	allSessions: () => listStoredSessions(),
 }));
 
 export const getAvatarOfDid = (did: Did) => {

@@ -4,7 +4,7 @@ import { Stack, Text } from "@mantine/core";
 import { useEventQueries } from "../db/useEventQuery";
 import { EventCard } from "../components/content/event/EventCard";
 import { useQuery } from "@tanstack/react-query";
-import { EventResolver } from "../db/resolve";
+import { EventResolver } from "../db/event-resolver";
 
 export default function EmbedPage() {
 	const [searchParams] = useSearchParams();

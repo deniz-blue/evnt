@@ -1,10 +1,10 @@
 import { EventDataSchema, type EventData } from "@evnt/schema";
-import { UtilEventSource, type EventSource } from "../db/models/event-source";
-import { DataDB } from "../db/data-db";
+import { UtilEventSource, type EventSource } from "./models/event-source";
+import { DataDB } from "./data-db";
 import { Client, simpleFetchHandler, type FailedClientResponse } from "@atcute/client";
 import { parseCanonicalResourceUri } from "@atcute/lexicons/syntax";
 import type { EventEnvelope } from "./models/event-envelope";
-import { tryCatchAsync } from "../lib/util/trynull";
+import { tryCatch, tryCatchAsync } from "../lib/util/trynull";
 import { ZodError } from "zod";
 
 export class EventResolver {
@@ -52,25 +52,18 @@ export class EventResolver {
 			};
 		};
 
-		const result = EventDataSchema.safeParse(json);
-
-		if (!result.success) {
-			return {
-				data: null,
-				err: this.#EnvelopeError(result.error),
-			};
-		};
+		const envelope = this.fromJsonObject(json);
 
 		return {
-			data: result.data,
+			...envelope,
 			rev: {
 				etag: res.headers.get("etag") ?? undefined,
 			},
 		};
 	}
 
-	static async fromJsonText(jsontext: string): Promise<EventEnvelope> {
-		const [json, jsonParseError] = await tryCatchAsync(() => JSON.parse(jsontext));
+	static fromJsonText(jsontext: string): EventEnvelope {
+		const [json, jsonParseError] = tryCatch(() => JSON.parse(jsontext));
 		if (jsonParseError) {
 			return {
 				data: null,
@@ -78,6 +71,10 @@ export class EventResolver {
 			};
 		}
 
+		return this.fromJsonObject(json);
+	}
+
+	static fromJsonObject(json: unknown): EventEnvelope {
 		const result = EventDataSchema.safeParse(json);
 
 		if (!result.success) {
