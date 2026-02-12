@@ -16,17 +16,18 @@ import { IconCode, IconEdit, IconJson, IconLink, IconShare } from "@tabler/icons
 import { Link } from "react-router";
 import { EnvelopeErrorBadge } from "../envelope/EnvelopeErrorBadge";
 
+export interface EventDetailsContentProps extends Omit<EventEnvelope, "draft"> {
+	source?: EventSource;
+	loading?: boolean;
+	isDraft?: boolean;
+}
+
 export const EventDetailsContent = ({
 	data,
 	source,
 	err,
 	loading,
-}: {
-	data: EventData;
-	source?: EventSource;
-	loading?: boolean;
-	err?: EventEnvelope.Error;
-}) => {
+}: EventDetailsContentProps) => {
 	return (
 		<Stack>
 			<Group gap={4}>
@@ -35,7 +36,7 @@ export const EventDetailsContent = ({
 						<Loader />
 					)}
 					<Title>
-						<Trans t={data.name} />
+						<Trans t={data?.name} />
 					</Title>
 					<EnvelopeErrorBadge err={err} />
 				</Group>
@@ -108,10 +109,10 @@ export const EventDetailsContent = ({
 
 			<Stack gap={0}>
 				<SmallTitle padLeft>
-					venue{data.venues && data.venues.length !== 1 ? "s" : ""}
+					venue{data?.venues && data.venues.length !== 1 ? "s" : ""}
 				</SmallTitle>
 				<Stack gap={4}>
-					{data.venues?.map((venue, index) => (
+					{data?.venues?.map((venue, index) => (
 						<Stack key={index} gap={0}>
 							<Snippet snippet={snippetVenue(venue)} />
 							<Stack gap={0}>
@@ -143,7 +144,7 @@ export const EventDetailsContent = ({
 					date & time
 				</SmallTitle>
 				<Stack gap={4}>
-					{data.instances?.map((instance, index) => (
+					{data?.instances?.map((instance, index) => (
 						<Stack key={index} gap={0}>
 							{snippetInstance(instance).map((snippet, snipIndex) => (
 								<Snippet key={snipIndex} snippet={snippet} />
@@ -158,7 +159,7 @@ export const EventDetailsContent = ({
 					description
 				</SmallTitle>
 				<Stack gap={4}>
-					{data.description ? (
+					{data?.description ? (
 						<MarkdownTranslations content={data.description} />
 					) : (
 						<Text c="dimmed" span fs="italic">No description provided.</Text>
@@ -171,7 +172,7 @@ export const EventDetailsContent = ({
 					links
 				</SmallTitle>
 				<Stack gap={4}>
-					{data.components?.filter(component => component.type == "link").map(x => x.data).map((link, index) => (
+					{data?.components?.filter(component => component.type == "link").map(x => x.data).map((link, index) => (
 						<EventLinkButton key={index} value={link} />
 					))}
 				</Stack>

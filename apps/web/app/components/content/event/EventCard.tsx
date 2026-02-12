@@ -33,7 +33,8 @@ export interface EventCardProps extends Omit<EventEnvelope, "draft"> {
 export const EventCard = (props: EventCardProps) => {
 	return (
 		<Paper
-			p={props.variant == "inline" ? 4 : "xs"}
+			p={props.variant == "inline" ? 0 : "xs"}
+			px={props.variant == "inline" ? 4 : undefined}
 			withBorder
 			w="100%"
 			h={props.variant === "card" ? "100%" : undefined}
@@ -48,8 +49,8 @@ export const EventCard = (props: EventCardProps) => {
 				</Stack>
 
 				{/* Bottom section */}
-				<Stack>
-					{props.variant === "card" && (
+				{props.variant === "card" && (
+					<Stack>
 						<Group>
 							{props.source && UtilEventSource.getType(props.source) === "local" && (
 								<Badge color="gray" size="xs" variant="outline" children="local" />
@@ -61,8 +62,8 @@ export const EventCard = (props: EventCardProps) => {
 								<Badge color="yellow" size="xs" variant="outline" children="draft" />
 							)}
 						</Group>
-					)}
-				</Stack>
+					</Stack>
+				)}
 			</Stack>
 		</Paper>
 	);
@@ -91,7 +92,7 @@ export const EventCardTitle = ({
 							{(styles) => <Loader size="xs" style={styles} />}
 						</Transition>
 						<SubtleLink to={source && (embed ? EventActions.getShareLink(source) : openLink(source))} newTab={embed}>
-							<Text fw="bold" span lineClamp={variant === "inline" ? 1 : undefined}>
+							<Text fw="bold" span lineClamp={variant === "inline" ? 1 : undefined} style={variant == "inline" ? { wordBreak: "break-all" } : undefined}>
 								{!!data ? (
 									UtilTranslations.isEmpty(data.name) ? (
 										<Text span c="dimmed" fz="sm" fs="italic" children="<no title>" />

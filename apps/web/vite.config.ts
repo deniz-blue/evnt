@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { VitePWA } from "vite-plugin-pwa";
 import metadata from "./public/oauth-client-metadata.json" with { type: "json" };
+import path from "node:path";
 
 const SERVER_HOST = "127.0.0.1";
 const SERVER_PORT = 5173;
@@ -12,6 +13,13 @@ export default defineConfig({
 	server: {
 		host: SERVER_HOST,
 		port: SERVER_PORT,
+	},
+
+	resolve: {
+		alias: {
+			"use-query-params": path.resolve(__dirname, "node_modules/use-query-params/dist/index.js"),
+			'serialize-query-params': path.resolve(__dirname, "node_modules/serialize-query-params/dist/index.js"),
+		},
 	},
 
 	plugins: [

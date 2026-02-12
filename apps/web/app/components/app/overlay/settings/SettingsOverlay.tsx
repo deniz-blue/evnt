@@ -1,17 +1,12 @@
-import { Button, Divider, Drawer, Group, Kbd, Stack, Text } from "@mantine/core";
+import { Drawer, Group, Kbd, Text } from "@mantine/core";
 import { useSearchParamKey } from "../../../../hooks/base/useSearchParamKey";
-import { LanguageSelect } from "./LanguageSelect";
-import { useLocaleStore } from "../../../../stores/useLocaleStore";
-import { TimezoneSelect } from "./TimezoneSelect";
-import { IconExternalLink, IconSettings } from "@tabler/icons-react";
-import { EVENT_REDIRECTOR_URL } from "../../../../constants";
-import { ATProtoSettings } from "./ATProtoSettings";
+import { IconSettings } from "@tabler/icons-react";
+import { Settings } from "./Settings";
 
 export const useSettingsOverlay = () => useSearchParamKey("settings", true);
 
 export const SettingsOverlay = () => {
 	const { isOpen, close } = useSettingsOverlay();
-	const language = useLocaleStore((state) => state.language);
 
 	return (
 		<Drawer
@@ -29,34 +24,7 @@ export const SettingsOverlay = () => {
 			size="md"
 			position="right"
 		>
-			<Stack>
-				<Divider label="Localization" />
-
-				<LanguageSelect
-					value={language}
-					onChange={lang => useLocaleStore.getState().setLanguage(lang)}
-				/>
-
-				<TimezoneSelect />
-
-				<Divider label="ATProto" />
-
-				<ATProtoSettings />
-
-				<Divider label="event.nya.pub" />
-
-				<Button
-					component="a"
-					href={EVENT_REDIRECTOR_URL + "/?" + new URLSearchParams({
-						setInstanceUrl: window.location.origin,
-						popup: "true",
-					})}
-					target="_blank"
-					rightSection={<IconExternalLink size={16} />}
-				>
-					Set this Application as Default
-				</Button>
-			</Stack>
+			<Settings />
 		</Drawer>
 	);
 };

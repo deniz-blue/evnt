@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import type { EventData } from "@evnt/schema";
 import { atom, useSetAtom } from "jotai";
 import { EventActions } from "../lib/actions/event-actions";
-import { useEventDetailsModal } from "../hooks/app/useEventDetailsModal";
 import { useNavigate } from "react-router";
 import { FormPageTemplate } from "./form";
 import { useMutation } from "@tanstack/react-query";
@@ -10,7 +9,6 @@ import { useMutation } from "@tanstack/react-query";
 export default function NewEventPage() {
 	const dataAtom = useMemo(() => atom<EventData | null>({ v: 0, name: {} }), []);
 
-	const { key } = useEventDetailsModal();
 	const navigate = useNavigate();
 
 	const mutation = useMutation({
@@ -18,7 +16,7 @@ export default function NewEventPage() {
 			return await EventActions.createLocalEvent(data);
 		},
 		onSuccess: async (source) => {
-			navigate(`/list?${new URLSearchParams({ [key]: source }).toString()}`);
+			navigate(`/event?${new URLSearchParams({ source }).toString()}`);
 		},
 	});
 

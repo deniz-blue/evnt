@@ -1,3 +1,3 @@
 import { useSearchParamKey } from "../base/useSearchParamKey";
 
-export const useEventEditModal = () => useSearchParamKey("eventEdit", true);
+export const useEventEditModal = () => useSearchParamKey("eventEdit");

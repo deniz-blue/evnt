@@ -1,20 +1,19 @@
 import { useEffect, useRef } from "react";
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useEventDetailsModal } from "../../../hooks/app/useEventDetailsModal";
 import { useViewIndexModal } from "../../../hooks/app/useViewIndexModal";
 
 export const LinkOpenHandler = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
-	const { key: eventDetailsKey, open: openEventDetails } = useEventDetailsModal();
-	const { key: viewIndexKey, open: openViewIndex } = useViewIndexModal();
+	const navigate = useNavigate();
+	const { open: openViewIndex } = useViewIndexModal();
 	const lastRef = useRef<string | null>(null);
 
 	const deleteParams = (params: string[]) => {
-		setSearchParams(prev => {
-			const next = new URLSearchParams(prev);
-			for (const param of params) next.delete(param);
-			return next;
-		});
+		// Mutation = no rerender
+		for (const param of params)
+			searchParams.delete(param);
+		setSearchParams(searchParams);
 	};
 
 	useEffect(() => {
@@ -24,17 +23,18 @@ export const LinkOpenHandler = () => {
 			const action = searchParams.get("action");
 
 			if (action === "view-event") {
-				const url = searchParams.get("url");
-				if (url) {
-					deleteParams(["action", "url"]);
-					openEventDetails(url);
+				const source = searchParams.get("source") || searchParams.get("url");
+				if (source) {
+					console.log("Opening event details for url", source);
+					// deleteParams(["action", "url"]);
+					navigate(`/event?${new URLSearchParams({ source }).toString()}`);
 				}
 			} else if (action === "view-index") {
 				const indexUrl = searchParams.get("index");
 				if (indexUrl) {
-					deleteParams(["action", "index"]);
 					const fullIndexUrl = indexUrl.startsWith("http") ? indexUrl : ("https://" + indexUrl);
-					openViewIndex(fullIndexUrl);
+					deleteParams(["action", "index"]);
+					setTimeout(() => openViewIndex(fullIndexUrl), 0);
 				}
 			}
 		})();

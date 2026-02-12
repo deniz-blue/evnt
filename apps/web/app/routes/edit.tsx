@@ -28,7 +28,6 @@ export default function EditEventPage() {
 		setDataAtom(prev => prev ?? query.query.data?.data ?? null);
 	}, [query?.query?.data ?? null]);
 
-	const { key } = useEventDetailsModal();
 	const navigate = useNavigate();
 
 	const mutation = useMutation({
@@ -37,7 +36,7 @@ export default function EditEventPage() {
 			await EventMutator.update(source, data);
 		},
 		onSuccess: async (data, { source }) => {
-			navigate(`/list?${new URLSearchParams({ [key]: source }).toString()}`);
+			navigate(`/event?${new URLSearchParams({ source }).toString()}`);
 		}
 	});
 

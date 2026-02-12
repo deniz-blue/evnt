@@ -1,45 +1,32 @@
 import { useCallback } from "react";
-import { useSearchParams } from "react-router";
+import { useQueryParam, type UrlUpdateType } from "use-query-params";
 
-export const useSearchParamKey = (key: string, replaceAll?: boolean) => {
-	const [searchParams, setSearchParams] = useSearchParams();
+export const useSearchParamKey = (key: string, replaceType: UrlUpdateType = "replace") => {
+	const [value = null, setValue] = useQueryParam(key);
 
-	const isOpen = searchParams.has(key);
-	const value = searchParams.get(key) || null;
+	const isOpen = value !== null;
 
-	const open = useCallback((value: string, replace = false) => {
-		setSearchParams(prev => {
-			const newParams = new URLSearchParams(prev);
-			newParams.set(key, value);
-			return newParams;
-		}, { replace: replaceAll ?? replace });
-	}, [key, setSearchParams, replaceAll]);
+	const open = useCallback((value: string) => {
+		setValue(value, replaceType);
+	}, [key, setValue, replaceType]);
 
 	const openLink = useCallback((value: string) => {
-		const newParams = new URLSearchParams(searchParams);
-		newParams.set(key, value);
-		return `?${newParams.toString()}`;
-	}, [key, searchParams]);
+		// Is this broken now?
+		const params = new URLSearchParams(window.location.search);
+		params.set(key, value);
+		return `?${params.toString()}`;
+	}, [key, value]);
 
-	const close = useCallback((replace = false) => {
-		setSearchParams(prev => {
-			const newParams = new URLSearchParams(prev);
-			newParams.delete(key);
-			return newParams;
-		}, { replace: replaceAll ?? replace });
-	}, [key, setSearchParams, replaceAll]);
+	const close = useCallback(() => {
+		setValue(null, replaceType);
+	}, [key, setValue, replaceType]);
 
 	const toggle = useCallback((value: string) => {
-		setSearchParams(prev => {
-			const newParams = new URLSearchParams(prev);
-			if (prev.has(key) || newParams.get(key) === value) {
-				newParams.delete(key);
-			} else {
-				newParams.set(key, value);
-			}
-			return newParams;
-		});
-	}, [key, setSearchParams]);
+		if (value)
+			close();
+		else
+			open(value);
+	}, [key, setValue, replaceType]);
 
 	return {
 		isOpen,

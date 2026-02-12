@@ -32,7 +32,7 @@ export default function MainLayout() {
 		>
 			<AppShell.Header pt="env(safe-area-inset-top, 0px)">
 				<Group gap={0} p="xs" align="center" h="100%" w="100%" justify="space-between">
-					<Group gap="xs">
+					<Group gap={4}>
 						<img src="/icon.svg" alt="@evnt Viewer Logo" width={32} height={32} />
 						<Button
 							component={Link}
@@ -47,6 +47,14 @@ export default function MainLayout() {
 							{...navbtnprops}
 						>
 							List
+						</Button>
+						<DatabaseStateView />
+						<Button
+							component={Link}
+							to="/calendar"
+							{...navbtnprops}
+						>
+							Cal
 						</Button>
 						<DatabaseStateView />
 					</Group>

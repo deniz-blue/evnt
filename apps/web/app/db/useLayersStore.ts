@@ -16,6 +16,7 @@ export interface LayersActions {
 
 	addEventSource: (source: EventSource, layerId?: string) => void;
 	removeEventSource: (source: EventSource, layerId?: string) => void;
+	allTrackedSources: () => EventSource[];
 };
 
 export type LayersStore = LayersState & LayersActions;
@@ -62,6 +63,13 @@ export const useLayersStore = create<LayersStore>()(
 					if (index === -1) return;
 					state.layers[layerId].data.events.splice(index, 1);
 				}),
+
+			allTrackedSources: () => {
+				let sources: EventSource[] = [];
+				for (const layer of Object.values(get().layers))
+					sources.push(...(layer.data.events || []));
+				return sources;
+			},
 		})),
 		{
 			name: LOCALSTORAGE_KEYS.layers,

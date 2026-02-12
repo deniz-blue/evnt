@@ -10,6 +10,7 @@ import { useShallow } from "zustand/shallow";
 import { useEventQueries } from "../db/useEventQuery";
 import { EventCard } from "../components/content/event/EventCard";
 import { EventContextMenu } from "../components/content/event/EventContextMenu";
+import { useLayersStore } from "../db/useLayersStore";
 
 export default function CalendarPage() {
 	const [date, setDate] = useState<PartialDate>(UtilPartialDate.today());
@@ -79,7 +80,7 @@ export default function CalendarPage() {
 					}}
 				>
 					{dates.map(row => (
-						row.map(date => (
+						row.map(day => (
 							<Paper
 								withBorder
 								radius={0}
@@ -91,7 +92,8 @@ export default function CalendarPage() {
 								}}
 								pos="relative"
 							>
-								<Overlay
+								<DayCard month={date.slice(0, 7) as PartialDate.Month} day={day} />
+								{/* <Overlay
 									style={{ pointerEvents: "none", display: "flex", alignItems: "center", justifyContent: "center" }}
 									center
 									backgroundOpacity={0}
@@ -111,8 +113,7 @@ export default function CalendarPage() {
 											{date.slice(-2)}
 										</text>
 									</svg>
-								</Overlay>
-								<DayCard date={date} />
+								</Overlay> */}
 							</Paper>
 						))
 					))}
@@ -122,30 +123,66 @@ export default function CalendarPage() {
 	);
 };
 
-export const DayCard = ({ date }: { date: PartialDate.Day }) => {
+export const DayCard = ({
+	month,
+	day
+}: {
+	month: PartialDate.Month;
+	day: PartialDate.Day;
+}) => {
+	const allTrackedSources = useLayersStore(
+		useShallow(store => store.allTrackedSources())
+	);
+
 	const sources = useCacheEventsStore(
-		useShallow(store => Object.entries(store.cacheByPartialDate).filter(([key]) => UtilPartialDate.includes(date, key as PartialDate)).map(([key, value]) => value).flat() || [])
+		// TODO: remove jank
+		useShallow(store => {
+			let entries = Object.entries(store.cacheByPartialDate);
+			entries = entries.filter(([key]) => UtilPartialDate.includes(day, key as PartialDate));
+			let sources = entries.map(([key, value]) => value).flat() || [];
+			sources = Array.from(new Set(sources));
+			return sources;
+		})
 	);
 
 	const queries = useEventQueries(sources);
 
 	return (
-		<ScrollArea h="100%" mah="100%" w="100%">
-			<Stack gap={0}>
-				{queries.map(({ query, source }, index) => (
-					<EventCard
-						key={index}
-						variant="inline"
-						source={source}
-						loading={query.isFetching}
-						menu={<EventContextMenu source={source} />}
-						err={query.data?.err}
-						rev={query.data?.rev}
-						data={query.data?.draft ?? query.data?.data ?? null}
-						isDraft={!!query.data?.draft}
+		<Stack gap={0} w="100%" h="100%" align="center">
+			<Text
+				ta="center"
+				c={month !== day.slice(0, 7) ? "dimmed" : undefined}
+				fz="xs"
+				fw="bold"
+				span
+			>
+				{day.slice(-2)}
+				{sources.length > 0 && (
+					<Text
+						span
+						c="dimmed"
+						fz="xs"
+						ml="xs"
+						children={`(${sources.length})`}
 					/>
-				))}
-			</Stack>
-		</ScrollArea>
+				)}
+			</Text>
+			<ScrollArea h="100%" mah="100%" w="100%">
+				<Stack gap={0}>
+					{queries.map(({ query, source }, index) => (
+						<EventCard
+							key={index}
+							variant="inline"
+							source={source}
+							loading={query.isFetching}
+							err={query.data?.err}
+							rev={query.data?.rev}
+							data={query.data?.draft ?? query.data?.data ?? null}
+							isDraft={!!query.data?.draft}
+						/>
+					))}
+				</Stack>
+			</ScrollArea>
+		</Stack>
 	);
-}
+};

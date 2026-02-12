@@ -3,6 +3,7 @@ import type { EventSource } from "../../db/models/event-source";
 import type { EventData, PartialDate } from "@evnt/schema";
 import { immer } from "zustand/middleware/immer";
 import { DataDB } from "../../db/data-db";
+import { useLayersStore } from "../../db/useLayersStore";
 
 export interface CacheEventsStore {
 	cacheByPartialDate: Record<PartialDate, EventSource[]>;
@@ -32,7 +33,8 @@ export const useCacheEventsStore = create<CacheEventsStore>()(
 		}),
 
 		init: async () => {
-			const all = await DataDB.getAllKeys();
+			console.log("Initializing cache...");
+			const all = useLayersStore.getState().allTrackedSources();
 			const { hydrate } = get();
 			for (const source of all) {
 				const data = await DataDB.get(source);
@@ -40,6 +42,7 @@ export const useCacheEventsStore = create<CacheEventsStore>()(
 					hydrate(source, data.data);
 				}
 			}
+			console.log("Cache initialized with", Object.keys(get().cacheByPartialDate).length, "partial dates.");
 		},
 	}))
 );

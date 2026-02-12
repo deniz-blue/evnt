@@ -7,6 +7,7 @@ export default [
 				layout("./layouts/SpaceBelowLayout.tsx", [
 					index("routes/home.tsx"),
 					route("list", "routes/list.tsx"),
+					route("event", "routes/event.tsx"),
 					route("test", "routes/test.tsx"),
 					route("new", "routes/new.tsx"),
 					route("edit", "routes/edit.tsx"),

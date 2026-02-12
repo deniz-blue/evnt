@@ -23,6 +23,8 @@ import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
 import.meta.glob("./styles/**/*.css", { eager: true });
 import "./lib/atproto/atproto-services";
+import { QueryParamProvider } from "use-query-params";
+import { ReactRouter7Adapter } from "./lib/compat/ReactRouter7Adapter";
 
 export const meta: Route.MetaFunction = () => [
 	{ title: "Vantage Events Viewer" },
@@ -67,10 +69,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 						},
 					})}
 				>
-					<Notifications />
-					<ModalsProvider modals={contextModals}>
-						{children}
-					</ModalsProvider>
+					<QueryParamProvider
+						adapter={ReactRouter7Adapter}
+					>
+						<Notifications />
+						<ModalsProvider modals={contextModals}>
+							{children}
+						</ModalsProvider>
+					</QueryParamProvider>
 				</MantineProvider>
 				<ScrollRestoration />
 				<Scripts />
