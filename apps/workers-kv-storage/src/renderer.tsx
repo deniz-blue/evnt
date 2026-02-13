@@ -1,14 +1,21 @@
-import { jsxRenderer } from "hono/jsx-renderer"
-import { Link, ViteClient } from "vite-ssr-components/hono"
+import { Context } from "hono";
+import { SignCallbackPageProps } from "./pages/sign-callback";
 
-export const renderer = jsxRenderer(({ children }) => {
-	return (
+export const renderSignCallbackPage = (c: Context, props: SignCallbackPageProps) => {
+	return c.html(
 		<html>
 			<head>
-				<ViteClient />
-				<Link href="/src/style.css" rel="stylesheet" />
+				<meta charSet="utf-8" />
+				<meta content="width=device-width, initial-scale=1" name="viewport" />
+				{import.meta.env.PROD ? (
+					<script type="module" src="/static/client.js" />
+				) : (
+					<script type="module" src="/src/client.tsx" />
+				)}
 			</head>
-			<body>{children}</body>
+			<body>
+				<div id="root" data-props={JSON.stringify(props)}></div>
+			</body>
 		</html>
 	);
-});
+};

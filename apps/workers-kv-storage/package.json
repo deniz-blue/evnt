@@ -9,7 +9,14 @@
 		"cf-typegen": "wrangler types --env-interface CloudflareBindings"
 	},
 	"dependencies": {
-		"hono": "^4.11.9"
+		"@evnt/schema": "workspace:*",
+		"@hono/vite-build": "^1.9.3",
+		"@hono/vite-dev-server": "^0.25.0",
+		"@hono/zod-validator": "^0.7.6",
+		"@noble/ed25519": "^3.0.0",
+		"@noble/hashes": "^2.0.1",
+		"hono": "^4.11.9",
+		"zod": "^4.3.5"
 	},
 	"devDependencies": {
 		"@cloudflare/vite-plugin": "^1.2.3",

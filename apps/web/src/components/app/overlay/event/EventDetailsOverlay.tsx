@@ -39,6 +39,7 @@ export const EventDetailsOverlayHandler = ({ source }: { source: EventSource }) 
 					source={source}
 					err={err}
 					loading={query.isFetching}
+					withModalCloseButton
 				/>
 			)}
 		</RQResult>

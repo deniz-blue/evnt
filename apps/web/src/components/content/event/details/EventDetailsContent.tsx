@@ -1,4 +1,3 @@
-import type { EventData } from "@evnt/schema";
 import { ActionIcon, Code, Group, Loader, Modal, Stack, Text, Title, Tooltip } from "@mantine/core";
 import { Trans } from "../Trans";
 import { SmallTitle } from "../../base/SmallTitle";
@@ -20,6 +19,7 @@ export interface EventDetailsContentProps extends Omit<EventEnvelope, "draft"> {
 	source?: EventSource;
 	loading?: boolean;
 	isDraft?: boolean;
+	withModalCloseButton?: boolean;
 }
 
 export const EventDetailsContent = ({
@@ -27,6 +27,7 @@ export const EventDetailsContent = ({
 	source,
 	err,
 	loading,
+	withModalCloseButton,
 }: EventDetailsContentProps) => {
 	return (
 		<Stack>
@@ -40,7 +41,7 @@ export const EventDetailsContent = ({
 					</Title>
 					<EnvelopeErrorBadge err={err} />
 				</Group>
-				<Modal.CloseButton />
+				{withModalCloseButton && <Modal.CloseButton />}
 			</Group>
 
 			{source && <LayerImportSection source={source} />}
@@ -97,9 +98,13 @@ export const EventDetailsContent = ({
 							<ActionIcon
 								size="input-md"
 								color="gray"
-								component={Link}
-								to="/_layout/edit"
-								search={{ source }}
+								renderRoot={(props) => (
+									<Link
+										to="/edit"
+										search={{ source }}
+										{...props}
+									/>
+								)}
 							>
 								<IconEdit />
 							</ActionIcon>

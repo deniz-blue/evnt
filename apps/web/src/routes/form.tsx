@@ -14,7 +14,7 @@ import z from "zod";
 const SearchParamsSchema = z.object({
 	"source": RemoteEventSourceSchema.optional(),
 	"data": z.string().optional(),
-	"redirect-to": z.string().optional(),
+	"redirect-to": z.url().optional(),
 	"title": z.string().optional(),
 	"desc": z.string().optional(),
 	"continue-text": z.string().optional(),
@@ -42,7 +42,9 @@ function FormPage() {
 		const data = get(dataAtom);
 		if (!data) return;
 		setLoading(true);
-		window.location.href = `${redirectToParam}?${new URLSearchParams({ data: JSON.stringify(data) })}`;
+		let url = new URL(redirectToParam);
+		url.searchParams.set("data", JSON.stringify(data));
+		window.location.href = url.toString();
 	}), [dataAtom, redirectToParam, setLoading]));
 
 	const fetchData = useSetAtom(useMemo(() => atom(null, async (get, set) => {
