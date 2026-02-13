@@ -1,14 +1,14 @@
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "evnt-kv-storage",
-	"main": "./src/index.tsx",
+	"main": "./dist/evnt_kv_storage/index.js",
 	"compatibility_date": "2026-02-13",
 	"kv_namespaces": [
 		{
 			"binding": "KV",
 			"id": "da0bd6e4f8b0446a9cd7483373bd30a1"
 		}
-	],
+	]
 	// "r2_buckets": [
 	//   {
 	//     "binding": "MY_BUCKET",
