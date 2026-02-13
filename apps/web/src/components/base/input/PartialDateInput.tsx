@@ -243,6 +243,15 @@ export const PartialDateInput = ({
 							Close popup to keep time unknown
 						</Text>
 					)}
+
+					<Button
+						onClick={() => setOpened(false)}
+						color="gray"
+						size="xs"
+						mt="md"
+					>
+						Close
+					</Button>
 				</Stack>
 			</Popover.Dropdown>
 		</Popover>

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import type { EditAtom } from "../components/editor/edit-atom";
-import type { EventData } from "@evnt/schema";
+import { EventDataSchema, type EventData } from "@evnt/schema";
 import { Button, Container, Group, Stack, Text, Title } from "@mantine/core";
 import { CenteredLoader } from "../components/content/base/CenteredLoader";
 import { atom, useAtomValue, useSetAtom } from "jotai";
@@ -13,7 +13,7 @@ import z from "zod";
 
 const SearchParamsSchema = z.object({
 	"source": RemoteEventSourceSchema.optional(),
-	"data": z.string().optional(),
+	"data": EventDataSchema.optional(),
 	"redirect-to": z.url().optional(),
 	"title": z.string().optional(),
 	"desc": z.string().optional(),
@@ -49,12 +49,7 @@ function FormPage() {
 
 	const fetchData = useSetAtom(useMemo(() => atom(null, async (get, set) => {
 		if (dataParam) {
-			try {
-				const data = JSON.parse(dataParam) as EventData;
-				set(dataAtom, data);
-			} catch (e) {
-				console.error("Failed to parse event data from URL", e);
-			}
+			set(dataAtom, dataParam);
 		} else if (sourceParam) {
 			setLoading(true);
 			try {
@@ -78,14 +73,16 @@ function FormPage() {
 	}, [sourceParam, dataParam]);
 
 	return (
-		<FormPageTemplate
-			title={titleParam}
-			desc={descParam}
-			continueText={continueTextParam}
-			onContinue={save}
-			loading={loading}
-			data={dataAtom}
-		/>
+		<Container p="xs">
+			<FormPageTemplate
+				title={titleParam}
+				desc={descParam}
+				continueText={continueTextParam}
+				onContinue={save}
+				loading={loading}
+				data={dataAtom}
+			/>
+		</Container>
 	)
 }
 

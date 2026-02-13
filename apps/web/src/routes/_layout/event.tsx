@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import z from "zod";
 import { EventSourceSchema } from "../../db/models/event-source";
 import { useEventQuery } from "../../db/useEventQuery";
-import { Stack } from "@mantine/core";
+import { Container, Stack } from "@mantine/core";
 import { EventDetailsContent } from "../../components/content/event/details/EventDetailsContent";
 import type { EventEnvelope } from "../../db/models/event-envelope";
 
@@ -20,13 +20,15 @@ function EventPage() {
 	const query = useEventQuery(source);
 
 	return (
-		<Stack>
-			<EventDetailsContent
-				source={source}
-				{...query?.data ?? {
-					data: null,
-				} as EventEnvelope}
-			/>
-		</Stack>
+		<Container size="md">
+			<Stack>
+				<EventDetailsContent
+					source={source}
+					{...query?.data ?? {
+						data: null,
+					} as EventEnvelope}
+				/>
+			</Stack>
+		</Container>
 	)
 }

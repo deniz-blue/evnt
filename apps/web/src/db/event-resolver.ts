@@ -10,10 +10,30 @@ import { ZodError } from "zod";
 export class EventResolver {
 	static async resolve(source: EventSource): Promise<EventEnvelope> {
 		const cached = await DataDB.get(source);
+		if (UtilEventSource.isLocal(source) && cached != null) return cached;
 		if (cached != null) return cached;
+		// the code below causes an infinite loop!
+
+		// if (cached != null && !!cached.data && !cached.err) {
+		// 	const updated = await this.#update(source, cached);
+		// 	console.log(`EventResolver: resolved event source ${source} from cache, updated: ${updated != null}`);
+		// 	if (updated != null) await DataDB.put(source, updated);
+		// 	if (updated != null) return updated;
+		// };
 		const envelope = await this.#fetch(source);
 		await DataDB.put(source, envelope);
+		console.log(`EventResolver: resolved event source ${source} from network, success: ${!!envelope.data}, err: ${!!envelope.err}`);
 		return envelope;
+	}
+
+	static async update(source: EventSource) {
+		const cached = await DataDB.get(source);
+		if (!cached) return;
+		if (UtilEventSource.isLocal(source)) return;
+		const updated = await this.#update(source, cached);
+		console.log(`EventResolver: updated event source ${source} from network, success: ${!!updated?.data}, err: ${!!updated?.err}`);
+		if (updated) await DataDB.put(source, updated);
+		else await DataDB.put(source, await this.#fetch(source));
 	}
 
 	static async #fetch(source: EventSource): Promise<EventEnvelope> {
@@ -28,6 +48,40 @@ export class EventResolver {
 		}
 	}
 
+	static async #update(source: EventSource, envelope: EventEnvelope): Promise<EventEnvelope | null> {
+		if (UtilEventSource.isHttp(source) || UtilEventSource.isHttps(source)) {
+			return await this.#updateHttp(source, envelope);
+		};
+
+		return null;
+	}
+
+	static async #updateHttp(source: EventSource.Http | EventSource.Https, envelope: EventEnvelope): Promise<EventEnvelope | null> {
+		const etag = envelope.rev?.etag;
+		if (etag) {
+			const [res, fetchError] = await tryCatchAsync(() => fetch(source, {
+				headers: [
+					["If-None-Match", etag],
+				],
+			}));
+
+			if (fetchError) return {
+				data: null,
+				err: this.#EnvelopeError(fetchError as TypeError),
+			};
+
+			const notModified = res.status === 304;
+			if (notModified) return envelope;
+
+			return {
+				...envelope,
+				...await this.fromResponse(res),
+			};
+		}
+
+		return null;
+	}
+
 	static async #fetchHttp(source: EventSource.Http | EventSource.Https): Promise<EventEnvelope> {
 		const [res, fetchError] = await tryCatchAsync(() => fetch(source));
 		if (fetchError) {
@@ -37,6 +91,10 @@ export class EventResolver {
 			};
 		};
 
+		return await this.fromResponse(res);
+	}
+
+	static async fromResponse(res: Response): Promise<EventEnvelope> {
 		if (!res.ok) {
 			return {
 				data: null,
@@ -54,10 +112,12 @@ export class EventResolver {
 
 		const envelope = this.fromJsonObject(json);
 
+		console.log(`EventResolver: headers`, [...res.headers.entries()]);
+
 		return {
 			...envelope,
 			rev: {
-				etag: res.headers.get("etag") ?? undefined,
+				etag: res.headers.get("ETag") ?? undefined,
 			},
 		};
 	}

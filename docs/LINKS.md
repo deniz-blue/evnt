@@ -28,18 +28,18 @@ The operations are differentiated by the `action` parameter.
 ## `?action=view-event`
   
 **Parameters:**
-- `url`: [EventSource](./SOURCE.md)
+- `source`: [EventSource](./SOURCE.md) *used to be 'url'*
 
 **Examples:**
 
-- [Link to FOSDEM 2026](<https://event.nya.pub/?action=view-event&url=https%3A%2F%2Fdeniz.blue%2Fevents-data%2Fevents%2F2026%2Ffoss%2Ffosdem26.json>)
+- [Link to FOSDEM 2026](<https://event.nya.pub/?action=view-event&source=https%3A%2F%2Fdeniz.blue%2Fevents-data%2Fevents%2F2026%2Ffoss%2Ffosdem26.json>)
 
 ## `?action=view-index`
 
 Views an `.index.json`.
 
 **Parameters:**
-- `url`: URL of the `.index.json` file
+- `index`: URL of the `.index.json` file
 
 ## Special Parameters
 

@@ -3,5 +3,8 @@ import { defineConfig } from 'vite'
 import ssrPlugin from 'vite-ssr-components/plugin'
 
 export default defineConfig({
-  plugins: [cloudflare(), ssrPlugin() as any],
+	server: {
+		port: 8787,
+	},
+	plugins: [cloudflare(), ssrPlugin() as any],
 })

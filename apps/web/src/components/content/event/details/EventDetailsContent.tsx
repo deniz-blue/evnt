@@ -11,9 +11,13 @@ import { ExternalLink } from "../../base/ExternalLink";
 import type { EventEnvelope } from "../../../../db/models/event-envelope";
 import { EventActions } from "../../../../lib/actions/event-actions";
 import { VantageCopyButton } from "../../../app/VantageCopyButton";
-import { IconCode, IconEdit, IconJson, IconLink, IconShare } from "@tabler/icons-react";
+import { IconCode, IconEdit, IconJson, IconLink, IconReload, IconShare } from "@tabler/icons-react";
 import { EnvelopeErrorBadge } from "../envelope/EnvelopeErrorBadge";
 import { Link } from "@tanstack/react-router";
+import { eventQueryKey, useEventQuery } from "../../../../db/useEventQuery";
+import { queryClient } from "../../../../query-client";
+import { AsyncAction } from "../../../data/AsyncAction";
+import { EventResolver } from "../../../../db/event-resolver";
 
 export interface EventDetailsContentProps extends Omit<EventEnvelope, "draft"> {
 	source?: EventSource;
@@ -48,6 +52,9 @@ export const EventDetailsContent = ({
 
 			<Stack align="end">
 				<Group gap={4}>
+					{source && UtilEventSource.isFromNetwork(source) && (
+						<EventRefetchButton source={source} />
+					)}
 					<VantageCopyButton
 						value={JSON.stringify(data, null, 2)}
 						labelCopy="Copy event JSON"
@@ -206,5 +213,26 @@ export const EventDetailsContent = ({
 				</Text>
 			</Stack>
 		</Stack >
+	);
+};
+
+export const EventRefetchButton = ({ source }: { source: EventSource }) => {
+	const { isFetching } = useEventQuery(source);
+
+	return (
+		<Tooltip label={"Refetch"} withArrow>
+			<AsyncAction action={() => EventResolver.update(source)}>
+				{({ loading, onClick }) => (
+					<ActionIcon
+						size="input-md"
+						color="gray"
+						loading={loading || isFetching}
+						onClick={onClick}
+					>
+						<IconReload />
+					</ActionIcon>
+				)}
+			</AsyncAction>
+		</Tooltip>
 	);
 };
