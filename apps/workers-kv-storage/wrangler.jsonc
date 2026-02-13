@@ -1,38 +1,25 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "workers-kv-storage",
-  "main": "src/index.ts",
-  "compatibility_date": "2026-02-13"
-  // "compatibility_flags": [
-  //   "nodejs_compat"
-  // ],
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "MY_KV_NAMESPACE",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
-  // "r2_buckets": [
-  //   {
-  //     "binding": "MY_BUCKET",
-  //     "bucket_name": "my-bucket"
-  //   }
-  // ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
-  //   }
-  // ],
-  // "ai": {
-  //   "binding": "AI"
-  // },
-  // "observability": {
-  //   "enabled": true,
-  //   "head_sampling_rate": 1
-  // }
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "evnt-kv-storage",
+	"main": "./src/index.tsx",
+	"compatibility_date": "2026-02-13",
+	"kv_namespaces": [
+		{
+			"binding": "KV",
+			"id": "da0bd6e4f8b0446a9cd7483373bd30a1"
+		}
+	],
+	// "r2_buckets": [
+	//   {
+	//     "binding": "MY_BUCKET",
+	//     "bucket_name": "my-bucket"
+	//   }
+	// ],
+	// "d1_databases": [
+	//   {
+	//     "binding": "MY_DB",
+	//     "database_name": "my-database",
+	//     "database_id": ""
+	//   }
+	// ]
 }
