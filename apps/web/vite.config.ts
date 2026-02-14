@@ -8,6 +8,21 @@ import react from "@vitejs/plugin-react-swc";
 const SERVER_HOST = "127.0.0.1";
 const SERVER_PORT = 5173;
 
+const icon = (size: number) => [
+	{
+		src: `icon${size}.png`,
+		type: "image/png",
+		sizes: `${size}x${size}`,
+		purpose: "any",
+	},
+	{
+		src: `icon${size}-maskable.png`,
+		type: "image/png",
+		sizes: `${size}x${size}`,
+		purpose: "maskable",
+	},
+];
+
 export default defineConfig({
 	clearScreen: false,
 	server: {
@@ -44,23 +59,31 @@ export default defineConfig({
 			registerType: "autoUpdate",
 			injectRegister: "auto",
 			manifest: {
+				id: "/",
 				name: "Vantage Events Viewer",
-				short_name: "Vantage Events Viewer",
-				description: "View @evnt events",
+				short_name: "Vantage",
+				description: "View and manage events",
+				categories: ["utilities", "calendar", "productivity"],
+				dir: "ltr",
+				lang: "en-US",
 				theme_color: "#242424",
 				background_color: "#242424",
+				start_url: "/",
+				display: "standalone",
+				display_override: ["window-controls-overlay", "standalone", "fullscreen", "minimal-ui"],
+				prefer_related_applications: false,
 				icons: [
 					{
 						src: "icon.svg",
 						type: "image/svg+xml",
+						sizes: "any",
+						purpose: "any",
 					},
-					{
-						src: "icon.png",
-						type: "image/png",
-						sizes: "256x256",
-					},
+					...icon(192),
+					...icon(256),
+					...icon(512),
 				],
-				display: "standalone",
+				orientation: "any",
 				protocol_handlers: [
 					{
 						protocol: "web+evnt",
@@ -81,10 +104,37 @@ export default defineConfig({
 						url: "/",
 					},
 					{
-						name: "Events List",
+						name: "List",
 						url: "/list",
 					}
 				],
+				file_handlers: [
+					{
+						action: "/?file-handler=%s",
+						accept: {
+							"application/json": [".json"],
+							"text/calendar": [".ics"],
+						},
+					},
+				],
+				share_target: {
+					action: "/?share-target",
+					method: "POST",
+					enctype: "multipart/form-data",
+					params: {
+						url: "url",
+						files: [
+							{
+								name: "json",
+								accept: ["application/json"],
+							},
+							{
+								name: "ics",
+								accept: ["text/calendar"],
+							},
+						],
+					},
+				},
 			},
 			workbox: {
 				globPatterns: ["**/*.{js,css,html,ico,png,svg}"],

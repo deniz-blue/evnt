@@ -1,3 +1,7 @@
 {
-  "https://vantage.deniz.blue": {}
+  "web_apps": [
+    {
+      "web_app_identity": "https://vantage.deniz.blue"
+    }
+  ]
 }
