@@ -37,6 +37,7 @@ export const EventCard = (props: EventCardProps) => {
 			withBorder
 			w="100%"
 			h={props.variant === "card" ? "100%" : undefined}
+			shadow="xs"
 		>
 			<Stack gap={4} h="100%" justify="space-between">
 				<Stack>
