@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import { configureOAuth, createAuthorizationUrl, finalizeAuthorization, getSession, listStoredSessions, OAuthUserAgent, type Session } from "@atcute/oauth-browser-client";
-import { CompositeDidDocumentResolver, LocalActorResolver, PlcDidDocumentResolver, WebDidDocumentResolver, XrpcHandleResolver } from "@atcute/identity-resolver";
+import { createAuthorizationUrl, deleteStoredSession, finalizeAuthorization, getSession, listStoredSessions, OAuthUserAgent, type Session } from "@atcute/oauth-browser-client";
 import { Client } from "@atcute/client";
 import { isDid, isHandle, type Did } from "@atcute/lexicons/syntax";
 import { useLocaleStore } from "../../stores/useLocaleStore";
@@ -9,14 +8,14 @@ export interface ATProtoAuthStore {
 	session: Session | null;
 	agent: OAuthUserAgent | null;
 	rpc: Client | null;
+	sessions: Did[] | null;
 
 	initialize: () => Promise<void>;
 
 	startAuthorization: (identifier: string) => Promise<void>;
 	finishAuthorization: (params: URLSearchParams) => Promise<AuthorizationState>;
-	signOut: () => Promise<void>;
-
-	allSessions: () => Did[];
+	signIn: (did: Did) => Promise<void>;
+	signOut: (did: Did) => Promise<void>;
 }
 
 export interface AuthorizationState {
@@ -29,9 +28,11 @@ export const useATProtoAuthStore = create<ATProtoAuthStore>((set, get) => ({
 	session: null,
 	agent: null,
 	rpc: null,
+	sessions: null,
 
 	initialize: async () => {
 		const storedSessions = listStoredSessions();
+		set({ sessions: storedSessions });
 		const mostRecentSession = storedSessions[0];
 		if (!mostRecentSession) return;
 		const session = await getSession(mostRecentSession, {
@@ -71,18 +72,35 @@ export const useATProtoAuthStore = create<ATProtoAuthStore>((set, get) => ({
 		const { session, state } = await finalizeAuthorization(params);
 		const agent = new OAuthUserAgent(session);
 		const rpc = new Client({ handler: agent });
-		set({ session, agent, rpc });
+		set({
+			session,
+			agent,
+			rpc,
+			sessions: listStoredSessions(),
+		});
 		return state as AuthorizationState;
 	},
 
-	signOut: async () => {
-		const { agent } = get();
-		if (!agent) return;
-		await agent.signOut();
-		set({ session: null, agent: null, rpc: null });
+	signIn: async (did: Did) => {
+		const session = await getSession(did, {
+			allowStale: true,
+		});
+		const agent = new OAuthUserAgent(session);
+		const rpc = new Client({ handler: agent });
+		set({ session, agent, rpc });
 	},
 
-	allSessions: () => listStoredSessions(),
+	signOut: async (did: Did) => {
+		const { agent } = get();
+
+		const isCurrentAgent = agent?.sub === did;
+		if (isCurrentAgent) {
+			await agent.signOut();
+			set({ session: null, agent: null, rpc: null });
+		} else deleteStoredSession(did);
+
+		set({ sessions: listStoredSessions() });
+	},
 }));
 
 export const getAvatarOfDid = (did: Did) => {
