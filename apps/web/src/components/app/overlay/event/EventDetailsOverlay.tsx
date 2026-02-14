@@ -33,7 +33,7 @@ export const EventDetailsOverlayHandler = ({ source }: { source: EventSource }) 
 
 	return (
 		<RQResult query={query}>
-			{({ data, err }) => data && (
+			{({ data, err }) => (
 				<EventDetailsContent
 					data={data}
 					source={source}

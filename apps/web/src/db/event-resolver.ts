@@ -33,32 +33,23 @@ export class EventResolver {
 		if (!cached) return;
 		if (UtilEventSource.isLocal(source)) return;
 		const updated = await this.#update(source, cached);
-		console.log(`EventResolver: updated event source ${source} from network, success: ${!!updated?.data}, err: ${!!updated?.err}`);
-		if (updated) await DataDB.put(source, updated);
-		else await DataDB.put(source, await this.#fetch(source));
+		if (updated !== cached) await DataDB.put(source, updated);
 	}
 
 	static async #fetch(source: EventSource): Promise<EventEnvelope> {
-		if (UtilEventSource.isHttp(source) || UtilEventSource.isHttps(source)) {
-			return await this.#fetchHttp(source);
-		} else if (UtilEventSource.isAt(source)) {
-			return await this.#fetchAtProto(source);
-		} else if (UtilEventSource.isLocal(source)) {
-			throw new Error(`Cannot fetch local event source: ${source}`);
-		} else {
-			throw new Error(`Unsupported event source: ${source}`);
-		}
+		if (UtilEventSource.isLocal(source)) throw new Error(`Cannot fetch local event source: ${source}`);
+		if (UtilEventSource.isHttpLike(source)) return await this.#fetchHttp(source);
+		if (UtilEventSource.isAt(source)) return await this.#fetchAtProto(source);
+		throw new Error(`Unsupported event source: ${source}`);
 	}
 
-	static async #update(source: EventSource, envelope: EventEnvelope): Promise<EventEnvelope | null> {
-		if (UtilEventSource.isHttp(source) || UtilEventSource.isHttps(source)) {
-			return await this.#updateHttp(source, envelope);
-		};
-
-		return null;
+	static async #update(source: Exclude<EventSource, EventSource.Local>, envelope: EventEnvelope): Promise<EventEnvelope> {
+		if (UtilEventSource.isHttpLike(source)) return await this.#updateHttp(source, envelope);
+		if (UtilEventSource.isAt(source)) return await this.#updateAtProto(source, envelope);
+		return envelope;
 	}
 
-	static async #updateHttp(source: EventSource.Http | EventSource.Https, envelope: EventEnvelope): Promise<EventEnvelope | null> {
+	static async #updateHttp(source: EventSource.Http | EventSource.Https, envelope: EventEnvelope): Promise<EventEnvelope> {
 		const etag = envelope.rev?.etag;
 		if (etag) {
 			const [res, fetchError] = await tryCatchAsync(() => fetch(source, {
@@ -68,20 +59,38 @@ export class EventResolver {
 			}));
 
 			if (fetchError) return {
-				data: null,
+				data: envelope.data,
 				err: this.#EnvelopeError(fetchError as TypeError),
 			};
 
 			const notModified = res.status === 304;
 			if (notModified) return envelope;
 
+			const {
+				data,
+				...newEnvelope
+			} = await this.fromResponse(res);
+
 			return {
 				...envelope,
-				...await this.fromResponse(res),
+				...newEnvelope,
+				data: data ?? envelope.data,
 			};
 		}
 
-		return null;
+		return envelope;
+	}
+
+	static async #updateAtProto(source: EventSource.At, envelope: EventEnvelope): Promise<EventEnvelope> {
+		const {
+			data,
+			...newEnvelope
+		} = await this.#fetchAtProto(source);
+		return {
+			...envelope,
+			...newEnvelope,
+			data: data ?? envelope.data,
+		};
 	}
 
 	static async #fetchHttp(source: EventSource.Http | EventSource.Https): Promise<EventEnvelope> {

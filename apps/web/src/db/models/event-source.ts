@@ -68,6 +68,10 @@ export class UtilEventSource {
 		return source.startsWith("https://");
 	}
 
+	static isHttpLike(source: EventSource): source is EventSource.Http | EventSource.Https {
+		return this.isHttp(source) || this.isHttps(source);
+	}
+
 	static isLocal(source: EventSource): source is EventSource.Local {
 		return source.startsWith("local://");
 	}

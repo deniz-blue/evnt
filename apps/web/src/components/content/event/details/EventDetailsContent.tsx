@@ -1,4 +1,4 @@
-import { ActionIcon, Code, Group, Loader, Modal, Stack, Text, Title, Tooltip } from "@mantine/core";
+import { ActionIcon, Box, Code, Group, Loader, Modal, Stack, Text, Title, Tooltip } from "@mantine/core";
 import { Trans } from "../Trans";
 import { SmallTitle } from "../../base/SmallTitle";
 import { snippetInstance, snippetVenue, venueGoogleMapsLink, venueOpenStreetMapsLink } from "@evnt/pretty";
@@ -11,11 +11,10 @@ import { ExternalLink } from "../../base/ExternalLink";
 import type { EventEnvelope } from "../../../../db/models/event-envelope";
 import { EventActions } from "../../../../lib/actions/event-actions";
 import { VantageCopyButton } from "../../../app/VantageCopyButton";
-import { IconCode, IconEdit, IconJson, IconLink, IconReload, IconShare } from "@tabler/icons-react";
+import { IconCode, IconEdit, IconJson, IconLink, IconQuote, IconReload, IconShare } from "@tabler/icons-react";
 import { EnvelopeErrorBadge } from "../envelope/EnvelopeErrorBadge";
 import { Link } from "@tanstack/react-router";
-import { eventQueryKey, useEventQuery } from "../../../../db/useEventQuery";
-import { queryClient } from "../../../../query-client";
+import { useEventQuery } from "../../../../db/useEventQuery";
 import { AsyncAction } from "../../../data/AsyncAction";
 import { EventResolver } from "../../../../db/event-resolver";
 
@@ -171,13 +170,18 @@ export const EventDetailsContent = ({
 				<SmallTitle padLeft>
 					description
 				</SmallTitle>
-				<Stack gap={4}>
-					{data?.description ? (
-						<MarkdownTranslations content={data.description} />
-					) : (
-						<Text c="dimmed" span fs="italic">No description provided.</Text>
-					)}
-				</Stack>
+				<Group gap={4} wrap="nowrap">
+					<Box c="dimmed" display="flex">
+						<IconQuote />
+					</Box>
+					<Stack gap={4}>
+						{data?.description ? (
+							<MarkdownTranslations content={data.description} />
+						) : (
+							<Text c="dimmed" span fs="italic">No description provided.</Text>
+						)}
+					</Stack>
+				</Group>
 			</Stack>
 
 			<Stack gap={0}>
