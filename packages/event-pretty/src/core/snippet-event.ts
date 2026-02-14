@@ -129,7 +129,7 @@ export const snippetInstance = (instance: EventInstance): TSnippet[] => {
 		})
 	}
 
-	if (UtilPartialDateRange.isSingleDay(instance) && UtilPartialDateRange.isSameTime(instance)) {
+	if (UtilPartialDateRange.isSingleDay(instance) && (UtilPartialDateRange.isSameTime(instance) || !instance.end || !UtilPartialDate.hasTime(instance.end))) {
 		snippets.push({
 			icon: "clock",
 			label: { type: "time", value: UtilPartialDate.getTimePart(instance.start!)! },

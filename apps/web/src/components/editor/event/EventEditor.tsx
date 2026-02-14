@@ -117,6 +117,7 @@ export const EventPreview = ({ data }: { data: EditAtom<EventData> }) => {
 	return (
 		<Stack>
 			<EventCard
+				variant="card"
 				data={snap}
 			/>
 		</Stack>

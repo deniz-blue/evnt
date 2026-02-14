@@ -2,10 +2,12 @@ import { EventDataSchema, type EventData } from "@evnt/schema";
 import { UtilEventSource, type EventSource } from "./models/event-source";
 import { DataDB } from "./data-db";
 import { Client, simpleFetchHandler, type FailedClientResponse } from "@atcute/client";
-import { parseCanonicalResourceUri } from "@atcute/lexicons/syntax";
+import { parseCanonicalResourceUri, type Did } from "@atcute/lexicons/syntax";
 import type { EventEnvelope } from "./models/event-envelope";
 import { tryCatch, tryCatchAsync } from "../lib/util/trynull";
 import { ZodError } from "zod";
+import { didDocumentResolver } from "../lib/atproto/atproto-services";
+import { getPdsEndpoint } from "@atcute/identity";
 
 export class EventResolver {
 	static async resolve(source: EventSource): Promise<EventEnvelope> {
@@ -153,9 +155,12 @@ export class EventResolver {
 		const parsed = parseCanonicalResourceUri(source);
 		if (!parsed.ok) throw new Error(`Invalid at-uri: ${parsed.error}`);
 
+		const didDocument = await didDocumentResolver.resolve(parsed.value.repo as Did<"plc" | "web">);
+		const pds = getPdsEndpoint(didDocument) ?? "https://bsky.social";
+
 		const rpc = new Client({
 			handler: simpleFetchHandler({
-				service: "https://bsky.social",
+				service: pds,
 			}),
 		});
 

@@ -92,6 +92,7 @@ export const FormPageTemplate = ({
 	error,
 	continueText,
 	onContinue,
+	button,
 	loading,
 	notice,
 	data,
@@ -104,6 +105,7 @@ export const FormPageTemplate = ({
 	continueText?: string;
 	onContinue?: () => void;
 	data: EditAtom<EventData | null>;
+	button?: ReactNode;
 }) => {
 	return (
 		<Container p={0}>
@@ -118,13 +120,15 @@ export const FormPageTemplate = ({
 						</Text>
 					</Stack>
 					<Group>
-						<Button
-							color="green"
-							onClick={onContinue}
-							loading={loading}
-						>
-							{continueText}
-						</Button>
+						{button ?? (
+							<Button
+								color="green"
+								onClick={onContinue}
+								loading={loading}
+							>
+								{continueText}
+							</Button>
+						)}
 					</Group>
 				</Group>
 				<Text c="red">

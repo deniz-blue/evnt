@@ -3,7 +3,9 @@ import { useLayersStore } from "../../db/useLayersStore";
 import { UtilEventSource, type EventSource } from "../../db/models/event-source";
 import { DataDB } from "../../db/data-db";
 import { useTasksStore } from "../../stores/useTasksStore";
-import { EVENT_REDIRECTOR_URL } from "../../constants";
+import { BlueDenizEvent, EVENT_REDIRECTOR_URL } from "../../constants";
+import { useATProtoAuthStore } from "../atproto/useATProtoStore";
+import * as TID from "@atcute/tid";
 
 export class EventActions {
 	static async createLocalEvent(data: EventData, layerId?: string) {
@@ -35,6 +37,31 @@ export class EventActions {
 		}, async () => {
 			if (!UtilEventSource.isLocal(source)) throw new Error("Can only update local events");
 			await DataDB.put(source, { data });
+			return source;
+		});
+	}
+
+	static async createATProtoEvent(data: EventData, layerId?: string) {
+		return await useTasksStore.getState().addTask({
+			title: "Creating ATProto event",
+			notify: true,
+		}, async () => {
+			const { rpc, agent } = useATProtoAuthStore.getState();
+			if (!rpc || !agent) throw new Error("Not authenticated with ATProto");
+			const res = await rpc.post("com.atproto.repo.putRecord", {
+				input: {
+					collection: BlueDenizEvent,
+					record: {
+						...data,
+						"$type": BlueDenizEvent,
+					},
+					repo: agent.sub,
+					rkey: TID.now(),
+				},
+			});
+			if (!res.ok) throw new Error(res.data.error + ": " + res.data.message);
+			const source = res.data.uri as EventSource.At;
+			useLayersStore.getState().addEventSource(source, layerId);
 			return source;
 		});
 	}
