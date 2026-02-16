@@ -1,3 +1,0 @@
-# LTFur Bot thing
-
-idk
