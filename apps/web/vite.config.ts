@@ -3,7 +3,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { VitePWA } from "vite-plugin-pwa";
 import metadata from "./public/oauth-client-metadata.json" with { type: "json" };
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 
 const SERVER_HOST = "127.0.0.1";
 const SERVER_PORT = 5173;
