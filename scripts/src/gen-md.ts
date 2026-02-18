@@ -3,7 +3,7 @@ import { convertSchemas, formatModelsAsMarkdown } from "zod2md";
 
 export const genMarkdownDocs = async (dest: string | URL) => {
 	const module = await import("@evnt/schema");
-	const { $ID, ...schemas } = module;
+	const { $ID, $NSID, ...schemas } = module;
 	const namedModels = Object.entries(schemas)
 		.map(([name, schema]) => ({
 			name,

@@ -24,21 +24,31 @@ This document defines the data structures and types used for the @evnt Event for
 
 ## `Translations`
 
-`Translations` are defined as a json object where the keys are **BCP47**/**ISO 639-1** language codes and values are `string` values.
+`Translations` are defined as a json object where the keys are **BCP47/IETF language tag** and values are `string` values.
+
 
 ```ts
 interface Translations {
-  [language: string]: string;
+	[language: string]: string;
 }
 ```
 
 ```js
-{ en: "Example", tr: "Örnek", lt: "Pavyzdys" }
+{
+	en: "Example",
+	tr: "Örnek",
+	lt: "Pavyzdys",
+	"zn-Hans-CN": "示例",
+}
 ```
 
 Data consumers should try to use the user's language in the object and fall back (`undefined | ""`) to other values.
 
-When creating or editing event data, applications **should not** use machine translation to fill in missing translations, but rather leave them empty and let users fill them in manually. Applications can use machine translations when displaying event details to users if they want to, but they should not modify the original data with machine translations.
+When creating or editing event data, applications;
+
+- **should not** use machine translation to fill in missing translations, but rather leave them empty and let users fill them in manually. Applications can use machine translations when displaying event details to users if they want to, but they should not modify the original data with machine translations.
+
+- should try to omit regional variants of languages when possible and just use the main language code (e.g. `en` instead of `en-US` or `en-GB`) unless the regional variant is necessary to distinguish between different languages (e.g. `zh-Hans-CN` vs `zh-Hant-TW`).
 
 ## `PartialDate`
 

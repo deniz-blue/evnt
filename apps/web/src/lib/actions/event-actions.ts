@@ -1,9 +1,9 @@
-import type { EventData } from "@evnt/schema";
+import { $NSID, type EventData } from "@evnt/schema";
 import { useLayersStore } from "../../db/useLayersStore";
 import { UtilEventSource, type EventSource } from "../../db/models/event-source";
 import { DataDB } from "../../db/data-db";
 import { useTasksStore } from "../../stores/useTasksStore";
-import { BlueDenizEvent, EVENT_REDIRECTOR_URL } from "../../constants";
+import { EVENT_REDIRECTOR_URL } from "../../constants";
 import { useATProtoAuthStore } from "../atproto/useATProtoStore";
 import * as TID from "@atcute/tid";
 
@@ -50,10 +50,10 @@ export class EventActions {
 			if (!rpc || !agent) throw new Error("Not authenticated with ATProto");
 			const res = await rpc.post("com.atproto.repo.putRecord", {
 				input: {
-					collection: BlueDenizEvent,
+					collection: $NSID,
 					record: {
 						...data,
-						"$type": BlueDenizEvent,
+						"$type": $NSID,
 					},
 					repo: agent.sub,
 					rkey: TID.now(),

@@ -1,9 +1,9 @@
-import type { EventData } from "@evnt/schema";
+import { $NSID, type EventData } from "@evnt/schema";
 import { UtilEventSource, type EventSource } from "./models/event-source";
 import { useATProtoAuthStore } from "../lib/atproto/useATProtoStore";
 import { parseCanonicalResourceUri } from "@atcute/lexicons";
-import { BlueDenizEvent } from "../constants";
 import { DataDB } from "./data-db";
+import type { Records } from "@atcute/lexicons/ambient";
 
 export class EventMutator {
 	static async update(source: EventSource, data: EventData): Promise<void> {
@@ -33,12 +33,11 @@ export class EventMutator {
 				repo,
 				rkey,
 				record: {
-					"$type": BlueDenizEvent,
+					"$type": $NSID,
 					...data,
-				},
+				} as Records[typeof $NSID],
 			},
 		});
 		DataDB.emitUpdate(source);
 	}
 }
-	

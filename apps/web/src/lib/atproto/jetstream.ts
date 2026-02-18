@@ -1,7 +1,8 @@
 import { JetstreamSubscription, type CommitEvent } from "@atcute/jetstream";
-import { BlueDenizEvent, LOCALSTORAGE_KEYS } from "../../constants";
+import { LOCALSTORAGE_KEYS } from "../../constants";
 import { Logger } from "../util/logger";
 import { UtilEventSource, type EventSource } from "../../db/models/event-source";
+import { $NSID } from "@evnt/schema";
 
 const JetstreamLogger = Logger.main.styledChild("Jetstream", "#88c0d0");
 
@@ -13,7 +14,7 @@ export const createJetstream = ({
 	let unmounted = false;
 	const subscription = new JetstreamSubscription({
 		url: "wss://jetstream2.us-east.bsky.network",
-		wantedCollections: [BlueDenizEvent],
+		wantedCollections: [$NSID],
 		cursor: Number(localStorage.getItem(LOCALSTORAGE_KEYS.jetstreamCursor)) || undefined,
 		onConnectionOpen: () => JetstreamLogger.log("Connection opened"),
 		onConnectionClose: () => JetstreamLogger.log("Connection closed"),
@@ -25,7 +26,7 @@ export const createJetstream = ({
 	(async () => {
 		for await (const event of subscription) {
 			if (unmounted) break;
-			if (event.kind == "commit" && event.commit.collection === BlueDenizEvent) {
+			if (event.kind == "commit" && event.commit.collection === $NSID) {
 				JetstreamLogger.log("Commit:", event);
 				const source = UtilEventSource.at(event.did, event.commit.collection, event.commit.rkey);
 				JetstreamLogger.log(event.commit.operation + ":", source);

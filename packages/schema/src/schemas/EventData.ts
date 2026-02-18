@@ -6,7 +6,8 @@ import { EventComponentSchema } from "./components/EventComponent";
 import { EventStatusSchema } from "./enums/EventStatus";
 import { unstable } from "./schema-util";
 
-export const $ID = "https://raw.githubusercontent.com/deniz-blue/events-format/refs/heads/main/event-data.schema.json";
+export const $ID = "https://raw.githubusercontent.com/deniz-blue/events-format/refs/heads/main/event-data.schema.json" as const;
+export const $NSID = "blue.deniz.event" as const;
 
 export type EventData = z.infer<typeof EventDataSchema>;
 export const EventDataSchema = z.object({

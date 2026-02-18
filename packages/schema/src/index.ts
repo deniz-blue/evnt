@@ -13,6 +13,14 @@ export * from "./schemas/components/LinkComponent";
 // Unstable
 export * from "./schemas/components/SourceComponent";
 export * from "./types/Media";
-
 // export * from "./schemas/organizer/Organizer";
 // export * from "./schemas/activity/EventActivity";
+
+import type { EventData, $NSID } from "./schemas/EventData";
+import type { } from "@atcute/lexicons/ambient";
+declare module "@atcute/lexicons/ambient" {
+	interface Records {
+		[$NSID]: EventData & { $type: typeof $NSID };
+	}
+}
+
