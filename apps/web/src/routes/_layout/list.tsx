@@ -1,32 +1,48 @@
-import { useSet } from "@mantine/hooks";
-import { createFileRoute, Link } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import { useLayersStore } from "../../db/useLayersStore";
 import { useMemo, useState } from "react";
 import { useEventQueries } from "../../db/useEventQuery";
 import { applyEventFilters, EventFilters } from "../../lib/filter/event-filters";
-import { ActionIcon, Button, Checkbox, Combobox, Group, Indicator, InputBase, Menu, MultiSelect, Paper, Stack, TextInput, Tooltip, useCombobox } from "@mantine/core";
-import { IconBraces, IconEdit, IconLink, IconPlus } from "@tabler/icons-react";
-import { EventActions } from "../../lib/actions/event-actions";
-import { EventDataSchema } from "@evnt/schema";
+import { Checkbox, Combobox, Group, Indicator, InputBase, Paper, Stack, TextInput, useCombobox } from "@mantine/core";
 import { EventsGrid } from "../../components/content/event-grid/EventsGrid";
-import { modals } from "@mantine/modals";
 import type { Layer } from "../../db/models/layer";
+import z from "zod";
+import { zodValidator } from "@tanstack/zod-adapter";
+
+const SearchParamsSchema = z.object({
+	search: z.string().optional(),
+	layers: z.string().array().optional().default(["default"]),
+});
 
 export const Route = createFileRoute("/_layout/list")({
 	component: ListPage,
+	validateSearch: zodValidator(SearchParamsSchema),
 })
 
 function ListPage() {
-	const [selectedLayerIds, setSelectedLayerIds] = useState<string[]>(["default"]);
+	const {
+		search = "",
+		layers: layerIds = ["default"],
+	} = Route.useSearch();
+	const navigate = Route.useNavigate();
+	const setSearch = (value: string) => navigate({
+		search: {
+			search: value == "" ? undefined : value,
+		},
+	});
+	const setLayerIds = (values: string[]) => navigate({
+		search: {
+			layers: values,
+		},
+	});
+
 	const layers = useLayersStore(store => store.layers);
 
 	const sources = useMemo(() => {
 		return Array.from(new Set(
-			Array.from(selectedLayerIds).map(id => layers[id]?.data.events || []).flat()
+			Array.from(layerIds).map(id => layers[id]?.data.events || []).flat()
 		));
-	}, [layers, selectedLayerIds])
-
-	const [search, setSearch] = useState("");
+	}, [layers, layerIds])
 
 	const allQueries = useEventQueries(sources);
 	const filtered = applyEventFilters(allQueries, [
@@ -46,10 +62,8 @@ function ListPage() {
 						/>
 						<LayersSelect
 							layers={layers}
-							value={selectedLayerIds}
-							onChange={(values) => {
-								setSelectedLayerIds(values);
-							}}
+							value={layerIds}
+							onChange={setLayerIds}
 						/>
 					</Group>
 					<Group gap={4}>

@@ -1,5 +1,5 @@
 // mantine styles
-import "@mantine/core/styles.css";
+import "@mantine/core/styles.layer.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
 

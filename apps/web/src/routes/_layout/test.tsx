@@ -1,13 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { ActionIcon, SimpleGrid, Stack, Text } from "@mantine/core";
+import { ActionIcon, Box, Code, SimpleGrid, Stack, Table, Text } from "@mantine/core";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { EventCard } from "../../components/content/event/EventCard";
-import { EventDataSchema, type EventData, type Translations } from "@evnt/schema";
+import { EventDataSchema, type EventData, type PartialDate, type Translations } from "@evnt/schema";
 import { IconDotsVertical } from "@tabler/icons-react";
 import type { EventEnvelope } from "../../db/models/event-envelope";
 import { Fragment } from "react/jsx-runtime";
 import { useState } from "react";
 import { TranslationsInput } from "../../components/base/input/TranslationsInput";
+import { snippetInstance, type Range } from "@evnt/pretty";
+import { Snippet } from "../../components/content/Snippet";
 
 export const Route = createFileRoute("/_layout/test")({
 	component: Test,
@@ -96,6 +98,31 @@ export default function Test() {
 					</Fragment>
 				))}
 			</SimpleGrid>
+
+			<Table
+				data={{
+					body: ([
+						{ start: "2025-12-25", end: undefined },
+						{ start: "2025-12-25", end: "2025-12-31" },
+						{ start: "2025-12-25T11:00", end: "2025-12-31" },
+						{ start: "2025-12-25T11:00", end: "2025-12-25" },
+						{ start: "2025-12-25T11:00", end: "2025-12-31T15:00" },
+						{ start: "2025-12-25T11:00", end: "2025-12-25T15:00" },
+					] as Range<PartialDate>[]).map((range) => ([
+						<Box>
+							<Code>{range.start} | {range.end}</Code>
+						</Box>,
+						<Stack gap={4}>
+							{snippetInstance({
+								venueIds: [],
+								...range,
+							}).map((snippet, index) => (
+								<Snippet key={index} snippet={snippet} />
+							))}
+						</Stack>,
+					])),
+				}}
+			/>
 		</Stack>
 	)
 }

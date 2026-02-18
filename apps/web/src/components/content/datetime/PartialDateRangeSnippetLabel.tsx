@@ -3,32 +3,47 @@ import type { PartialDate } from "@evnt/schema";
 import { UtilPartialDate, UtilPartialDateRange } from "@evnt/schema/utils";
 import { Text, Tooltip } from "@mantine/core";
 import { useLocaleStore } from "../../../stores/useLocaleStore";
+import { useMemo } from "react";
 
 export const PartialDateRangeSnippetLabel = ({ value }: { value: Range<PartialDate> }) => {
-    const language = useLocaleStore(store => store.language);
-    const timeZone = useLocaleStore(store => store.timezone);
+	const language = useLocaleStore(store => store.language);
+	const timeZone = useLocaleStore(store => store.timezone);
 
-    const startParts = value.start.split(/\D/);
-    const endParts = value.end.split(/\D/);
+	const parts = useMemo(() => {
+		const isSameYear = UtilPartialDate.asYear(value.start) === UtilPartialDate.asYear(value.end);
+		const isSameMonth = isSameYear
+			&& UtilPartialDate.hasMonth(value.start)
+			&& UtilPartialDate.hasMonth(value.end)
+			&& UtilPartialDate.asMonth(value.start) === UtilPartialDate.asMonth(value.end);
+		const isSameDay = isSameMonth
+			&& UtilPartialDate.hasDay(value.start)
+			&& UtilPartialDate.hasDay(value.end)
+			&& UtilPartialDate.asDay(value.start) === UtilPartialDate.asDay(value.end);
+		const isSameTime = UtilPartialDateRange.isSameTime(value);
 
-    const isSameYear = startParts[0] === endParts[0];
-    const isSameMonth = isSameYear && startParts[1] === endParts[1];
-    const isSameDay = isSameMonth && startParts[2] === endParts[2];
-    const isSameTime = UtilPartialDateRange.isSameTime(value);
+		const fmt = new Intl.DateTimeFormat(language, {
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+			hour: UtilPartialDate.hasTime(value.start) ? "numeric" : undefined,
+			minute: UtilPartialDate.hasTime(value.start) ? "numeric" : undefined,
+			hour12: false,
+			timeZone,
+		});
 
-    return (
-        <Tooltip label={`meow`}>
-            <Text span inline inherit>
-                {new Intl.DateTimeFormat(language, {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-					hour: UtilPartialDate.hasTime(value.start) ? "numeric" : undefined,
-					minute: UtilPartialDate.hasTime(value.start) ? "numeric" : undefined,
-					hour12: false,
-					timeZone,
-                }).formatRange(UtilPartialDate.toLowDate(value.start), UtilPartialDate.toLowDate(value.end))}
-            </Text>
-        </Tooltip>
-    )
+		const startDate = UtilPartialDate.toLowDate(value.start);
+		const endDate = UtilPartialDate.toLowDate(value.end);
+		if (!UtilPartialDate.hasTime(value.end)) endDate.setHours(0, 0, 0, 0);
+		const parts = fmt.formatRangeToParts(startDate, endDate);
+		console.log(parts);
+		return parts;
+	}, [language, timeZone, value]);
+
+	return (
+		<Tooltip label={`meow`}>
+			<Text span inline inherit>
+				{parts.map(p => p.value).join("")}
+			</Text>
+		</Tooltip>
+	)
 };

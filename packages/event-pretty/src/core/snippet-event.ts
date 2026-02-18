@@ -1,5 +1,5 @@
-import type { EventData, EventInstance, Venue } from "@evnt/schema";
-import type { SnippetLabel, TSnippet } from "./snippet";
+import type { EventData, EventInstance, PartialDate, Venue } from "@evnt/schema";
+import type { Range, SnippetLabel, TSnippet } from "./snippet";
 import { UtilPartialDate, UtilPartialDateRange, UtilTranslations } from "@evnt/schema/utils";
 
 export const snippetEvent = (data: EventData, opts?: {
@@ -45,9 +45,7 @@ export const snippetEvent = (data: EventData, opts?: {
 		}
 
 
-		for (const instance of instances) {
-			snippets.push(...snippetInstance(instance));
-		};
+		snippets.push(...snippetInstances(instances));
 	}
 
 	return snippets;
@@ -86,68 +84,180 @@ export const venueOpenStreetMapsLink = (venue: Venue): string | null => {
 	return null;
 }
 
+export const snippetInstances = (instances: EventInstance[]): TSnippet[] => {
+	const snippets: TSnippet[] = [];
+
+	// Group instances by date (the ones that have the same time will be grouped together)
+	// Consecutive days will also be grouped together if they have the same times-per-day
+	// - event that starts at 9am and ends at 5pm each day
+	// - event that occurs between 11-14 and 16-18 on 3 days in a row -> will be grouped together as 3 consecutive days with 2 time ranges per day
+
+	const groupedByDate: Record<PartialDate.Day, EventInstance[]> = {};
+	const ungroupedByDate: EventInstance[] = [];
+	for (const instance of instances) {
+		if (instance.start && UtilPartialDate.hasDay(instance.start) && (!instance.end || UtilPartialDateRange.isSameDay(instance))) {
+			const day = UtilPartialDate.asDay(instance.start);
+			groupedByDate[day] ||= [];
+			groupedByDate[day].push(instance);
+		} else {
+			ungroupedByDate.push(instance);
+		}
+	}
+
+	// Check for consecutive days with same time and group them together
+	const groupedByConsecutiveDays: {
+		range: Range<PartialDate.Day>;
+		instances: EventInstance[];
+	}[] = [];
+
+	const hashTimes = (instances: EventInstance[]) => instances.map(i => [
+		i.start,
+		i.end,
+	].filter((s): s is PartialDate.Full => !!s && UtilPartialDate.hasTime(s)).map(s => UtilPartialDate.getTimePart(s)).join("-")).sort().join("|");
+
+	for (const [day, instances] of Object.entries(groupedByDate) as [PartialDate.Day, EventInstance[]][]) {
+		// Try to find an existing group that this day can be added to
+		let addedToGroup = false;
+		for (const group of groupedByConsecutiveDays) {
+			console.log("Checking consecutive day grouping:", { day, group, instances, hashTimes: hashTimes(instances) });
+			if (
+				UtilPartialDateRange.isNextDay({ start: group.range.end, end: day })
+				&& hashTimes(instances) === hashTimes(group.instances)
+			) {
+				group.range.end = day;
+				group.instances.push(...instances);
+				addedToGroup = true;
+				break;
+			}
+		}
+
+		// If it wasn't added to an existing group, create a new group
+		if (!addedToGroup) {
+			groupedByConsecutiveDays.push({
+				range: { start: day, end: day },
+				instances,
+			});
+		}
+	}
+
+	// Create snippets for grouped consecutive days
+	for (const group of groupedByConsecutiveDays) {
+		if (group.instances.length === 0) continue;
+		const deduplicatedTimeRanges = Array.from(new Set(group.instances.map(i => {
+			const hasStartTime = i.start && UtilPartialDate.hasTime(i.start);
+			const hasEndTime = i.end && UtilPartialDate.hasTime(i.end);
+			if (hasStartTime && hasEndTime) {
+				return `range:${UtilPartialDate.getTimePart(i.start as PartialDate.Full)}-${UtilPartialDate.getTimePart(i.end as PartialDate.Full)}`;
+			} else if (hasStartTime) {
+				return `time:${UtilPartialDate.getTimePart(i.start as PartialDate.Full)}`;
+			}
+			return "none";
+		}))).map(tr => {
+			if (tr.startsWith("range:")) {
+				const [startTime, endTime] = tr.replace("range:", "").split("-");
+				return {
+					type: "time-range",
+					value: {
+						start: { value: startTime },
+						end: { value: endTime },
+					},
+				} as SnippetLabel;
+			} else if (tr.startsWith("time:")) {
+				const time = tr.replace("time:", "");
+				return {
+					type: "time",
+					value: time,
+				} as SnippetLabel;
+			}
+			return null;
+		}).filter((tr): tr is SnippetLabel => !!tr);
+
+		snippets.push({
+			icon: "calendar",
+			label: {
+				type: "date-time-range",
+				value: {
+					start: group.range.start,
+					end: group.range.end
+				},
+			},
+		});
+
+		for (const timeRange of deduplicatedTimeRanges) {
+			snippets.push({
+				icon: "clock",
+				label: timeRange,
+			});
+		}
+	}
+
+	// Rest of em
+	for (const instance of ungroupedByDate) {
+		snippets.push(...snippetInstance(instance));
+	}
+
+	console.log("Generated snippets for event:", { snippets, groupedByDate, groupedByConsecutiveDays });
+
+	return snippets;
+};
+
 export const snippetInstance = (instance: EventInstance): TSnippet[] => {
 	const snippets: TSnippet[] = [];
 
-	// Legend:
-	// nothing = null
-	// YYYY = year
-	// YYYY-MM = month
-	// YYYY-MM-DD = date
-	// YYYY-MM-DDThh:mm = full
+	if (instance.start && instance.end) {
+		const startHasDay = UtilPartialDate.hasDay(instance.start);
+		const endHasDay = UtilPartialDate.hasDay(instance.end);
+		const startHasTime = UtilPartialDate.hasTime(instance.start);
+		const endHasTime = UtilPartialDate.hasTime(instance.end);
 
-	// Things to account for:
-	// start=null end=null => no date/time snippet
-	// start=year end=null => date snippet only
-	// start=month end=null => date snippet only
-	// start=date end=null => date snippet only
-	// start=full end=null => date and time snippet
-	// start=year end=year => date-range if different, else date snippet only
-	// start=month end=month => date-range if different, else date snippet only
-	// start=date end=date => date-range if different, else date snippet only
-	// start=full end=date => date-range if different, else date and time snippet
+		const singleDay = startHasDay && endHasDay && UtilPartialDateRange.isSameDay(instance);
+		const bothSameTime = startHasTime && endHasTime && UtilPartialDate.getTimePart(instance.start) === UtilPartialDate.getTimePart(instance.end);
 
-	// if we have date for start and end, and they are the same day, show single day snippet, otherwise show date-range snippet
-	// if we have only start date, show single day snippet
-	// if start=full and end=date, assume end time is 23:59 for comparison purposes
-	// if we have time for start and end, and they are the same time, show single time snippet, otherwise show time-range snippet
-
-	if (instance.start && instance.end && UtilPartialDateRange.isSingleDay(instance)) {
-		snippets.push({
-			icon: "calendar",
-			label: { type: "partial-date", value: UtilPartialDate.getDatePart(instance.start) },
-		})
-	} else if (instance.start && instance.end) {
-		snippets.push({
-			icon: "calendar",
-			label: { type: "date-time-range", value: { start: instance.start, end: instance.end } },
-		})
+		if (singleDay && bothSameTime) {
+			snippets.push({
+				icon: "calendar",
+				label: { type: "date-time", value: instance.start },
+			})
+		} else if (singleDay && startHasTime && endHasTime) {
+			snippets.push({
+				icon: "calendar",
+				label: { type: "date-time", value: UtilPartialDate.getDatePart(instance.start) },
+			});
+			snippets.push({
+				icon: "clock",
+				label: {
+					type: "time-range", value: {
+						start: { value: UtilPartialDate.getTimePart(instance.start)!, date: UtilPartialDate.asDay(instance.start! as PartialDate.Full) },
+						end: { value: UtilPartialDate.getTimePart(instance.end)!, date: UtilPartialDate.asDay(instance.end! as PartialDate.Full) },
+					}
+				},
+			});
+		} else if (singleDay && startHasTime && !endHasTime) {
+			snippets.push({
+				icon: "calendar",
+				label: { type: "date-time", value: UtilPartialDate.getDatePart(instance.start) },
+			});
+			snippets.push({
+				icon: "clock",
+				label: {
+					type: "time",
+					value: UtilPartialDate.getTimePart(instance.start)!,
+					date: UtilPartialDate.asDay(instance.start! as PartialDate.Full),
+				},
+			});
+		} else {
+			snippets.push({
+				icon: "calendar",
+				label: { type: "date-time-range", value: { start: instance.start, end: instance.end } },
+			});
+		}
 	} else if (instance.start) {
 		snippets.push({
 			icon: "calendar",
-			label: { type: "partial-date", value: UtilPartialDate.getDatePart(instance.start) },
-		})
-	}
+			label: { type: "date-time", value: instance.start },
+		});
+	} else {
 
-	if (UtilPartialDateRange.isSingleDay(instance) && (UtilPartialDateRange.isSameTime(instance) || !instance.end || !UtilPartialDate.hasTime(instance.end))) {
-		snippets.push({
-			icon: "clock",
-			label: { type: "time", value: UtilPartialDate.getTimePart(instance.start!)! },
-		})
-	} else if (
-		instance.start
-		&& instance.end
-		&& UtilPartialDateRange.isSingleDay(instance)
-		&& UtilPartialDate.hasTime(instance.start)
-		&& UtilPartialDate.hasTime(instance.end)
-	) {
-		const start = { value: UtilPartialDate.getTimePart(instance.start!)!, date: UtilPartialDate.getDatePart(instance.start!) };
-		const end = { value: UtilPartialDate.getTimePart(instance.end!)!, date: UtilPartialDate.getDatePart(instance.end!) };
-
-		snippets.push({
-			icon: "clock",
-			label: { type: "time-range", value: { start, end } },
-		})
 	}
 
 	return snippets;

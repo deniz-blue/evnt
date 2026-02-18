@@ -36,7 +36,7 @@ export const OsuSelect = ({
 						placeholder="Select option..."
 					/>
 				</Combobox.EventsTarget>
-				<Collapse in={dropdownOpened}>
+				<Collapse expanded={dropdownOpened}>
 					<Paper withBorder>
 						<ScrollArea.Autosize mah={200}>
 							<Combobox.Options>

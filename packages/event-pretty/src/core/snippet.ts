@@ -13,7 +13,7 @@ export type SnippetLabel =
 	| { type: "external-link"; url: string; name?: string }
 	| { type: "address"; value: Address }
 	| { type: "partial-date"; value: PartialDate }
-	| { type: "time"; value: string; date?: PartialDate }
+	| { type: "time"; value: string; date?: PartialDate.Day }
 	| { type: "time-range"; value: Range<{ value: string; date?: PartialDate }> }
 	| { type: "date-time"; value: PartialDate }
 	| { type: "date-time-range"; value: Range<PartialDate> }

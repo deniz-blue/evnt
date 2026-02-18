@@ -1,6 +1,6 @@
 import "@typelex/emitter";
 
-namespace blue.deniz.atproto.event {
+namespace blue.deniz.event {
   model Main {
     @required @readOnly v: numeric = 0;
     @required name: Translations;

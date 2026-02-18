@@ -4,9 +4,14 @@ import type { EventData, PartialDate } from "@evnt/schema";
 import { immer } from "zustand/middleware/immer";
 import { DataDB } from "../../db/data-db";
 import { useLayersStore } from "../../db/useLayersStore";
+import { UtilPartialDate } from "@evnt/schema/utils";
 
 export interface CacheEventsStore {
-	cacheByPartialDate: Record<PartialDate, EventSource[]>;
+	cache: {
+		byPartialDate: Record<PartialDate, EventSource[]>;
+		byMonth: Record<PartialDate.Month, EventSource[]>;
+		byDay: Record<PartialDate.Day, EventSource[]>;
+	};
 
 	hydrateSource: (source: EventSource) => Promise<void>;
 	hydrate: (source: EventSource, data: EventData) => void;
@@ -15,7 +20,11 @@ export interface CacheEventsStore {
 
 export const useCacheEventsStore = create<CacheEventsStore>()(
 	immer((set, get) => ({
-		cacheByPartialDate: {},
+		cache: {
+			byPartialDate: {},
+			byMonth: {},
+			byDay: {},
+		},
 
 		hydrateSource: async (source: EventSource) => {
 			const data = await DataDB.get(source);
@@ -27,13 +36,32 @@ export const useCacheEventsStore = create<CacheEventsStore>()(
 		hydrate: (source: EventSource, data: EventData) => set((state) => {
 			for (const instance of data.instances || []) {
 				for (const key of ["start", "end"] as const) {
-					if (instance[key]) state.cacheByPartialDate[instance[key]] = Array.from(new Set([...(state.cacheByPartialDate[instance[key]] || []), source]));
+					const partialDate = instance[key];
+					if (!partialDate) continue;
+
+					state.cache.byPartialDate[partialDate] ||= [];
+					if (!state.cache.byPartialDate[partialDate].includes(source))
+						state.cache.byPartialDate[partialDate].push(source);
+
+					if (UtilPartialDate.hasMonth(partialDate)) {
+						const month = UtilPartialDate.asMonth(partialDate);
+						state.cache.byMonth[month] ||= [];
+						if (!state.cache.byMonth[month].includes(source))
+							state.cache.byMonth[month].push(source);
+					}
+
+					if (UtilPartialDate.hasDay(partialDate)) {
+						const day = UtilPartialDate.asDay(partialDate);
+						state.cache.byDay[day] ||= [];
+						if (!state.cache.byDay[day].includes(source))
+							state.cache.byDay[day].push(source);
+					}
 				}
 			}
 		}),
 
 		init: async () => {
-			console.log("Initializing cache...");
+			console.time("Cache initialization...");
 			const all = useLayersStore.getState().allTrackedSources();
 			const { hydrate } = get();
 			for (const source of all) {
@@ -42,7 +70,7 @@ export const useCacheEventsStore = create<CacheEventsStore>()(
 					hydrate(source, data.data);
 				}
 			}
-			console.log("Cache initialized with", Object.keys(get().cacheByPartialDate).length, "partial dates.");
+			console.timeEnd("Cache initialization...");
 		},
 	}))
 );

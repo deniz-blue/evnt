@@ -29,7 +29,7 @@ export const prettyRanges = (ranges: PartialDateRange[]): PrettyRange[] => {
             continue;
         }
 
-        if (UtilPartialDateRange.isSingleDay(range)) {
+        if (UtilPartialDateRange.isSameDay(range)) {
             result.push({ type: "single", range });
             continue;
         }

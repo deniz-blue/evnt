@@ -59,6 +59,7 @@ export const DeatomOptional = <Data, Props>({
 			<Button
 				onClick={() => onChange(typeof set === "function" ? (set as () => Data)() : set)}
 				color="gray"
+				justify="start"
 				{...setButtonProps}
 			>
 				{setLabel}

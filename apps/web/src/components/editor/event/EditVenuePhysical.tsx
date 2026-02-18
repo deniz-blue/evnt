@@ -1,6 +1,6 @@
 import type { Address, PhysicalVenue } from "@evnt/schema";
 import { Deatom, DeatomOptional, type EditAtom } from "../edit-atom";
-import { Button, CloseButton, Grid, Group, Input, Select, SimpleGrid, Stack, Text, Tooltip } from "@mantine/core";
+import { Button, Grid, Group, Input, Select, SimpleGrid, Stack, Text, Tooltip } from "@mantine/core";
 import { ClearableTextInput } from "../../base/input/ClearableTextInput";
 import { focusAtom } from "jotai-optics";
 import { atom, useAtomValue, useSetAtom } from "jotai";
@@ -28,14 +28,14 @@ export const EditVenuePhysical = ({ data }: { data: EditAtom<PhysicalVenue> }) =
 		<Stack>
 			<Text fw="bold">Physical Venue Details</Text>
 
-			{hasAddress ? (
-				<EditAddress
-					data={focusAtom(data, o => o.prop("address").valueOr({})) as EditAtom<Address>}
-					onDelete={deleteAddress}
-				/>
+			<EditAddress
+				data={focusAtom(data, o => o.prop("address").valueOr({})) as EditAtom<Address>}
+				onDelete={deleteAddress}
+			/>
+			{/* {hasAddress ? (
 			) : (
 				<Button onClick={addAddress}>Add Address Details</Button>
-			)}
+			)} */}
 		</Stack>
 	)
 };
@@ -49,9 +49,17 @@ export const EditAddress = ({
 }) => {
 	return (
 		<Stack>
-			<Group justify="space-between">
+			<Group>
 				<Text fw="bold">Address</Text>
-				{onDelete && <CloseButton onClick={onDelete} />}
+				{onDelete && (
+					<Button
+						onClick={onDelete}
+						size="compact-xs"
+						color="gray"
+					>
+						Clear
+					</Button>
+				)}
 			</Group>
 
 			<Grid>

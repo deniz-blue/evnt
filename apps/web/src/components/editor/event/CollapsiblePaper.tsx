@@ -16,7 +16,7 @@ export const CollapsiblePaper = ({
 
 	return (
 		<Paper withBorder p="xs">
-			<Stack>
+			<Stack gap={0}>
 				<Group justify="space-between" align="start">
 					<Group gap={4} align="start" c="dimmed">
 						<ActionIcon onClick={toggle} size={24} variant="subtle" color="gray">
@@ -35,7 +35,7 @@ export const CollapsiblePaper = ({
 					/>
 				</Group>
 
-				<Collapse in={!collapsed}>
+				<Collapse expanded={!collapsed}>
 					<Stack p="xs">
 						{children}
 					</Stack>

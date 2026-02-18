@@ -20,12 +20,12 @@ export const PartialDateInput = ({
 	// Specifically for DeatomOptional lol
 	ref?: React.Ref<{ focus: () => void }>;
 }) => {
-	const levelOf = (v: PartialDate): CalendarLevel => UtilPartialDate.hasCompleteDate(v) ? "month" : UtilPartialDate.hasMonth(v) ? "year" : "decade";
+	const levelOf = (v: PartialDate): CalendarLevel => UtilPartialDate.hasDay(v) ? "month" : UtilPartialDate.hasMonth(v) ? "year" : "decade";
 	const asPartialDateDay = (v: PartialDate): PartialDate.Day => UtilPartialDate.toLowDate(value).toISOString().slice(0, 10) as PartialDate.Day;
 	const [level, setLevel] = useState<CalendarLevel>(levelOf(value));
 	const [date, setDate] = useState<string>(asPartialDateDay(value));
 	const [opened, setOpened] = useState(false);
-	const [calendarCollapsed, setCalendarCollapsed] = useState(UtilPartialDate.hasCompleteDate(value));
+	const [calendarCollapsed, setCalendarCollapsed] = useState(UtilPartialDate.hasDay(value));
 	const timePickerHoursRef = useRef<HTMLInputElement | null>(null);
 
 	const [inputValue, setInputValue] = useState<string>(value);
@@ -106,7 +106,7 @@ export const PartialDateInput = ({
 
 	return (
 		<Popover
-			position="bottom"
+			position="top"
 			withArrow
 			opened={opened}
 			onChange={setOpened}
@@ -157,13 +157,13 @@ export const PartialDateInput = ({
 					<Text c="dimmed" ta="center" size="xs">
 						{(
 							!UtilPartialDate.hasMonth(value) ? "Enter Partial Date" :
-								!UtilPartialDate.hasCompleteDate(value) ? "Known month, Unknown day" :
+								!UtilPartialDate.hasDay(value) ? "Known month, Unknown day" :
 									!UtilPartialDate.hasTime(value) ? "Known day, Unknown time" :
 										"Complete date and time"
 						)}
 					</Text>
 
-					<Collapse in={calendarCollapsed}>
+					<Collapse expanded={calendarCollapsed}>
 						<Button
 							onClick={() => setCalendarCollapsed(false)}
 							miw="260px"
@@ -182,7 +182,7 @@ export const PartialDateInput = ({
 						</Button>
 					</Collapse>
 
-					<Collapse in={!calendarCollapsed}>
+					<Collapse expanded={!calendarCollapsed}>
 						<Box>
 							{level === "decade" && (
 								<YearPicker
@@ -206,7 +206,7 @@ export const PartialDateInput = ({
 								<DatePicker
 									level="month"
 									date={date}
-									value={UtilPartialDate.hasCompleteDate(value) ? value : undefined}
+									value={UtilPartialDate.hasDay(value) ? value : undefined}
 									highlightToday
 									onDateChange={onDateChange}
 									onChange={onValueChange}
@@ -215,14 +215,14 @@ export const PartialDateInput = ({
 							)}
 
 							<Text c="dimmed" ta="center" size="xs" mt={4}>
-								{(UtilPartialDate.hasCompleteDate(value) ? null :
+								{(UtilPartialDate.hasDay(value) ? null :
 									UtilPartialDate.hasMonth(value) ? "Close popup if unknown day" :
 										"Close popup if unknown month")}
 							</Text>
 						</Box>
 					</Collapse>
 
-					{UtilPartialDate.hasCompleteDate(value) && (
+					{UtilPartialDate.hasDay(value) && (
 						<Group>
 							<TimePicker
 								format="24h"
@@ -238,7 +238,7 @@ export const PartialDateInput = ({
 						</Group>
 					)}
 
-					{UtilPartialDate.hasCompleteDate(value) && !UtilPartialDate.isComplete(value) && (
+					{UtilPartialDate.hasDay(value) && !UtilPartialDate.isComplete(value) && (
 						<Text c="dimmed" ta="center" size="xs">
 							Close popup to keep time unknown
 						</Text>

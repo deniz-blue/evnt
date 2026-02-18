@@ -9,7 +9,6 @@ import { useCacheEventsStore } from "../../lib/cache/useCacheEventsStore";
 import { useShallow } from "zustand/shallow";
 import { useEventQueries } from "../../db/useEventQuery";
 import { EventCard } from "../../components/content/event/EventCard";
-import { useLayersStore } from "../../db/useLayersStore";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout/calendar")({
@@ -137,20 +136,9 @@ export const DayCard = ({
 	month: PartialDate.Month;
 	day: PartialDate.Day;
 }) => {
-	const allTrackedSources = useLayersStore(
-		useShallow(store => store.allTrackedSources())
-	)
-
 	const sources = useCacheEventsStore(
-		// TODO: remove jank
-		useShallow(store => {
-			let entries = Object.entries(store.cacheByPartialDate);
-			entries = entries.filter(([key]) => UtilPartialDate.includes(day, key as PartialDate));
-			let sources = entries.map(([key, value]) => value).flat() || [];
-			sources = Array.from(new Set(sources));
-			return sources;
-		})
-	)
+		useShallow(store => store.cache.byDay[day] ?? [])
+	);
 
 	const queries = useEventQueries(sources);
 

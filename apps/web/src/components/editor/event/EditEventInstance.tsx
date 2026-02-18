@@ -21,6 +21,10 @@ export const EditEventInstance = ({
 	instance: EditAtom<EventInstance>;
 	onDelete: () => void;
 }) => {
+	const getInstanceData = useSetAtom(useMemo(() => atom(null, (get) => {
+		return get(instance);
+	}), []));
+
 	return (
 		<CollapsiblePaper
 			onDelete={onDelete}
@@ -45,7 +49,14 @@ export const EditEventInstance = ({
 						<DeatomOptional
 							component={PartialDateInput}
 							atom={focusAtom(instance, o => o.prop(field))}
-							set={() => UtilPartialDate.thisMonth()}
+							set={() => {
+								if (field == "start") return UtilPartialDate.thisMonth();
+								const instance = getInstanceData();
+								if (!instance.start) return UtilPartialDate.thisMonth();
+								if (UtilPartialDate.hasDay(instance.start))
+									return UtilPartialDate.asDay(instance.start);
+								return instance.start;
+							}}
 						/>
 					</Stack>
 				))}
@@ -163,7 +174,7 @@ export const InstanceAtomDisplay = ({ instance }: { instance: EditAtom<EventInst
 	}), [instance]));
 
 	return (
-		<Stack gap={4}>
+		<Group gap={4}>
 			{snippets.length == 0 && (
 				<Snippet
 					snippet={{
@@ -175,6 +186,6 @@ export const InstanceAtomDisplay = ({ instance }: { instance: EditAtom<EventInst
 			{snippets.map((snippet, i) => (
 				<Snippet key={i} snippet={snippet} />
 			))}
-		</Stack>
+		</Group>
 	);
 };

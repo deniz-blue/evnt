@@ -1,13 +1,14 @@
-import { createTheme, MantineProvider, type ActionIconProps, type ButtonProps, type TooltipProps } from "@mantine/core";
-import { createRootRoute, Outlet, redirect, Scripts } from "@tanstack/react-router";
+import { MantineProvider } from "@mantine/core";
+import { createRootRoute, Outlet, redirect } from "@tanstack/react-router";
 import { Notifications } from "@mantine/notifications";
 import { contextModals } from "../components/app/modals/modals";
 import { ModalsProvider } from "@mantine/modals";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { DatesProvider } from "@mantine/dates";
 import { useLocaleStore } from "../stores/useLocaleStore";
-import { useMemo, useState, type ComponentType, type PropsWithChildren } from "react";
+import { useMemo, type ComponentType, type PropsWithChildren } from "react";
 import { queryClient } from "../query-client";
+import { theme } from "../styles/theme";
 
 export const Route = createRootRoute({
 	component: RootPage,
@@ -33,30 +34,6 @@ export const Route = createRootRoute({
 				},
 			});
 		}
-	},
-});
-
-export const theme = createTheme({
-	components: {
-		ActionIcon: {
-			defaultProps: {
-				variant: "light",
-			} as ActionIconProps,
-		},
-		Button: {
-			defaultProps: {
-				variant: "light",
-			} as ButtonProps,
-		},
-		Tooltip: {
-			defaultProps: {
-				withArrow: true,
-				arrowOffset: 4,
-				arrowSize: 6,
-				color: "gray",
-				opacity: 0.9,
-			} as TooltipProps,
-		},
 	},
 });
 

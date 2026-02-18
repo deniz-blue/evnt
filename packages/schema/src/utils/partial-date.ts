@@ -41,16 +41,16 @@ export class UtilPartialDate {
 		return new Date(padded + "Z");
 	}
 
-	static fromDate(date: Date): PartialDate {
+	static fromDate(date: Date): PartialDate.Full {
 		const iso = date.toISOString();
-		return (iso.length == 27 ? iso.slice(1, 19) : iso.slice(0, 16)) as PartialDate;
+		return (iso.length == 27 ? iso.slice(1, 19) : iso.slice(0, 16)) as PartialDate.Full;
 	}
 
 	static isComplete(value: PartialDate): value is PartialDate.Full {
 		return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value);
 	}
 
-	static hasCompleteDate(value: PartialDate): value is PartialDate.Day | PartialDate.Full {
+	static hasDay(value: PartialDate): value is PartialDate.Day | PartialDate.Full {
 		return /^\d{4}-\d{2}-\d{2}/.test(value);
 	}
 
@@ -89,7 +89,7 @@ export class UtilPartialDate {
 			timeZone: options.timezone || "UTC",
 			year: options.noCurrentYear && new Date().getFullYear() === parseInt(value.slice(0, 4)) ? undefined : "numeric",
 			month: this.hasMonth(value) ? "long" : undefined,
-			day: this.hasCompleteDate(value) ? "numeric" : undefined,
+			day: this.hasDay(value) ? "numeric" : undefined,
 			weekday: options.weekday,
 		};
 		return date.toLocaleDateString(options.locale || "en", dateOptions);
@@ -108,16 +108,32 @@ export class UtilPartialDate {
 		return date.toLocaleTimeString(options.locale || "en", timeOptions);
 	}
 
-	static now(): PartialDate {
+	static now(): PartialDate.Full {
 		return this.fromDate(new Date());
 	}
 
 	static today(): PartialDate.Day {
-		return new Date().toISOString().slice(0, 10) as PartialDate.Day;
+		return this.asDay(this.now());
 	}
 
 	static thisMonth(): PartialDate.Month {
-		return new Date().toISOString().slice(0, 7) as PartialDate.Month;
+		return this.asMonth(this.today());
+	}
+
+	static thisYear(): PartialDate.Year {
+		return this.asYear(this.today());
+	}
+
+	static asYear(value: PartialDate): PartialDate.Year {
+		return value.slice(0, 4) as PartialDate.Year;
+	}
+
+	static asMonth(value: PartialDate.Full | PartialDate.Day | PartialDate.Month): PartialDate.Month {
+		return value.slice(0, 7) as PartialDate.Month;
+	}
+
+	static asDay(value: PartialDate.Full | PartialDate.Day): PartialDate.Day {
+		return value.slice(0, 10) as PartialDate.Day;
 	}
 
 	static toComponents(value: PartialDate): PartialDateComponents {
@@ -126,7 +142,7 @@ export class UtilPartialDate {
 			components.year = parseInt(value.slice(0, 4));
 			components.month = parseInt(value.slice(5, 7));
 		}
-		if (this.hasCompleteDate(value)) {
+		if (this.hasDay(value)) {
 			components.day = parseInt(value.slice(8, 10));
 		}
 		if (this.hasTime(value)) {
