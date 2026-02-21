@@ -1,5 +1,7 @@
 export * from "./types/Translations";
 export * from "./types/PartialDate";
+export * from "./types/Media";
+export * from "./types/MediaSource";
 export * from "./schemas/venue/Venue";
 export * from "./schemas/EventData";
 export * from "./schemas/EventInstance";
@@ -9,10 +11,9 @@ export * from "./schemas/venue/OnlineVenue";
 export * from "./schemas/venue/VenueType";
 export * from "./schemas/components/EventComponent";
 export * from "./schemas/components/LinkComponent";
+export * from "./schemas/components/SourceComponent";
 
 // Unstable
-export * from "./schemas/components/SourceComponent";
-export * from "./types/Media";
 // export * from "./schemas/organizer/Organizer";
 // export * from "./schemas/activity/EventActivity";
 

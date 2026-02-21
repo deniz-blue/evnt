@@ -468,13 +468,13 @@
         "url": {
           "type": "string",
           "format": "uri",
-          "description": "The URL of the media"
+          "description": "The URL of the media source"
         },
-        "size": {
-          "description": "The dimensions of the media",
-          "$ref": "#/$defs/MediaSize"
+        "dimensions": {
+          "description": "The dimensions of the media in pixels",
+          "$ref": "#/$defs/MediaDimensions"
         },
-        "type": {
+        "mimeType": {
           "description": "The MIME type of the media",
           "type": "string"
         }
@@ -485,9 +485,9 @@
       "additionalProperties": false,
       "id": "MediaSource",
       "title": "Media Source",
-      "description": "A source for a media item"
+      "description": "A source for a media item."
     },
-    "MediaSize": {
+    "MediaDimensions": {
       "type": "object",
       "properties": {
         "width": {
@@ -508,8 +508,8 @@
         "height"
       ],
       "additionalProperties": false,
-      "id": "MediaSize",
-      "title": "Media Size",
+      "id": "MediaDimensions",
+      "title": "Media Dimensions",
       "description": "The dimensions of a media item"
     },
     "MediaPresentation": {

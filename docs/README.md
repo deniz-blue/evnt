@@ -139,8 +139,8 @@ Required fields:
 - `url`: The URL of the media source.
 
 Optional fields:
-- `type`: The MIME type of the media source, such as `image/jpeg`, `video/mp4` etc.
-- `size`: `MediaSize`; object with `width` and `height` properties representing the dimensions of the media in pixels.
+- `mimeType`: The MIME type of the media source, such as `image/jpeg`, `video/mp4` etc.
+- `dimensions`: Optional object with `width` and `height` properties representing the dimensions of the media in pixels.
 
 # `EventData`
 

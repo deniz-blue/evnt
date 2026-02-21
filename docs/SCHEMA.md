@@ -98,6 +98,19 @@ _Object containing the following properties:_
 
 _(\*) Required._
 
+## MediaDimensions
+
+The dimensions of a media item
+
+_Object containing the following properties:_
+
+| Property          | Description                       | Type                 |
+| :---------------- | :-------------------------------- | :------------------- |
+| **`width`** (\*)  | The width of the media in pixels  | `number` (_int, ≥0_) |
+| **`height`** (\*) | The height of the media in pixels | `number` (_int, ≥0_) |
+
+_(\*) Required._
+
 ## MediaPresentation
 
 The presentation details of a media item
@@ -125,30 +138,17 @@ _Object containing the following properties:_
 
 _(\*) Required._
 
-## MediaSize
-
-The dimensions of a media item
-
-_Object containing the following properties:_
-
-| Property          | Description                       | Type                 |
-| :---------------- | :-------------------------------- | :------------------- |
-| **`width`** (\*)  | The width of the media in pixels  | `number` (_int, ≥0_) |
-| **`height`** (\*) | The height of the media in pixels | `number` (_int, ≥0_) |
-
-_(\*) Required._
-
 ## MediaSource
 
-A source for a media item
+A source for a media item.
 
 _Object containing the following properties:_
 
-| Property       | Description                 | Type                    |
-| :------------- | :-------------------------- | :---------------------- |
-| **`url`** (\*) | The URL of the media        | `string` (_url_)        |
-| `size`         | The dimensions of the media | [MediaSize](#mediasize) |
-| `type`         | The MIME type of the media  | `string`                |
+| Property       | Description                           | Type                                |
+| :------------- | :------------------------------------ | :---------------------------------- |
+| **`url`** (\*) | The URL of the media source           | `string` (_url_)                    |
+| `dimensions`   | The dimensions of the media in pixels | [MediaDimensions](#mediadimensions) |
+| `mimeType`     | The MIME type of the media            | `string`                            |
 
 _(\*) Required._
 
