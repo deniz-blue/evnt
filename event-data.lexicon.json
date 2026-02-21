@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "blue.deniz.atproto.event",
+  "id": "blue.deniz.event",
   "defs": {
     "main": {
       "type": "object",

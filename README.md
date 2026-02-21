@@ -4,8 +4,9 @@ A **standardized**, **open-source** data **format** for representing and sharing
 
 _Links:_
 
-- [About](./docs/ABOUT.md)
+- [About & Differences from other formats](./docs/ABOUT.md)
 - 📱 [Applications](#applications)
+- 📅 [ATProto](#atproto)
 - 📅 [Event Repositories](#event-repositories)
 - 📜 [Data Format Specification](./docs/README.md)
   - [@evnt/schema](./packages/schema/) package
@@ -29,6 +30,12 @@ Applications are the different clients that can be used to view and interact wit
 Applications share links to the application selector (event.nya.pub)
 
 Events can be served over **HTTP** or [ATProto](https://atproto.com).
+
+## ATProto
+
+Event data can be served over [ATProto](https://atproto.com).
+
+We are currently using the `blue.deniz.event` collection for storing event data but it is subject to change.
 
 ## Event Repositories
 

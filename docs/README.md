@@ -8,6 +8,8 @@ This document defines the data structures and types used for the @evnt Event for
 	- [`Translations`](#translations)
 	- [`PartialDate`](#partialdate)
 	- [`EventStatus`](#eventstatus)
+	- [`Media`](#media)
+		- [`MediaSource`](#mediasource)
 - [`EventData`](#eventdata)
 	- [Venues](#venues)
 		- [`Venue`](#venue)
@@ -19,6 +21,8 @@ This document defines the data structures and types used for the @evnt Event for
 	- [Components](#components)
 		- [Type `EventComponent`](#type-eventcomponent)
 		- [`LinkComponent`](#linkcomponent)
+		- [`SourceComponent`](#sourcecomponent)
+		- [`SplashMediaComponent`](#splashmediacomponent)
 
 # Types
 
@@ -113,6 +117,30 @@ graph LR;
 	suspended --> postponed
 	suspended --> cancelled
 ```
+
+## `Media`
+
+A `Media` object represents a media item, such as an image or video.
+
+Required fields:
+- `sources`: An array of [`MediaSource`](#mediasource)s.
+
+Optional fields:
+- `alt`: [`Translations`](#translations) representing alternative text for the media, which can be used for accessibility.
+- `presentation`: Optional object for presentation information;
+  - `blurhash`: [BlurHash](https://blurha.sh/)
+  - `dominantColor`: Hex color code with hashtag representing the dominant color; example: `#ff0000` for red.
+
+### `MediaSource`
+
+A `MediaSource` represents a source of a media item, such as an image or video.
+
+Required fields:
+- `url`: The URL of the media source.
+
+Optional fields:
+- `type`: The MIME type of the media source, such as `image/jpeg`, `video/mp4` etc.
+- `size`: `MediaSize`; object with `width` and `height` properties representing the dimensions of the media in pixels.
 
 # `EventData`
 
@@ -264,3 +292,20 @@ Optional fields:
 - `disabled`: A boolean indicating whether the link is disabled. This can be used to represent links that are no longer valid or temporarily unavailable.
 - `opensAt`: A [`PartialDate`](#partialdate) representing the date and/or time when the link becomes active or valid. This can be used for links that are not yet active but will become active in the future (e.g., a ticketing page that opens at a specific date and time).
 - `closesAt`: A [`PartialDate`](#partialdate) representing the date and/or time when the link becomes inactive or invalid. This can be used for links that are only valid for a certain period of time (e.g., a form for registering to a competition that closes at a specific date and time).
+
+### `SourceComponent`
+
+A `SourceComponent` represents a source of information about the event, such as a news article, a social media post, an official announcement etc.
+
+Required fields:
+- `url`: The URL of the source.
+
+### `SplashMediaComponent`
+
+A `SplashMediaComponent` represents a media item (such as an image or video) that can be used as a splash media for the event.
+
+Splash media is a media item that can be used to represent the event in a visual way, such as a cover image or a promotional video. This can be used by applications to display a visually appealing representation of the event.
+
+Required fields:
+- `media`: A [`Media`](#media) object representing the media item.
+- `role`: A string representing the role of the splash media. This can be used to differentiate between different types of splash media (e.g., `background`, `thumbnail`, `poster` etc.) and allow applications to choose the most appropriate media item for a specific context. The only currently defined role is `background`, but applications can define their own roles as needed.

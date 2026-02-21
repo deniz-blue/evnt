@@ -351,6 +351,36 @@
           ],
           "additionalProperties": false,
           "description": "!unstable(#5)"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "splashMedia"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string"
+                },
+                "media": {
+                  "$ref": "#/$defs/Media"
+                }
+              },
+              "required": [
+                "role",
+                "media"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
         }
       ],
       "id": "EventComponent"
@@ -402,7 +432,102 @@
       ],
       "additionalProperties": false,
       "id": "SourceComponent",
-      "description": "!unstable(#5)"
+      "description": "A source of information about the event, such as a news article, a social media post, an official announcement etc."
+    },
+    "Media": {
+      "type": "object",
+      "properties": {
+        "sources": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MediaSource"
+          },
+          "description": "The sources for the media item"
+        },
+        "alt": {
+          "description": "Alternative text for the media item",
+          "$ref": "#/$defs/Translations"
+        },
+        "presentation": {
+          "description": "The presentation details of the media item",
+          "$ref": "#/$defs/MediaPresentation"
+        }
+      },
+      "required": [
+        "sources"
+      ],
+      "additionalProperties": false,
+      "id": "Media",
+      "title": "Media",
+      "description": "A media item, such as an image or video"
+    },
+    "MediaSource": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URL of the media"
+        },
+        "size": {
+          "description": "The dimensions of the media",
+          "$ref": "#/$defs/MediaSize"
+        },
+        "type": {
+          "description": "The MIME type of the media",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "additionalProperties": false,
+      "id": "MediaSource",
+      "title": "Media Source",
+      "description": "A source for a media item"
+    },
+    "MediaSize": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "The width of the media in pixels"
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "The height of the media in pixels"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "additionalProperties": false,
+      "id": "MediaSize",
+      "title": "Media Size",
+      "description": "The dimensions of a media item"
+    },
+    "MediaPresentation": {
+      "type": "object",
+      "properties": {
+        "blurhash": {
+          "description": " A BlurHash representation of the media item",
+          "type": "string"
+        },
+        "dominantColor": {
+          "description": "The dominant color of the media item in hex rgb format (must start with a hashtag)",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "id": "MediaPresentation",
+      "title": "Media Presentation",
+      "description": "The presentation details of a media item"
     }
   }
 }

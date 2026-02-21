@@ -37,7 +37,8 @@ _All properties are optional._
 _Union of the following possible types:_
 
 - _Object with properties:_<ul><li>**`type`** (\*): `'link'`</li><li>**`data`** (\*): [LinkComponent](#linkcomponent)</li></ul>
-- _Object with properties:_<ul><li>**`type`** (\*): `'source'`</li><li>**`data`** (\*): [SourceComponent](#sourcecomponent) - !unstable(#5)</li></ul>
+- _Object with properties:_<ul><li>**`type`** (\*): `'source'`</li><li>**`data`** (\*): [SourceComponent](#sourcecomponent) - A source of information about the event, such as a news article, a social media post, an official announcement etc.</li></ul>
+- _Object with properties:_<ul><li>**`type`** (\*): `'splashMedia'`</li><li>**`data`** (\*): _Object with properties:_<ul><li>**`role`** (\*): `string`</li><li>**`media`** (\*): [Media](#media) - A media item, such as an image or video</li></ul></li></ul>
 
 ## EventInstance
 
@@ -97,25 +98,36 @@ _Object containing the following properties:_
 
 _(\*) Required._
 
-## Media
+## MediaPresentation
 
-!unstable(#6) A media item, such as an image or video
+The presentation details of a media item
 
 _Object containing the following properties:_
 
-| Property           | Description                                        | Type                                                    |
-| :----------------- | :------------------------------------------------- | :------------------------------------------------------ |
-| **`sources`** (\*) | The sources for the media item                     | _Array of at least 1 [MediaSource](#mediasource) items_ |
-| `altText`          | Alternative text for the media item                | [Translations](#translations)                           |
-| `caption`          | A caption for the media item                       | [Translations](#translations)                           |
-| `blurhash`         |  A BlurHash representation of the media item       | `string`                                                |
-| `dominantColor`    | The dominant color of the media item in hex format | `string`                                                |
+| Property        | Description                                                                        | Type     |
+| :-------------- | :--------------------------------------------------------------------------------- | :------- |
+| `blurhash`      |  A BlurHash representation of the media item                                       | `string` |
+| `dominantColor` | The dominant color of the media item in hex rgb format (must start with a hashtag) | `string` |
+
+_All properties are optional._
+
+## Media
+
+A media item, such as an image or video
+
+_Object containing the following properties:_
+
+| Property           | Description                                | Type                                                    |
+| :----------------- | :----------------------------------------- | :------------------------------------------------------ |
+| **`sources`** (\*) | The sources for the media item             | _Array of at least 1 [MediaSource](#mediasource) items_ |
+| `alt`              | Alternative text for the media item        | [Translations](#translations)                           |
+| `presentation`     | The presentation details of the media item | [MediaPresentation](#mediapresentation)                 |
 
 _(\*) Required._
 
 ## MediaSize
 
-!unstable(#6) The dimensions of a media item
+The dimensions of a media item
 
 _Object containing the following properties:_
 
@@ -128,7 +140,7 @@ _(\*) Required._
 
 ## MediaSource
 
-!unstable(#6) A source for a media item
+A source for a media item
 
 _Object containing the following properties:_
 
@@ -178,7 +190,7 @@ _(\*) Required._
 
 ## SourceComponent
 
-!unstable(#5)
+A source of information about the event, such as a news article, a social media post, an official announcement etc.
 
 _Object containing the following properties:_
 
