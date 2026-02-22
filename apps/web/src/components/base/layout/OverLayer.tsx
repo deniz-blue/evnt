@@ -9,7 +9,7 @@ export const OverLayer = ({
 		<Box
 			pos="absolute"
 			inset={0}
-			style={{ zIndex: 1 }}
+			style={{ zIndex: 0 }}
 			w="100%"
 			h="100%"
 			{...props}

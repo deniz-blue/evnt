@@ -5,7 +5,7 @@ import { zodValidator } from "@tanstack/zod-adapter";
 import { useEventQueries } from "../db/useEventQuery";
 import { EventResolver } from "../db/event-resolver";
 import { Stack, Text } from "@mantine/core";
-import { EventCard } from "../components/content/event/EventCard";
+import { EventCard } from "../components/content/event/card/EventCard";
 import { useQuery } from "@tanstack/react-query";
 
 const SearchParamsSchema = z.object({

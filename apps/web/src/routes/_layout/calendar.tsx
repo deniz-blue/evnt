@@ -8,7 +8,7 @@ import { useLocaleStore } from "../../stores/useLocaleStore";
 import { useCacheEventsStore } from "../../lib/cache/useCacheEventsStore";
 import { useShallow } from "zustand/shallow";
 import { useEventQueries } from "../../db/useEventQuery";
-import { EventCard } from "../../components/content/event/EventCard";
+import { EventCard } from "../../components/content/event/card/EventCard";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout/calendar")({

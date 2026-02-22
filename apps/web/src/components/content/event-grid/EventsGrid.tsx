@@ -1,6 +1,6 @@
 import { SimpleGrid, Stack } from "@mantine/core";
 import type { EventQueryResult } from "../../../db/useEventQuery";
-import { EventCard } from "../event/EventCard";
+import { EventCard } from "../event/card/EventCard";
 import { EventContextMenu } from "../event/EventContextMenu";
 
 export const EventsGrid = ({
@@ -13,6 +13,8 @@ export const EventsGrid = ({
 			<SimpleGrid
 				type="container"
 				cols={{ base: 1, "680px": 2, "1400px": 3, "1800px": 4 }}
+				data-grow
+				data-hover
 			>
 				{queries.map(({ query, source }, index) => (
 					<EventCard

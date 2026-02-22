@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { ActionIcon, Box, Code, SimpleGrid, Stack, Table, Text } from "@mantine/core";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
-import { EventCard } from "../../components/content/event/EventCard";
+import { EventCard } from "../../components/content/event/card/EventCard";
 import { EventDataSchema, type EventData, type PartialDate, type Translations } from "@evnt/schema";
 import { IconDotsVertical } from "@tabler/icons-react";
 import type { EventEnvelope } from "../../db/models/event-envelope";

@@ -3,7 +3,7 @@ import type { EditAtom } from "../edit-atom";
 import { Button, Container, Group, JsonInput, Paper, Space, Stack, Tabs, Text, Textarea } from "@mantine/core";
 import { EditEvent } from "./EditEvent";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
-import { EventCard } from "../../content/event/EventCard";
+import { EventCard } from "../../content/event/card/EventCard";
 import { useEffect, useMemo, useState } from "react";
 import { z, type ZodError } from "zod";
 import { tryCatch } from "../../../lib/util/trynull";
