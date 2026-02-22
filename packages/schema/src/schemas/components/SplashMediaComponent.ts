@@ -6,6 +6,6 @@ export const SplashMediaRoleSchema = z.string() as z.ZodType<SplashMediaRole>;
 
 export type SplashMediaComponent = z.infer<typeof SplashMediaComponentSchema>;
 export const SplashMediaComponentSchema = z.object({
-	role: SplashMediaRoleSchema,
+	roles: SplashMediaRoleSchema.array(),
 	media: MediaSchema,
 });

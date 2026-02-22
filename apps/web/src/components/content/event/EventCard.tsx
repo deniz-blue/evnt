@@ -7,6 +7,7 @@ import type { EventEnvelope } from "../../../db/models/event-envelope";
 import { EnvelopeErrorBadge } from "./envelope/EnvelopeErrorBadge";
 import { UtilTranslations } from "@evnt/schema/utils";
 import { Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 
 const loaderTransition: MantineTransition = {
 	in: { opacity: 1, width: "1.5rem" },
@@ -33,7 +34,7 @@ export const EventCard = (props: EventCardProps) => {
 	return (
 		<Paper
 			p={props.variant == "inline" ? 0 : "xs"}
-			px={props.variant == "inline" ? 4 : undefined}
+			px={props.variant == "inline" ? 1 : undefined}
 			withBorder
 			w="100%"
 			h={props.variant === "card" ? "100%" : undefined}
@@ -80,8 +81,20 @@ export const EventCardTitle = ({
 }: EventCardProps) => {
 	const { key } = useEventDetailsModal();
 
+	let title: ReactNode = <Text inherit inline span c="dimmed" fz="sm" fs="italic" children="<no title>" />;
+	if (!!err) title = <Text inherit inline span c="dimmed" fz="sm" fs="italic" children="<unknown>" />;
+	else if (!!loading) title = <Skeleton height="1rem" width="16ch" />;
+
+	if (!!data && !UtilTranslations.isEmpty(data.name))
+		title = <Trans t={data.name} />;
+	else if (!!data)
+		title = <Text inherit inline span c="dimmed" fz="sm" fs="italic" children="<no title>" />;
+
 	return (
-		<Group align="start">
+		<Group
+			align="start"
+			fz={variant === "inline" ? "xs" : undefined}
+		>
 			<Stack gap={0} flex="1">
 				<Group gap={4} align="center">
 					<Group gap={0} align="center" wrap="nowrap">
@@ -103,38 +116,39 @@ export const EventCardTitle = ({
 								/>
 							)}
 						>
-							<Text fw="bold" span lineClamp={variant === "inline" ? 1 : undefined} style={variant == "inline" ? { wordBreak: "break-all" } : undefined}>
-								{!!data ? (
-									UtilTranslations.isEmpty(data.name) ? (
-										<Text span c="dimmed" fz="sm" fs="italic" children="<no title>" />
-									) : (
-										<Trans t={data?.name} />
-									)
-								) : !!loading ? (
-									<Skeleton height="1rem" width="16ch" />
-								) : !!err ? (
-									<Text span c="dimmed" fz="sm" fs="italic" children="<unknown>" />
-								) : (
-									<Text span c="dimmed" fz="sm" fs="italic" children="<no title>" />
-								)}
+							<Text
+								fw={variant == "inline" ? undefined : "bold"}
+								inherit
+								span
+								style={variant == "inline" ? {
+									whiteSpace: "pre",
+									textOverflow: "clip",
+									overflow: "hidden",
+								} : undefined}
+							>
+								{title}
 							</Text>
 						</Anchor>
 					</Group>
 					<EnvelopeErrorBadge err={err} />
 				</Group>
-				<Text fz="sm" c="dimmed" inline span>
-					{(!!data && "label" in data && data.label) && (
-						<Trans t={data.label} />
-					)}
-				</Text>
-				<Transition
-					mounted={!data && !!loading}
-					transition={loadingTextTransition}
-				>
-					{(styles) => (
-						<Text style={styles} fz="xs" c="dimmed" fs="italic">loading...</Text>
-					)}
-				</Transition>
+				{variant !== "inline" && (
+					<>
+						<Text fz="sm" c="dimmed" inline span>
+							{(!!data && "label" in data && data.label) && (
+								<Trans t={data.label} />
+							)}
+						</Text>
+						<Transition
+							mounted={!data && !!loading}
+							transition={loadingTextTransition}
+						>
+							{(styles) => (
+								<Text style={styles} fz="xs" c="dimmed" fs="italic">loading...</Text>
+							)}
+						</Transition>
+					</>
+				)}
 			</Stack>
 			{menu}
 		</Group>

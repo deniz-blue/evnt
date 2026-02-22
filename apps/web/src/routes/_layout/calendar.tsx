@@ -68,7 +68,7 @@ export default function CalendarPage() {
 					{[...Array(7).keys()].map((d) => (
 						<Paper withBorder radius={0} key={d}>
 							<Text ta="center" fw={500} c="dimmed">
-								{new Intl.DateTimeFormat(userLanguage, { weekday: "short" }).format(new Date(2021, 0, d + 3))}
+								{new Intl.DateTimeFormat(userLanguage, { weekday: "short" }).format(new Date(2021, 0, d + 4))}
 							</Text>
 						</Paper>
 					))}
@@ -99,27 +99,6 @@ export default function CalendarPage() {
 								pos="relative"
 							>
 								<DayCard month={date.slice(0, 7) as PartialDate.Month} day={day} />
-								{/* <Overlay
-									style={{ pointerEvents: "none", display: "flex", alignItems: "center", justifyContent: "center" }}
-									center
-									backgroundOpacity={0}
-									c="white"
-									opacity={0.1}
-									zIndex={5}
-								>
-									<svg width="100%" height="100%">
-										<text
-											x="50%"
-											y="50%"
-											textAnchor="middle"
-											fontSize="30"
-											fill="currentColor"
-											dominantBaseline="middle"
-										>
-											{date.slice(-2)}
-										</text>
-									</svg>
-								</Overlay> */}
 							</Paper>
 						))
 					))}
@@ -136,6 +115,8 @@ export const DayCard = ({
 	month: PartialDate.Month;
 	day: PartialDate.Day;
 }) => {
+	const isToday = UtilPartialDate.today() === day;
+
 	const sources = useCacheEventsStore(
 		useShallow(store => store.cache.byDay[day] ?? [])
 	);
@@ -146,7 +127,7 @@ export const DayCard = ({
 		<Stack gap={0} w="100%" h="100%" align="center">
 			<Text
 				ta="center"
-				c={month !== day.slice(0, 7) ? "dimmed" : undefined}
+				c={month !== day.slice(0, 7) ? "dimmed" : isToday ? "blue" : undefined}
 				fz="xs"
 				fw="bold"
 				span
@@ -157,12 +138,12 @@ export const DayCard = ({
 						span
 						c="dimmed"
 						fz="xs"
-						ml="xs"
+						ml={4}
 						children={`(${sources.length})`}
 					/>
 				)}
 			</Text>
-			<ScrollArea h="100%" mah="100%" w="100%">
+			<ScrollArea h="100%" mah="100%" w="100%" scrollbars="y">
 				<Stack gap={0}>
 					{queries.map(({ query, source }, index) => (
 						<EventCard
