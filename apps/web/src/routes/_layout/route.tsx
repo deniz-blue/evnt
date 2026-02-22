@@ -31,6 +31,10 @@ function LayoutPage() {
 		select: (matches) => matches.some((match) => match.staticData?.spaceless),
 	});
 
+	const hasEventForm = useMatches({
+		select: (matches) => matches.some((match) => match.staticData?.hasEventForm),
+	});
+
 	const navbtnprops: ButtonProps = {
 		variant: "subtle",
 		color: "gray",
@@ -73,14 +77,16 @@ function LayoutPage() {
 					</Group>
 					<Group gap={4}>
 						<Menu>
-							<Menu.Target>
-								<ActionIcon
-									size="input-md"
-									color="green"
-								>
-									<IconPlus />
-								</ActionIcon>
-							</Menu.Target>
+							{!hasEventForm && (
+								<Menu.Target>
+									<ActionIcon
+										size="input-md"
+										color="green"
+									>
+										<IconPlus />
+									</ActionIcon>
+								</Menu.Target>
+							)}
 							<Menu.Dropdown>
 								<Menu.Item
 									leftSection={<IconEdit />}

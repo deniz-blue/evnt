@@ -1,10 +1,10 @@
 import { Input, SimpleGrid, Stack, TextInput } from "@mantine/core";
-import { Deatom, DeatomOptional, type EditAtom } from "../edit-atom";
+import { Deatom, DeatomOptional, type EditAtom } from "../../edit-atom";
 import type { LinkComponent } from "@evnt/schema";
 import { focusAtom } from "jotai-optics";
-import { TranslationsInput } from "../../base/input/TranslationsInput";
-import { ClearableSwitch } from "../../base/input/ClearableSwitch";
-import { PartialDateInput } from "../../base/input/PartialDateInput";
+import { TranslationsInput } from "../../../base/input/TranslationsInput";
+import { ClearableSwitch } from "../../../base/input/ClearableSwitch";
+import { PartialDateInput } from "../../../base/input/PartialDateInput";
 import { UtilPartialDate } from "@evnt/schema/utils";
 
 export const EditComponentLink = ({ data }: { data: EditAtom<LinkComponent> }) => {

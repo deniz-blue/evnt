@@ -17,6 +17,7 @@
         "sourceMap": true,
         "resolveJsonModule": true,
         "noEmit": true,
-        "noImplicitReturns": true
+        "noImplicitReturns": true,
+		"strict": true
     }
 }

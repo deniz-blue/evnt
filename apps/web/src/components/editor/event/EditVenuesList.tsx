@@ -51,7 +51,7 @@ export const EditVenuesList = ({
 	return (
 		<Stack gap={4}>
 			<Group gap={4} justify="space-between">
-				<Title order={3}>
+				<Title order={4}>
 					Venues ({indexes.length})
 				</Title>
 				<Button

@@ -28,7 +28,7 @@ export default function CalendarPage() {
 		consistentWeeks: true,
 	}) as PartialDate.Day[][];
 
-	const h = "calc(100svh - var(--app-shell-header-height, 0px) - 2 * var(--app-shell-padding) - var(--safe-area-inset-bottom) - var(--safe-area-inset-bottom))";
+	const h = "calc(100svh - var(--app-shell-header-height, 0px) - 2 * var(--app-shell-padding) - var(--safe-area-inset-top) - var(--safe-area-inset-bottom))";
 
 	return (
 		<Stack

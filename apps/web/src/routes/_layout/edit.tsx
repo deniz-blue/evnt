@@ -19,6 +19,9 @@ const RouteSearchSchema = z.object({
 export const Route = createFileRoute("/_layout/edit")({
 	component: EditPage,
 	validateSearch: RouteSearchSchema,
+	staticData: {
+		hasEventForm: true,
+	},
 })
 
 function EditPage() {

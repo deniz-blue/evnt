@@ -12,7 +12,7 @@
 >
 	<mask id="mask">
 		<circle r="13" cx="12" cy="12" fill="white" />
-		<circle r="10" cx="12" cy="12" fill="black" />
+		<circle r="9" cx="12" cy="12" fill="black" />
 	</mask>
 	<foreignObject
 		x="0"

@@ -12,6 +12,7 @@ export * from "./schemas/venue/VenueType";
 export * from "./schemas/components/EventComponent";
 export * from "./schemas/components/LinkComponent";
 export * from "./schemas/components/SourceComponent";
+export * from "./schemas/components/SplashMediaComponent";
 
 // Unstable
 // export * from "./schemas/organizer/Organizer";

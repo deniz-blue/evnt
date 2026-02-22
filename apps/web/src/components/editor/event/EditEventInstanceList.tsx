@@ -1,13 +1,10 @@
 import type { EventData, EventInstance, Venue } from "@evnt/schema";
-import { Button, Combobox, Divider, Group, Paper, Popover, Stack, Text, Title, useCombobox } from "@mantine/core";
+import { Button, Group, Paper, Stack, Text, Title } from "@mantine/core";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { EditEventInstance } from "./EditEventInstance";
 import { focusAtom } from "jotai-optics";
 import type { EditAtom } from "../edit-atom";
 import { useMemo } from "react";
-import { EditVenuesList } from "./EditVenuesList";
-import { Snippet } from "../../content/Snippet";
-import { snippetVenue } from "@evnt/pretty";
 
 export const EditEventInstanceList = ({ data }: { data: EditAtom<EventData> }) => {
 	const length = useAtomValue(useMemo(() => atom((get) => get(data).instances?.length ?? 0), [data]));
@@ -16,7 +13,7 @@ export const EditEventInstanceList = ({ data }: { data: EditAtom<EventData> }) =
 	return (
 		<Stack gap={4}>
 			<Group gap={4} justify="space-between">
-				<Title order={3}>
+				<Title order={4}>
 					Instances ({length})
 				</Title>
 				<Button

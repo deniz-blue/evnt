@@ -1,6 +1,6 @@
 import { EventDataSchema, type EventData } from "@evnt/schema";
 import type { EditAtom } from "../edit-atom";
-import { Button, Container, Group, JsonInput, Stack, Tabs, Text, Textarea } from "@mantine/core";
+import { Button, Container, Group, JsonInput, Paper, Space, Stack, Tabs, Text, Textarea } from "@mantine/core";
 import { EditEvent } from "./EditEvent";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { EventCard } from "../../content/event/EventCard";
@@ -8,7 +8,13 @@ import { useEffect, useMemo, useState } from "react";
 import { z, type ZodError } from "zod";
 import { tryCatch } from "../../../lib/util/trynull";
 
-export const EventEditor = ({ data }: { data: EditAtom<EventData> }) => {
+export const EventEditor = ({
+	data,
+	button,
+}: {
+	data: EditAtom<EventData>;
+	button?: React.ReactNode;
+}) => {
 	const errorsAtom = useMemo(() => atom<ZodError | string | null>(null), []);
 	const isValid = useAtomValue(useMemo(() => atom((get) => (
 		get(errorsAtom) === null
@@ -17,11 +23,22 @@ export const EventEditor = ({ data }: { data: EditAtom<EventData> }) => {
 	return (
 		<Stack gap={0}>
 			<Tabs defaultValue="form">
-				<Tabs.List>
-					<Tabs.Tab value="form" disabled={!isValid}>Form Editor</Tabs.Tab>
-					<Tabs.Tab value="json">JSON Editor</Tabs.Tab>
-					<Tabs.Tab value="preview" disabled={!isValid}>Preview</Tabs.Tab>
-				</Tabs.List>
+				<Paper
+					pos="sticky"
+					top="calc(var(--safe-area-inset-top) + var(--app-shell-header-height, 0px))"
+					pt="var(--app-shell-padding)"
+					shadow="xl"
+					radius={0}
+					style={{ zIndex: 5 }}
+				>
+					<Tabs.List>
+						<Tabs.Tab value="form" disabled={!isValid}>Form</Tabs.Tab>
+						<Tabs.Tab value="json">JSON</Tabs.Tab>
+						<Tabs.Tab value="preview" disabled={!isValid}>Preview</Tabs.Tab>
+						<Space flex="1" />
+						{button}
+					</Tabs.List>
+				</Paper>
 
 				<Tabs.Panel value="form" pt="xs">
 					<EditEvent data={data} />

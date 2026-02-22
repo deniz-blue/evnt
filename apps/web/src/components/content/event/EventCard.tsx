@@ -1,4 +1,4 @@
-import { Anchor, Badge, Group, Loader, Paper, Skeleton, Stack, Text, Transition, type MantineTransition } from "@mantine/core";
+import { Anchor, Badge, Box, Group, Loader, Paper, Skeleton, Stack, Text, Transition, type MantineTransition } from "@mantine/core";
 import { Trans } from "./Trans";
 import { EventInstanceList } from "./EventInstanceList";
 import { useEventDetailsModal } from "../../../hooks/app/useEventDetailsModal";
@@ -8,6 +8,8 @@ import { EnvelopeErrorBadge } from "./envelope/EnvelopeErrorBadge";
 import { UtilTranslations } from "@evnt/schema/utils";
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import type { EventComponent } from "@evnt/schema";
+import { EvntMedia } from "../../base/media/EvntMedia";
 
 const loaderTransition: MantineTransition = {
 	in: { opacity: 1, width: "1.5rem" },
@@ -31,6 +33,11 @@ export interface EventCardProps extends Omit<EventEnvelope, "draft"> {
 };
 
 export const EventCard = (props: EventCardProps) => {
+	const backgroundMedia = props.data?.components
+		?.find((c): c is EventComponent & { type: "splashMedia" } =>
+			c.type === "splashMedia" && c.data.roles.includes("background"))
+		?.data?.media;
+
 	return (
 		<Paper
 			p={props.variant == "inline" ? 0 : "xs"}
@@ -39,33 +46,64 @@ export const EventCard = (props: EventCardProps) => {
 			w="100%"
 			h={props.variant === "card" ? "100%" : undefined}
 			shadow="xs"
+			pos="relative"
+			style={{ overflow: "hidden" }}
 		>
-			<Stack gap={4} h="100%" justify="space-between">
-				<Stack>
-					<EventCardTitle {...props} />
+			{backgroundMedia && (
+				<>
+					<Box
+						w="100%"
+						h="100%"
+						pos="absolute"
+						inset={0}
+						style={{ zIndex: 0 }}
+					>
+						<EvntMedia
+							media={backgroundMedia}
+						/>
+					</Box>
+					<Box
+						w="100%"
+						h="100%"
+						pos="absolute"
+						inset={0}
+						style={{
+							zIndex: 0,
+							background: "rgba(0, 0, 0, 0.7)",
+							mixBlendMode: "darken",
+							boxShadow: "inset 0 0 10000px rgba(0, 0, 0, 0.8)",
+						}}
+					/>
+				</>
+			)}
+			<Box pos="relative" style={{ zIndex: 1 }} h="100%">
+				<Stack gap={4} h="100%" justify="space-between">
+					<Stack>
+						<EventCardTitle {...props} />
 
-					{props.variant === "card" && !!props.data && (
-						<EventInstanceList value={props.data} />
+						{props.variant === "card" && !!props.data && (
+							<EventInstanceList value={props.data} />
+						)}
+					</Stack>
+
+					{/* Bottom section */}
+					{props.variant === "card" && (
+						<Stack>
+							<Group>
+								{props.source && UtilEventSource.getType(props.source) === "local" && (
+									<Badge color="gray" size="xs" variant="outline" children="local" />
+								)}
+								{props.source && UtilEventSource.getType(props.source) === "at" && (
+									<Badge color="blue" size="xs" variant="outline" children="atproto" />
+								)}
+								{props.isDraft && (
+									<Badge color="yellow" size="xs" variant="outline" children="draft" />
+								)}
+							</Group>
+						</Stack>
 					)}
 				</Stack>
-
-				{/* Bottom section */}
-				{props.variant === "card" && (
-					<Stack>
-						<Group>
-							{props.source && UtilEventSource.getType(props.source) === "local" && (
-								<Badge color="gray" size="xs" variant="outline" children="local" />
-							)}
-							{props.source && UtilEventSource.getType(props.source) === "at" && (
-								<Badge color="blue" size="xs" variant="outline" children="atproto" />
-							)}
-							{props.isDraft && (
-								<Badge color="yellow" size="xs" variant="outline" children="draft" />
-							)}
-						</Group>
-					</Stack>
-				)}
-			</Stack>
+			</Box>
 		</Paper>
 	);
 };

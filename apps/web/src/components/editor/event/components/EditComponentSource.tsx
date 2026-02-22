@@ -1,5 +1,5 @@
 import { Stack, Text, TextInput } from "@mantine/core";
-import { Deatom, type EditAtom } from "../edit-atom";
+import { Deatom, type EditAtom } from "../../edit-atom";
 import type { SourceComponent } from "@evnt/schema";
 import { focusAtom } from "jotai-optics";
 

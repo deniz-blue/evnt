@@ -1,18 +1,12 @@
-import { CloseButton, Group, Paper, Stack, Text } from "@mantine/core";
 import type { EditAtom } from "../edit-atom";
 import type { EventComponent, EventData } from "@evnt/schema";
 import { atom, useAtomValue, useSetAtom } from "jotai";
-import { useMemo, type ComponentType } from "react";
-import { EditComponentLink } from "./EditComponentLink";
+import { useMemo } from "react";
 import { focusAtom } from "jotai-optics";
-import { IconExternalLink, IconLink } from "@tabler/icons-react";
-import { EditComponentSource } from "./EditComponentSource";
 import { CollapsiblePaper } from "./CollapsiblePaper";
-
-const componentTypeLabels: Record<EventComponent["type"], [ComponentType, string]> = {
-	link: [IconLink, "Link Component"],
-	source: [IconExternalLink, "Source Component"],
-};
+import { EventComponentRegistry } from "./event-components";
+import { Trans } from "../../content/event/Trans";
+import { IconQuestionMark } from "@tabler/icons-react";
 
 export const EditComponent = ({ component, data }: {
 	data: EditAtom<EventData>;
@@ -29,21 +23,30 @@ export const EditComponent = ({ component, data }: {
 		}));
 	}), [data, component]));
 
-	const [Icon, label] = componentTypeLabels[type];
+	const {
+		label,
+		icon: Icon,
+		editComponent: EditComponent,
+	} = useMemo(() => {
+		const registryEntry = EventComponentRegistry[type];
+		return {
+			label: registryEntry?.label ?? { en: `Unknown: ${type}` },
+			icon: registryEntry?.icon ?? IconQuestionMark,
+			editComponent: registryEntry?.editComponent ?? (
+				(() => null)
+			) as any, // Stupid typescript
+		};
+	}, [type]);
+
+	const componentDataAtom = useMemo(() => focusAtom(component, o => o.prop("data")), [component]);
 
 	return (
 		<CollapsiblePaper
 			icon={<Icon />}
-			title={label}
+			title={<Trans t={label} />}
 			onDelete={onDelete}
 		>
-			{type === "link" && (
-				<EditComponentLink data={focusAtom(component, o => o.prop("data"))} />
-			)}
-
-			{type === "source" && (
-				<EditComponentSource data={focusAtom(component, o => o.prop("data"))} />
-			)}
+			<EditComponent data={componentDataAtom} />
 		</CollapsiblePaper>
 	);
 };

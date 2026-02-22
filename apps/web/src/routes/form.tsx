@@ -23,7 +23,10 @@ const SearchParamsSchema = z.object({
 export const Route = createFileRoute("/form")({
 	component: FormPage,
 	validateSearch: zodValidator(SearchParamsSchema),
-})
+	staticData: {
+		hasEventForm: true,
+	},
+});
 
 function FormPage() {
 	const {
@@ -112,24 +115,13 @@ export const FormPageTemplate = ({
 			<Stack gap={0}>
 				<Group justify="space-between" align="start" wrap="nowrap">
 					<Stack gap={0}>
-						<Title order={2}>
+						<Title order={4}>
 							{title}
 						</Title>
-						<Text size="sm" c="dimmed">
+						<Text fz="xs" c="dimmed">
 							{desc}
 						</Text>
 					</Stack>
-					<Group>
-						{button ?? (
-							<Button
-								color="green"
-								onClick={onContinue}
-								loading={loading}
-							>
-								{continueText}
-							</Button>
-						)}
-					</Group>
 				</Group>
 				<Text c="red">
 					{error}
@@ -138,17 +130,32 @@ export const FormPageTemplate = ({
 				{loading && <CenteredLoader />}
 				<EditEventPageWrapper
 					data={data}
+					button={button ?? (
+						<Button
+							color="green"
+							onClick={onContinue}
+							loading={loading}
+						>
+							{continueText}
+						</Button>
+					)}
 				/>
 			</Stack>
 		</Container>
 	)
 };
 
-export const EditEventPageWrapper = ({ data }: { data: EditAtom<EventData | null> }) => {
+export const EditEventPageWrapper = ({
+	data,
+	button,
+}: {
+	data: EditAtom<EventData | null>;
+	button?: ReactNode;
+}) => {
 	const isNull = useAtomValue(useMemo(() => atom(get => get(data) === null), [data]));
 	if (isNull) return null;
 	return (
-		<EventEditor data={data as EditAtom<EventData>} />
+		<EventEditor data={data as EditAtom<EventData>} button={button} />
 	)
 };
 

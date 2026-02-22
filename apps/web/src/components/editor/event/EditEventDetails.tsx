@@ -20,10 +20,10 @@ export const EditEventDetails = ({ data }: { data: WritableAtom<EventData, [Even
 
 			<Deatom
 				component={TranslationsInput}
-				atom={focusAtom(data, (o) => o.prop("description").valueOr({}))}
-				label="Event Description"
-				description="Currently shows up as long markdown. Might be subjected to change!"
-				placeholder="Event Description..."
+				atom={focusAtom(data, (o) => o.prop("label").valueOr({}))}
+				label="Event Label"
+				description="A short, descriptive label. Shows up under the event name."
+				placeholder="Friend Group Hangout"
 			/>
 
 			<Group grow>

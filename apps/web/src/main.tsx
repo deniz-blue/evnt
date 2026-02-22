@@ -14,6 +14,7 @@ declare module "@tanstack/react-router" {
 
 	interface StaticDataRouteOption {
 		spaceless?: boolean;
+		hasEventForm?: boolean;
 	}
 }
 

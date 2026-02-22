@@ -29,6 +29,7 @@
 		"@tanstack/react-router-devtools": "^1.160.0",
 		"@tanstack/zod-adapter": "^1.160.0",
 		"@vitejs/plugin-react": "^5.1.4",
+		"blurhash": "^2.0.5",
 		"dayjs": "^1.11.19",
 		"ical.js": "^2.2.1",
 		"idb": "^8.0.3",

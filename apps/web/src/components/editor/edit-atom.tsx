@@ -18,6 +18,7 @@ export const Deatom = <Data, Props,>({
 		if (v && typeof v === "object" && "currentTarget" in v) onChange((v as React.ChangeEvent<HTMLInputElement>).currentTarget.value as unknown as Data);
 		else onChange(v as Data);
 	}, [onChange]);
+	// @ts-ignore
 	return <Component {...(props as Props)} value={value} onChange={handleChange} />;
 };
 
@@ -70,6 +71,7 @@ export const DeatomOptional = <Data, Props>({
 	return (
 		<Group flex="1" gap={4}>
 			<Box flex="1">
+				{/* @ts-ignore */}
 				<Component {...(props as unknown as Props)} value={value} onChange={onChange} onDelete={() => onChange(undefined as Data)} ref={ref} />
 			</Box>
 			{withDeleteButton && <CloseButton onClick={() => onChange(undefined as Data)} />}

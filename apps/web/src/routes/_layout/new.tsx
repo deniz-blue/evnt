@@ -11,6 +11,9 @@ import type { EventSource } from "../../db/models/event-source";
 
 export const Route = createFileRoute("/_layout/new")({
 	component: NewPage,
+	staticData: {
+		hasEventForm: true,
+	},
 })
 
 function NewPage() {

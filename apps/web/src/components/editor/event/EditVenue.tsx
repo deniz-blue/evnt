@@ -128,6 +128,7 @@ export const VenueTypePicker = ({
 }) => {
 	const label = (Icon: ComponentType<{ size: number }>, label: string) => (
 		<Group gap={4} wrap="nowrap" py={4}>
+			{/* @ts-ignore */}
 			<Icon size={16} />
 			<Text inline inherit>{label}</Text>
 		</Group>
@@ -160,6 +161,9 @@ export const VenueAtomDisplay = ({
 	}), [venue]));
 
 	return (
-		<Snippet snippet={snippet} noSublabel={noSublabel} />
+		<Snippet snippet={{
+			...snippet,
+			sublabel: undefined,
+		}} noSublabel={noSublabel} />
 	);
 };

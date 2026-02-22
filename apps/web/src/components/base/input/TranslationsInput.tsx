@@ -1,8 +1,7 @@
 import type { LanguageKey, Translations } from "@evnt/schema";
 import { useLocaleStore, useTranslations } from "../../../stores/useLocaleStore";
-import { Accordion, ActionIcon, Box, CloseButton, Combobox, Group, Indicator, Input, Popover, Stack, Text, TextInput, Tooltip, type TextInputProps } from "@mantine/core";
+import { Accordion, ActionIcon, Box, CloseButton, Group, Indicator, Input, Popover, Stack, Text, TextInput, Tooltip, type TextInputProps } from "@mantine/core";
 import { useMemo, useRef, useState } from "react";
-import { UtilLanguageCode } from "../../../lib/util/language-code";
 import { useDisclosure } from "@mantine/hooks";
 import { LanguageIcon } from "../../content/LanguageIcon";
 

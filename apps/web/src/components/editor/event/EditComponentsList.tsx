@@ -6,26 +6,8 @@ import { Button, Group, Input, Menu, Paper, Stack, Text, Title } from "@mantine/
 import { IconChevronDown, IconExternalLink, IconLink } from "@tabler/icons-react";
 import { EditComponent } from "./EditComponent";
 import { focusAtom } from "jotai-optics";
-
-const componentTypes: {
-	icon: ComponentType<{ size?: number }>;
-	label: ReactNode;
-	desc: ReactNode;
-	data: EventComponent;
-}[] = [
-		{
-			icon: IconLink,
-			label: "Link",
-			desc: "Registration page, livestream, competition forms etc.",
-			data: { type: "link", data: { url: "" } },
-		},
-		{
-			icon: IconExternalLink,
-			label: "Source",
-			desc: "Canonical source of the event; official website, social media page etc.",
-			data: { type: "source", data: { url: "" } },
-		},
-	];
+import { EventComponentRegistry } from "./event-components";
+import { Trans } from "../../content/event/Trans";
 
 export const EditComponentsList = ({ data }: { data: EditAtom<EventData> }) => {
 	const indexes = useAtomValue(useMemo(() => atom((get) => {
@@ -42,7 +24,7 @@ export const EditComponentsList = ({ data }: { data: EditAtom<EventData> }) => {
 	return (
 		<Stack gap={4}>
 			<Group gap={4} justify="space-between">
-				<Title order={3}>
+				<Title order={4}>
 					Components ({indexes.length})
 				</Title>
 				<Menu>
@@ -53,15 +35,15 @@ export const EditComponentsList = ({ data }: { data: EditAtom<EventData> }) => {
 					</Menu.Target>
 					<Menu.Dropdown maw="400px">
 						<Menu.Label>Add component with type...</Menu.Label>
-						{componentTypes.map(({ icon: Icon, data, label, desc }, i) => (
+						{Object.entries(EventComponentRegistry).map(([type, { icon: Icon, label, desc, createData }]) => (
 							<Menu.Item
-								key={i}
+								key={type}
 								leftSection={<Icon size={18} />}
-								onClick={() => addComponent(data)}
+								onClick={() => createData && addComponent(createData)}
 							>
 								<Stack gap={0}>
-									<Input.Label>{label}</Input.Label>
-									<Input.Description>{desc}</Input.Description>
+									<Input.Label><Trans t={label} /></Input.Label>
+									{desc && <Input.Description><Trans t={desc} /></Input.Description>}
 								</Stack>
 							</Menu.Item>
 						))}

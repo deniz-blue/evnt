@@ -17,9 +17,9 @@ export const CollapsiblePaper = ({
 	return (
 		<Paper withBorder p="xs">
 			<Stack gap={0}>
-				<Group justify="space-between" align="start">
-					<Group gap={4} align="start" c="dimmed">
-						<ActionIcon onClick={toggle} size={24} variant="subtle" color="gray">
+				<Group justify="space-between" gap={4} align="start" wrap="nowrap">
+					<Group gap={4} align="start" c="dimmed" wrap="nowrap">
+						<ActionIcon onClick={toggle} size="md" variant="subtle" color="gray">
 							<Accordion.Chevron style={{
 								transform: collapsed ? "rotate(-90deg)" : "rotate(0deg)",
 								transition: "transform 150ms ease",
