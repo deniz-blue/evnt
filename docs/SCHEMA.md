@@ -38,7 +38,7 @@ _Union of the following possible types:_
 
 - _Object with properties:_<ul><li>**`type`** (\*): `'link'`</li><li>**`data`** (\*): [LinkComponent](#linkcomponent)</li></ul>
 - _Object with properties:_<ul><li>**`type`** (\*): `'source'`</li><li>**`data`** (\*): [SourceComponent](#sourcecomponent) - A source of information about the event, such as a news article, a social media post, an official announcement etc.</li></ul>
-- _Object with properties:_<ul><li>**`type`** (\*): `'splashMedia'`</li><li>**`data`** (\*): _Object with properties:_<ul><li>**`role`** (\*): `string`</li><li>**`media`** (\*): [Media](#media) - A media item, such as an image or video</li></ul></li></ul>
+- _Object with properties:_<ul><li>**`type`** (\*): `'splashMedia'`</li><li>**`data`** (\*): _Object with properties:_<ul><li>**`roles`** (\*): `Array<string>`</li><li>**`media`** (\*): [Media](#media) - A media item, such as an image or video</li></ul></li></ul>
 
 ## EventInstance
 

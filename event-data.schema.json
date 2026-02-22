@@ -362,15 +362,18 @@
             "data": {
               "type": "object",
               "properties": {
-                "role": {
-                  "type": "string"
+                "roles": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 },
                 "media": {
                   "$ref": "#/$defs/Media"
                 }
               },
               "required": [
-                "role",
+                "roles",
                 "media"
               ],
               "additionalProperties": false

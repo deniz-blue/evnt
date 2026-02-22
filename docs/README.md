@@ -308,4 +308,4 @@ Splash media is a media item that can be used to represent the event in a visual
 
 Required fields:
 - `media`: A [`Media`](#media) object representing the media item.
-- `role`: A string representing the role of the splash media. This can be used to differentiate between different types of splash media (e.g., `background`, `thumbnail`, `poster` etc.) and allow applications to choose the most appropriate media item for a specific context. The only currently defined role is `background`, but applications can define their own roles as needed.
+- `roles`: A string array representing the roles of the splash media. This can be used to differentiate between different types of splash media (e.g., `background`, `thumbnail`, `poster` etc.) and allow applications to choose the most appropriate media item for a specific context. The only currently defined role is `background`, but applications can define their own roles as needed.
