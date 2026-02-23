@@ -20,6 +20,7 @@ export const theme = createTheme({
 				arrowSize: 6,
 				color: "gray",
 				opacity: 0.9,
+				multiline: true,
 			} as TooltipProps,
 		},
 	},

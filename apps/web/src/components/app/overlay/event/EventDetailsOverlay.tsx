@@ -14,11 +14,12 @@ export const EventDetailsOverlay = () => {
 		<BaseOverlay
 			opened={!!source}
 			onClose={close}
+			modalBodyProps={{ p: 0 }}
 		>
 			{source && UtilEventSource.is(source, true) ? (
 				<EventDetailsOverlayHandler source={source} />
 			) : (
-				<Stack>
+				<Stack align="center" justify="center" h="100%" ta="center">
 					<Text>
 						Invalid event source: <Code>{source}</Code>
 					</Text>

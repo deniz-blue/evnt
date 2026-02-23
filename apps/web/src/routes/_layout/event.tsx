@@ -13,6 +13,9 @@ const SearchParamsSchema = z.object({
 export const Route = createFileRoute("/_layout/event")({
 	component: EventPage,
 	validateSearch: SearchParamsSchema,
+	staticData: {
+		spaceless: true,
+	},
 })
 
 function EventPage() {
@@ -20,15 +23,28 @@ function EventPage() {
 	const query = useEventQuery(source);
 
 	return (
-		<Container size="md">
-			<Stack>
-				<EventDetailsContent
-					source={source}
-					{...query?.data ?? {
-						data: null,
-					} as EventEnvelope}
-				/>
-			</Stack>
-		</Container>
+		<Stack
+			w="100%"
+			align="center"
+		>
+			<Container
+				size="md"
+				p={0}
+				w="100%"
+				mih="100dvh"
+				style={{
+					boxShadow: "0 0 50px rgba(0,0,0,0.2)",
+				}}
+			>
+				<Stack>
+					<EventDetailsContent
+						source={source}
+						{...query?.data ?? {
+							data: null,
+						} as EventEnvelope}
+					/>
+				</Stack>
+			</Container>
+		</Stack>
 	)
 }

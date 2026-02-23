@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Code, Group, Loader, Modal, Stack, Text, Title, Tooltip } from "@mantine/core";
+import { ActionIcon, Box, Code, Container, Group, Loader, Modal, Stack, Text, Title, Tooltip } from "@mantine/core";
 import { Trans } from "../Trans";
 import { SmallTitle } from "../../base/SmallTitle";
 import { snippetInstance, snippetVenue, venueGoogleMapsLink, venueOpenStreetMapsLink } from "@evnt/pretty";
@@ -17,6 +17,8 @@ import { Link } from "@tanstack/react-router";
 import { useEventQuery } from "../../../../db/useEventQuery";
 import { AsyncAction } from "../../../data/AsyncAction";
 import { EventResolver } from "../../../../db/event-resolver";
+import { EventDetailsContext } from "./event-details-context";
+import { EventDetailsBanner } from "./EventDetailsBanner";
 
 export interface EventDetailsContentProps extends Omit<EventEnvelope, "draft"> {
 	source?: EventSource;
@@ -25,198 +27,187 @@ export interface EventDetailsContentProps extends Omit<EventEnvelope, "draft"> {
 	withModalCloseButton?: boolean;
 }
 
-export const EventDetailsContent = ({
-	data,
-	source,
-	err,
-	loading,
-	withModalCloseButton,
-}: EventDetailsContentProps) => {
+export const EventDetailsContent = (props: EventDetailsContentProps) => {
+	const {
+		data,
+		source,
+	} = props;
+
 	return (
-		<Stack>
-			<Group gap={4}>
-				<Group flex="1" gap={4}>
-					{loading && (
-						<Loader />
-					)}
-					<Title>
-						<Trans t={data?.name} />
-					</Title>
-					<EnvelopeErrorBadge err={err} />
-				</Group>
-				{withModalCloseButton && <Modal.CloseButton />}
-			</Group>
+		<EventDetailsContext value={props}>
+			<EventDetailsBanner />
+			<Container mt="sm" w="100%">
+				{source && <LayerImportSection source={source} />}
 
-			{source && <LayerImportSection source={source} />}
-
-			<Stack align="end">
-				<Group gap={4}>
-					{source && UtilEventSource.isFromNetwork(source) && (
-						<EventRefetchButton source={source} />
-					)}
-					<VantageCopyButton
-						value={JSON.stringify(data, null, 2)}
-						labelCopy="Copy event JSON"
-						labelCopied="Event JSON copied to clipboard"
-						icon={<IconJson />}
-					/>
-					{source && UtilEventSource.getType(source) === "at" && (
-						<Tooltip label={"View on PDSls"} withArrow>
-							<ActionIcon
-								size="input-md"
-								color="gray"
-								component="a"
-								href={`https://pds.ls/${source}`}
-								target="_blank"
-							>
-								<Text span inline inherit fz="xs">
-									PDS
-								</Text>
-							</ActionIcon>
-						</Tooltip>
-					)}
-					{source && UtilEventSource.isFromNetwork(source) && (
-						<VantageCopyButton
-							value={EventActions.getEmbedLink(source)}
-							labelCopied="Embed link copied to clipboard"
-							labelCopy="Copy embed link"
-							icon={<IconCode />}
-						/>
-					)}
-					{source && UtilEventSource.isFromNetwork(source) && (
-						<VantageCopyButton
-							value={source}
-							labelCopied="Source copied to clipboard"
-							labelCopy="Copy source URL"
-							icon={<IconLink />}
-						/>
-					)}
-					{source && UtilEventSource.isFromNetwork(source) && (
-						<VantageCopyButton
-							value={EventActions.getShareLink(source)}
-							labelCopied="Share link copied to clipboard"
-							labelCopy="Copy share link"
-							icon={<IconShare />}
-						/>
-					)}
-					{source && UtilEventSource.isEditable(source) && (
-						<Tooltip label={"Edit"} withArrow>
-							<ActionIcon
-								size="input-md"
-								color="gray"
-								renderRoot={(props) => (
-									<Link
-										to="/edit"
-										search={{ source }}
-										{...props}
-									/>
-								)}
-							>
-								<IconEdit />
-							</ActionIcon>
-						</Tooltip>
-					)}
-				</Group>
-			</Stack>
-
-			<Stack gap={0}>
-				<SmallTitle padLeft>
-					venue{data?.venues && data.venues.length !== 1 ? "s" : ""}
-				</SmallTitle>
-				<Stack gap={4}>
-					{data?.venues?.map((venue, index) => (
-						<Stack key={index} gap={0}>
-							<Snippet snippet={snippetVenue(venue)} />
-							<Stack gap={0}>
-								{venueGoogleMapsLink(venue) && (
-									<Snippet snippet={{
-										sublabel: {
-											type: "external-link",
-											name: "View on Google Maps",
-											url: venueGoogleMapsLink(venue)!,
-										},
-									}} />
-								)}
-								{venueOpenStreetMapsLink(venue) && (
-									<Snippet snippet={{
-										sublabel: {
-											type: "external-link",
-											name: "View on OpenStreetMap",
-											url: venueOpenStreetMapsLink(venue)!,
-										},
-									}} />
-								)}
-							</Stack>
-						</Stack>
-					))}
-				</Stack>
-			</Stack>
-			<Stack gap={0}>
-				<SmallTitle padLeft>
-					date & time
-				</SmallTitle>
-				<Stack gap={4}>
-					{data?.instances?.map((instance, index) => (
-						<Stack key={index} gap={0}>
-							{snippetInstance(instance).map((snippet, snipIndex) => (
-								<Snippet key={snipIndex} snippet={snippet} />
-							))}
-						</Stack>
-					))}
-				</Stack>
-			</Stack>
-
-			<Stack gap={0}>
-				<SmallTitle padLeft>
-					description
-				</SmallTitle>
-				<Group gap={4} wrap="nowrap">
-					<Box c="dimmed" display="flex">
-						<IconQuote />
-					</Box>
-					<Stack gap={4}>
-						{data?.description ? (
-							<MarkdownTranslations content={data.description} />
-						) : (
-							<Text c="dimmed" span fs="italic">No description provided.</Text>
+				<Stack align="end">
+					<Group gap={4}>
+						{source && UtilEventSource.isFromNetwork(source) && (
+							<EventRefetchButton source={source} />
 						)}
-					</Stack>
-				</Group>
-			</Stack>
-
-			<Stack gap={0}>
-				<SmallTitle padLeft>
-					links
-				</SmallTitle>
-				<Stack gap={4}>
-					{data?.components?.filter(component => component.type == "link").map(x => x.data).map((link, index) => (
-						<EventLinkButton key={index} value={link} />
-					))}
+						<VantageCopyButton
+							value={JSON.stringify(data, null, 2)}
+							labelCopy="Copy event JSON"
+							labelCopied="Event JSON copied to clipboard"
+							icon={<IconJson />}
+						/>
+						{source && UtilEventSource.getType(source) === "at" && (
+							<Tooltip label={"View on PDSls"} withArrow>
+								<ActionIcon
+									size="input-md"
+									color="gray"
+									component="a"
+									href={`https://pds.ls/${source}`}
+									target="_blank"
+								>
+									<Text span inline inherit fz="xs">
+										PDS
+									</Text>
+								</ActionIcon>
+							</Tooltip>
+						)}
+						{source && UtilEventSource.isFromNetwork(source) && (
+							<VantageCopyButton
+								value={EventActions.getEmbedLink(source)}
+								labelCopied="Embed link copied to clipboard"
+								labelCopy="Copy embed link"
+								icon={<IconCode />}
+							/>
+						)}
+						{source && UtilEventSource.isFromNetwork(source) && (
+							<VantageCopyButton
+								value={source}
+								labelCopied="Source copied to clipboard"
+								labelCopy="Copy source URL"
+								icon={<IconLink />}
+							/>
+						)}
+						{source && UtilEventSource.isFromNetwork(source) && (
+							<VantageCopyButton
+								value={EventActions.getShareLink(source)}
+								labelCopied="Share link copied to clipboard"
+								labelCopy="Copy share link"
+								icon={<IconShare />}
+							/>
+						)}
+						{source && UtilEventSource.isEditable(source) && (
+							<Tooltip label={"Edit"} withArrow>
+								<ActionIcon
+									size="input-md"
+									color="gray"
+									renderRoot={(props) => (
+										<Link
+											to="/edit"
+											search={{ source }}
+											{...props}
+										/>
+									)}
+								>
+									<IconEdit />
+								</ActionIcon>
+							</Tooltip>
+						)}
+					</Group>
 				</Stack>
-			</Stack>
 
-			<Stack gap={0}>
-				<Text c="dimmed" fz="xs">
-					{source && ["http", "https"].includes(UtilEventSource.getType(source)) && (
-						<Text span inherit>
-							Source: <ExternalLink href={source} />
-						</Text>
-					)}
+				<Stack gap={0}>
+					<SmallTitle padLeft>
+						venue{data?.venues && data.venues.length !== 1 ? "s" : ""}
+					</SmallTitle>
+					<Stack gap={4}>
+						{data?.venues?.map((venue, index) => (
+							<Stack key={index} gap={0}>
+								<Snippet snippet={snippetVenue(venue)} />
+								<Stack gap={0}>
+									{venueGoogleMapsLink(venue) && (
+										<Snippet snippet={{
+											sublabel: {
+												type: "external-link",
+												name: "View on Google Maps",
+												url: venueGoogleMapsLink(venue)!,
+											},
+										}} />
+									)}
+									{venueOpenStreetMapsLink(venue) && (
+										<Snippet snippet={{
+											sublabel: {
+												type: "external-link",
+												name: "View on OpenStreetMap",
+												url: venueOpenStreetMapsLink(venue)!,
+											},
+										}} />
+									)}
+								</Stack>
+							</Stack>
+						))}
+					</Stack>
+				</Stack>
+				<Stack gap={0}>
+					<SmallTitle padLeft>
+						date & time
+					</SmallTitle>
+					<Stack gap={4}>
+						{data?.instances?.map((instance, index) => (
+							<Stack key={index} gap={0}>
+								{snippetInstance(instance).map((snippet, snipIndex) => (
+									<Snippet key={snipIndex} snippet={snippet} />
+								))}
+							</Stack>
+						))}
+					</Stack>
+				</Stack>
 
-					{source && UtilEventSource.getType(source) == "at" && (
-						<Text span inherit>
-							Source: <Code>{source}</Code>
-						</Text>
-					)}
+				<Stack gap={0}>
+					<SmallTitle padLeft>
+						description
+					</SmallTitle>
+					<Group gap={4} wrap="nowrap">
+						<Box c="dimmed" display="flex">
+							<IconQuote />
+						</Box>
+						<Stack gap={4}>
+							{data?.description ? (
+								<MarkdownTranslations content={data.description} />
+							) : (
+								<Text c="dimmed" span fs="italic">No description provided.</Text>
+							)}
+						</Stack>
+					</Group>
+				</Stack>
 
-					{source && UtilEventSource.getType(source) == "local" && (
-						<Text span inherit>
-							Source: Locally saved
-						</Text>
-					)}
-				</Text>
-			</Stack>
-		</Stack >
+				<Stack gap={0}>
+					<SmallTitle padLeft>
+						links
+					</SmallTitle>
+					<Stack gap={4}>
+						{data?.components?.filter(component => component.type == "link").map(x => x.data).map((link, index) => (
+							<EventLinkButton key={index} value={link} />
+						))}
+					</Stack>
+				</Stack>
+
+				<Stack gap={0}>
+					<Text c="dimmed" fz="xs">
+						{source && ["http", "https"].includes(UtilEventSource.getType(source)) && (
+							<Text span inherit>
+								Source: <ExternalLink href={source} />
+							</Text>
+						)}
+
+						{source && UtilEventSource.getType(source) == "at" && (
+							<Text span inherit>
+								Source: <Code>{source}</Code>
+							</Text>
+						)}
+
+						{source && UtilEventSource.getType(source) == "local" && (
+							<Text span inherit>
+								Source: Locally saved
+							</Text>
+						)}
+					</Text>
+				</Stack>
+			</Container>
+		</EventDetailsContext>
 	);
 };
 

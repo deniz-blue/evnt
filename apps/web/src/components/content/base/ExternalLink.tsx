@@ -3,16 +3,18 @@ import { IconExternalLink } from "@tabler/icons-react";
 import type { PropsWithChildren } from "react";
 
 export const ExternalLink = ({
-    children,
-    href,
+	children,
+	href,
+	noTooltip,
 }: PropsWithChildren<{
-    href: string;
+	href: string;
+	noTooltip?: boolean;
 }>) => {
-    return (
-        <Tooltip label={href}>
-            <Anchor inline inherit href={href} target="_blank" rel="noopener noreferrer">
-                {children ?? new URL(href).hostname} <IconExternalLink size="0.8em" />
-            </Anchor>
-        </Tooltip>
-    );
+	return (
+		<Tooltip label={href} disabled={noTooltip} fz="xs">
+			<Anchor inline inherit href={href} target="_blank" rel="noopener noreferrer">
+				{children ?? new URL(href).hostname} <IconExternalLink size="0.8em" />
+			</Anchor>
+		</Tooltip>
+	);
 };
