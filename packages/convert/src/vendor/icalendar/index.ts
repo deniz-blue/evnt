@@ -17,13 +17,34 @@ export const convertFromVEvent = (
 		name: { [language]: event.summary || "" },
 		description: event.description ? { [language]: event.description } : undefined,
 		instances: [],
+		venues: [],
+		components: [],
 	};
+
+	for (let loc of event.component.getAllProperties("location")) {
+		const location = loc.getFirstValue();
+		if (typeof location == "string") eventData.venues!.push({
+			venueId: `icalendar:${eventData.venues!.length}`,
+			venueName: { [language]: location },
+			venueType: "unknown",
+		});
+	}
 
 	if (event.startDate) {
 		eventData.instances!.push({
 			venueIds: eventData.venues?.map(({ venueId }) => venueId) || [],
 			start: UtilPartialDate.fromDate(event.startDate.toJSDate()),
 			end: event.endDate ? UtilPartialDate.fromDate(event.endDate.toJSDate()) : undefined,
+		});
+	}
+
+	for (let uri of event.component.getAllProperties("url")) {
+		const url = uri.getFirstValue();
+		if (typeof url == "string") eventData.components!.push({
+			type: "link",
+			data: {
+				url,
+			},
 		});
 	}
 
