@@ -10,11 +10,10 @@
   ],
   "exports": {
     ".": "./src/index.ts",
-    "./vendor/facebook": "./src/vendor/facebook",
-    "./vendor/foss-events": "./src/vendor/foss-events",
-    "./vendor/frab": "./src/vendor/frab",
-    "./vendor/google": "./src/vendor/google",
-    "./vendor/schema-org": "./src/vendor/schema-org"
+    "./vendor/facebook": "./src/vendor/facebook/index.ts",
+    "./vendor/google": "./src/vendor/google/index.ts",
+    "./vendor/icalendar": "./src/vendor/icalendar/index.ts",
+    "./vendor/schema-org": "./src/vendor/schema-org/index.ts"
   },
   "scripts": {
     "gen": "tsx ./scripts/gen.ts"

@@ -1,6 +1,6 @@
-import { ActionIcon, Anchor, AppShell, Button, Code, Container, Flex, Group, Loader, Menu, Space, Text, Title, type ButtonProps } from "@mantine/core";
+import { ActionIcon, Anchor, AppShell, Button, Code, Container, Flex, Group, Loader, Space, Text, Title, type ButtonProps } from "@mantine/core";
 import { createFileRoute, Link, Outlet, useMatches, type ErrorComponentProps } from "@tanstack/react-router"
-import { IconBraces, IconEdit, IconLink, IconPlus, IconSettings } from "@tabler/icons-react";
+import { IconSettings } from "@tabler/icons-react";
 import z from "zod";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { SettingsDrawer } from "../../components/app/overlay/settings/SettingsDrawer";
@@ -12,7 +12,7 @@ import { useTasksStore } from "../../stores/useTasksStore";
 import { Fragment } from "react/jsx-runtime";
 import { ViewIndexOverlay } from "../../components/app/overlay/index/ViewIndexOverlay";
 import { EventDetailsOverlay } from "../../components/app/overlay/event/EventDetailsOverlay";
-import { modals } from "@mantine/modals";
+import { AddEventMenu } from "../../components/app/AddEventMenu";
 
 const SearchParamsSchema = z.object({
 	settings: z.string().optional(),
@@ -76,51 +76,9 @@ function LayoutPage() {
 						</Button>
 					</Group>
 					<Group gap={4}>
-						<Menu>
-							{!hasEventForm && (
-								<Menu.Target>
-									<ActionIcon
-										size="input-md"
-										color="green"
-									>
-										<IconPlus />
-									</ActionIcon>
-								</Menu.Target>
-							)}
-							<Menu.Dropdown>
-								<Menu.Item
-									leftSection={<IconEdit />}
-									renderRoot={(props) => (
-										<Link
-											to="/new"
-											{...props}
-										/>
-									)}
-								>
-									Create New
-								</Menu.Item>
-								<Menu.Item
-									leftSection={<IconLink />}
-									onClick={() => modals.openContextModal({
-										modal: "ImportURLModal",
-										innerProps: {},
-										size: "xl",
-									})}
-								>
-									Add From URL
-								</Menu.Item>
-								<Menu.Item
-									leftSection={<IconBraces />}
-									onClick={() => modals.openContextModal({
-										modal: "ImportJSONModal",
-										innerProps: {},
-										size: "xl",
-									})}
-								>
-									Add From JSON content
-								</Menu.Item>
-							</Menu.Dropdown>
-						</Menu>
+						{!hasEventForm && (
+							<AddEventMenu />
+						)}
 						<ActionIcon
 							size="input-md"
 							renderRoot={(props) => (

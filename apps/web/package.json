@@ -15,6 +15,7 @@
 		"@atcute/lexicons": "^1.2.9",
 		"@atcute/oauth-browser-client": "^3.0.0",
 		"@atcute/tid": "^1.1.2",
+		"@evnt/convert": "workspace:*",
 		"@evnt/pretty": "workspace:^",
 		"@evnt/schema": "workspace:*",
 		"@mantine/core": "9.0.0-alpha.0",
