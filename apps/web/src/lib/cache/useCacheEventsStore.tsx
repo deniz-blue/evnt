@@ -11,10 +11,12 @@ export interface CacheEventsStore {
 		byPartialDate: Record<PartialDate, EventSource[]>;
 		byMonth: Record<PartialDate.Month, EventSource[]>;
 		byDay: Record<PartialDate.Day, EventSource[]>;
+		byText: Record<string, EventSource[]>;
 	};
 
 	hydrateSource: (source: EventSource) => Promise<void>;
 	hydrate: (source: EventSource, data: EventData) => void;
+	uncache: (source: EventSource) => void;
 	init: () => Promise<void>;
 };
 
@@ -24,16 +26,36 @@ export const useCacheEventsStore = create<CacheEventsStore>()(
 			byPartialDate: {},
 			byMonth: {},
 			byDay: {},
+			byText: {},
 		},
+
+		uncache: (source: EventSource) => set((state) => {
+			for (const key in state.cache) {
+				state.cache[key as keyof CacheEventsStore["cache"]] = Object.fromEntries(
+					Object.entries(state.cache[key as keyof CacheEventsStore["cache"]]).map(([k, sources]) => [
+						k,
+						sources.filter(s => s !== source),
+					])
+				);
+			}
+		}),
 
 		hydrateSource: async (source: EventSource) => {
 			const data = await DataDB.get(source);
+			get().uncache(source);
 			if (data?.data) {
 				get().hydrate(source, data.data);
 			}
 		},
 
 		hydrate: (source: EventSource, data: EventData) => set((state) => {
+			const text = [
+				...Object.values(data.name),
+				...Object.values(data.label ?? {}),
+			].join(" ");
+			state.cache.byText[text] ||= []
+			state.cache.byText[text].push(source);
+
 			for (const instance of data.instances || []) {
 				for (const key of ["start", "end"] as const) {
 					const partialDate = instance[key];

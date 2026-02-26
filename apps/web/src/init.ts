@@ -2,6 +2,7 @@
 import "@mantine/core/styles.layer.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
+import "@mantine/spotlight/styles.css";
 
 // custom styles
 import.meta.glob("./styles/**/*.css", { eager: true });

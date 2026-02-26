@@ -15,6 +15,7 @@ export interface EventCardProps extends Omit<EventEnvelope, "draft"> {
 	loading?: boolean;
 	isDraft?: boolean;
 	embed?: boolean;
+	fullHeight?: boolean;
 };
 
 export const EventCard = (props: EventCardProps) => {
@@ -24,7 +25,7 @@ export const EventCard = (props: EventCardProps) => {
 			px={props.variant == "inline" ? 1 : undefined}
 			withBorder
 			w="100%"
-			h={props.variant === "card" ? "100%" : undefined}
+			h={props.fullHeight ? "100%" : props.variant === "card" ? "100%" : undefined}
 			shadow="xs"
 			pos="relative"
 			style={{ overflow: "hidden" }}

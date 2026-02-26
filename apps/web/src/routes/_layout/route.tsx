@@ -1,6 +1,6 @@
 import { ActionIcon, Anchor, AppShell, Button, Code, Container, Flex, Group, Loader, Space, Text, Title, type ButtonProps } from "@mantine/core";
 import { createFileRoute, Link, Outlet, useMatches, type ErrorComponentProps } from "@tanstack/react-router"
-import { IconSettings } from "@tabler/icons-react";
+import { IconSearch, IconSettings } from "@tabler/icons-react";
 import z from "zod";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { SettingsDrawer } from "../../components/app/overlay/settings/SettingsDrawer";
@@ -13,6 +13,8 @@ import { Fragment } from "react/jsx-runtime";
 import { ViewIndexOverlay } from "../../components/app/overlay/index/ViewIndexOverlay";
 import { EventDetailsOverlay } from "../../components/app/overlay/event/EventDetailsOverlay";
 import { AddEventMenu } from "../../components/app/AddEventMenu";
+import { VantageSpotlight } from "../../components/app/overlay/spotlight/VantageSpotlight";
+import { spotlight } from "@mantine/spotlight";
 
 const SearchParamsSchema = z.object({
 	settings: z.string().optional(),
@@ -76,11 +78,19 @@ function LayoutPage() {
 						</Button>
 					</Group>
 					<Group gap={4}>
+						<ActionIcon
+							color="gray"
+							size="input-md"
+							onClick={spotlight.toggle}
+						>
+							<IconSearch />
+						</ActionIcon>
 						{!hasEventForm && (
 							<AddEventMenu />
 						)}
 						<ActionIcon
 							size="input-md"
+							color="gray"
 							renderRoot={(props) => (
 								<Link
 									to="."
@@ -101,6 +111,7 @@ function LayoutPage() {
 				<Outlet />
 				<Overlays />
 				<Shortcuts />
+				<VantageSpotlight />
 				{!spaceless && <Space h="30vh" />}
 			</AppShell.Main>
 		</AppShell>

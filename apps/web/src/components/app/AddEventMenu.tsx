@@ -33,7 +33,7 @@ export const AddEventMenu = () => {
 			<Menu.Target>
 				<ActionIcon
 					size="input-md"
-					color="green"
+					color="gray"
 				>
 					<IconPlus />
 					<input
