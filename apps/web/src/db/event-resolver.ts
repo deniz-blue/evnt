@@ -123,8 +123,6 @@ export class EventResolver {
 
 		const envelope = this.fromJsonObject(json);
 
-		console.log(`EventResolver: headers`, [...res.headers.entries()]);
-
 		return {
 			...envelope,
 			rev: {
@@ -157,6 +155,7 @@ export class EventResolver {
 
 		return {
 			data: result.data,
+			err: undefined,
 		};
 	}
 
@@ -206,6 +205,7 @@ export class EventResolver {
 
 		return {
 			data: result.data,
+			err: undefined,
 			rev: {
 				cid: res.data.cid,
 			},
