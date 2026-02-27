@@ -26,7 +26,7 @@ export const BaseOverlay = ({
 					transitionProperty: 'transform, opacity, border-top-left-radius, border-top-right-radius',
 				},
 			}}
-			scrollAreaComponent={ScrollArea.Autosize}
+			// scrollAreaComponent={ScrollArea.Autosize}
 		>
 			<Modal.Overlay />
 			<Modal.Content bdrs={0} mih="100lvh">

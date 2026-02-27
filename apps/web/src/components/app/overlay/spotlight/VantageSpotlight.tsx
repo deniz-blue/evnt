@@ -1,17 +1,23 @@
 import { Spotlight } from "@mantine/spotlight";
 import { IconCalendar, IconHome, IconList, IconSearch } from "@tabler/icons-react";
 import { useState, type ReactNode } from "react";
-import { UtilEventSource } from "../../../../db/models/event-source";
+import { UtilEventSource, type EventSource } from "../../../../db/models/event-source";
 import { useNavigate } from "@tanstack/react-router";
 import { useCacheEventsStore } from "../../../../lib/cache/useCacheEventsStore";
 import { useShallow } from "zustand/shallow";
 import { EventCard } from "../../../content/event/card/EventCard";
-import { useEventQueries } from "../../../../db/useEventQuery";
+import { useEventQueries, useEventQuery } from "../../../../db/useEventQuery";
+import { EventCardTitle } from "../../../content/event/card/EventCardTitle";
+import { EventCardContext } from "../../../content/event/card/event-card-context";
+import { EventCardBackground } from "../../../content/event/card/EventCardBackground";
+import { OverLayer } from "../../../base/layout/OverLayer";
+import { Box } from "@mantine/core";
 
 export const VantageSpotlight = () => {
 	const [query, setQuery] = useState("");
 	const navigate = useNavigate();
-	const cacheResults = useCacheEventsStore(
+
+	const searchResults = useCacheEventsStore(
 		useShallow(state => Object.entries(state.cache.byText)
 			.filter(([text]) => text.toLowerCase().includes(query.toLowerCase()))
 			.flatMap(([, sources]) => sources)
@@ -53,27 +59,14 @@ export const VantageSpotlight = () => {
 		<Spotlight.Action key={props.label} {...props} />
 	)));
 
-	const queries = useEventQueries(cacheResults);
-
-	if (!!queries.length)
+	if (!!searchResults.length)
 		actions.push(
 			<Spotlight.ActionsGroup label="Events">
-				{queries.map(q => (
-					<Spotlight.Action
-						key={`event-${q.source}`}
-						onClick={() => navigate({
-							to: "/event",
-							search: { source: q.source },
-						})}
-						p={0}
-					>
-						<EventCard
-							data={null}
-							source={q.source}
-							fullHeight
-							{...q.query.data}
-						/>
-					</Spotlight.Action>
+				{searchResults.map(source => (
+					<SplotlightEventAction
+						key={source}
+						source={source}
+					/>
 				))}
 			</Spotlight.ActionsGroup>
 		);
@@ -88,5 +81,35 @@ export const VantageSpotlight = () => {
 				{actions.length > 0 ? actions : <Spotlight.Empty>Nothing found...</Spotlight.Empty>}
 			</Spotlight.ActionsList>
 		</Spotlight.Root>
+	);
+};
+
+export const SplotlightEventAction = ({ source }: { source: EventSource }) => {
+	const navigate = useNavigate();
+
+	const query = useEventQuery(source);
+
+	return (
+		<Spotlight.Action
+			description={source}
+			onClick={() => navigate({
+				to: "/event",
+				search: { source },
+			})}
+			pos="relative"
+		>
+			<EventCardContext
+				value={{
+					data: null,
+					...query.data,
+					loading: query.isFetching,
+				}}
+			>
+				<EventCardBackground backgroundOpacity={0.5} />
+				<Box pos="relative" style={{ zIndex: 1 }}>
+					<EventCardTitle />
+				</Box>
+			</EventCardContext>
+		</Spotlight.Action >
 	);
 };

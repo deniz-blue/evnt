@@ -6,7 +6,12 @@ import { EvntMedia } from "../../../base/media/EvntMedia";
 import { Blurhash } from "../../../base/media/Blurhash";
 import type { ReactNode } from "react";
 
-export const EventCardBackground = () => {
+export interface EventCardBackgroundProps {
+	backgroundDim?: number;
+	backgroundOpacity?: number;
+};
+
+export const EventCardBackground = (props: EventCardBackgroundProps) => {
 	const { data, variant } = useEventCardContext();
 
 	const backgroundMedia = data?.components
@@ -21,7 +26,7 @@ export const EventCardBackground = () => {
 		backgroundElement = <Blurhash hash={backgroundMedia.presentation.blurhash} />;
 
 	return (
-		<OverLayer>
+		<OverLayer style={{ opacity: props.backgroundOpacity }}>
 			{backgroundElement && (
 				<OverLayer>
 					{backgroundElement}
@@ -29,7 +34,7 @@ export const EventCardBackground = () => {
 			)}
 			<OverLayer
 				className={classes.dim}
-				style={{ "--dim": !backgroundMedia ? 0.05 : undefined }}
+				style={{ "--dim": props.backgroundDim ?? (!backgroundMedia ? 0.05 : undefined) }}
 			/>
 		</OverLayer>
 	)

@@ -31,7 +31,7 @@ export const EventDetailsBanner = () => {
 					)}
 					<OverLayer
 						className={classes.dim}
-						style={{ "--dim": !bannerMedia ? 0.2 : undefined }}
+						style={{ "--dim": !bannerMedia ? 0 : undefined }}
 					/>
 				</OverLayer>
 				<Stack pos="relative" h="100%" p="xs" justify="stretch">
