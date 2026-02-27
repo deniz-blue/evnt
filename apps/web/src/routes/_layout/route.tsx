@@ -1,6 +1,6 @@
 import { ActionIcon, Anchor, AppShell, Button, Code, Container, Flex, Group, Loader, Space, Text, Title, type ButtonProps } from "@mantine/core";
-import { createFileRoute, Link, Outlet, useMatches, type ErrorComponentProps } from "@tanstack/react-router"
-import { IconSearch, IconSettings } from "@tabler/icons-react";
+import { createFileRoute, Link, Outlet, useMatches, useNavigate, type ErrorComponentProps } from "@tanstack/react-router"
+import { IconCalendar, IconHome, IconList, IconSearch, IconSettings } from "@tabler/icons-react";
 import z from "zod";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { SettingsDrawer } from "../../components/app/overlay/settings/SettingsDrawer";
@@ -15,6 +15,7 @@ import { EventDetailsOverlay } from "../../components/app/overlay/event/EventDet
 import { AddEventMenu } from "../../components/app/AddEventMenu";
 import { VantageSpotlight } from "../../components/app/overlay/spotlight/VantageSpotlight";
 import { spotlight } from "@mantine/spotlight";
+import { useProvideAction } from "../../components/app/overlay/spotlight/useAction";
 
 const SearchParamsSchema = z.object({
 	settings: z.string().optional(),
@@ -29,6 +30,8 @@ export const Route = createFileRoute("/_layout")({
 })
 
 function LayoutPage() {
+	const navigate = useNavigate();
+
 	const spaceless = useMatches({
 		select: (matches) => matches.some((match) => match.staticData?.spaceless),
 	});
@@ -42,6 +45,36 @@ function LayoutPage() {
 		color: "gray",
 		size: "compact-md",
 	} as const;
+
+	useProvideAction({
+		label: "Go to Home",
+		icon: <IconHome />,
+		onClick: () => navigate({ to: "/" }),
+	});
+
+	useProvideAction({
+		label: "Go to List view",
+		icon: <IconList />,
+		onClick: () => navigate({ to: "/list" }),
+	});
+
+	useProvideAction({
+		label: "Go to Calendar view",
+		icon: <IconCalendar />,
+		onClick: () => navigate({ to: "/calendar" }),
+	});
+
+	useProvideAction({
+		label: "Toggle Settings",
+		icon: <IconSettings />,
+		onClick: () => navigate({
+			to: ".",
+			search: prev => ({
+				...prev,
+				settings: prev.settings !== undefined ? undefined : "",
+			}),
+		}),
+	});
 
 	return (
 		<AppShell

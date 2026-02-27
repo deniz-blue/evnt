@@ -19,6 +19,8 @@ import { AsyncAction } from "../../../data/AsyncAction";
 import { EventResolver } from "../../../../db/event-resolver";
 import { EventDetailsContext } from "./event-details-context";
 import { EventDetailsBanner } from "./EventDetailsBanner";
+import { EventDetailsInstanceList } from "./EventDetailsInstanceList";
+import { EventDetailsLinks } from "./EventDetailsLinks";
 
 export interface EventDetailsContentProps extends Omit<EventEnvelope, "draft"> {
 	source?: EventSource;
@@ -109,52 +111,7 @@ export const EventDetailsContent = (props: EventDetailsContentProps) => {
 					</Group>
 				</Stack>
 
-				<Stack gap={0}>
-					<SmallTitle padLeft>
-						venue{data?.venues && data.venues.length !== 1 ? "s" : ""}
-					</SmallTitle>
-					<Stack gap={4}>
-						{data?.venues?.map((venue, index) => (
-							<Stack key={index} gap={0}>
-								<Snippet snippet={snippetVenue(venue)} />
-								<Stack gap={0}>
-									{venueGoogleMapsLink(venue) && (
-										<Snippet snippet={{
-											sublabel: {
-												type: "external-link",
-												name: "View on Google Maps",
-												url: venueGoogleMapsLink(venue)!,
-											},
-										}} />
-									)}
-									{venueOpenStreetMapsLink(venue) && (
-										<Snippet snippet={{
-											sublabel: {
-												type: "external-link",
-												name: "View on OpenStreetMap",
-												url: venueOpenStreetMapsLink(venue)!,
-											},
-										}} />
-									)}
-								</Stack>
-							</Stack>
-						))}
-					</Stack>
-				</Stack>
-				<Stack gap={0}>
-					<SmallTitle padLeft>
-						date & time
-					</SmallTitle>
-					<Stack gap={4}>
-						{data?.instances?.map((instance, index) => (
-							<Stack key={index} gap={0}>
-								{snippetInstance(instance).map((snippet, snipIndex) => (
-									<Snippet key={snipIndex} snippet={snippet} />
-								))}
-							</Stack>
-						))}
-					</Stack>
-				</Stack>
+				<EventDetailsInstanceList />
 
 				<Stack gap={0}>
 					<SmallTitle padLeft>
@@ -174,16 +131,7 @@ export const EventDetailsContent = (props: EventDetailsContentProps) => {
 					</Group>
 				</Stack>
 
-				<Stack gap={0}>
-					<SmallTitle padLeft>
-						links
-					</SmallTitle>
-					<Stack gap={4}>
-						{data?.components?.filter(component => component.type == "link").map(x => x.data).map((link, index) => (
-							<EventLinkButton key={index} value={link} />
-						))}
-					</Stack>
-				</Stack>
+				<EventDetailsLinks />
 
 				<Stack gap={0}>
 					<Text c="dimmed" fz="xs">

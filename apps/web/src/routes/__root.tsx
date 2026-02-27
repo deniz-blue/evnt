@@ -61,7 +61,7 @@ export function RootPage() {
 	);
 }
 
-type ProviderEntry<T = any> = [ComponentType<T>, T];
+type ProviderEntry<T = any> = [React.FC<T>, T];
 interface ProviderStackProps<T extends ProviderEntry[]> extends PropsWithChildren {
 	providers: [...T];
 };
