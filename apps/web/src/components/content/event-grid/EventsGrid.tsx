@@ -2,6 +2,7 @@ import { SimpleGrid, Stack } from "@mantine/core";
 import type { EventQueryResult } from "../../../db/useEventQuery";
 import { EventCard } from "../event/card/EventCard";
 import { EventContextMenu } from "../event/EventContextMenu";
+import { EventEnvelopeProvider } from "../event/event-envelope-context";
 
 export const EventsGrid = ({
 	queries,
@@ -17,17 +18,17 @@ export const EventsGrid = ({
 				data-hover
 			>
 				{queries.map(({ query, source }, index) => (
-					<EventCard
+					<EventEnvelopeProvider
 						key={index}
-						variant="card"
-						source={source}
-						loading={query.isFetching}
-						menu={<EventContextMenu source={source} />}
-						err={query.data?.err}
-						rev={query.data?.rev}
-						data={query.data?.draft ?? query.data?.data ?? null}
-						isDraft={!!query.data?.draft}
-					/>
+						value={query.data ?? { data: null }}
+					>
+						<EventCard
+							variant="card"
+							source={source}
+							loading={query.isFetching}
+							menu={<EventContextMenu source={source} />}
+						/>
+					</EventEnvelopeProvider>
 				))}
 			</SimpleGrid>
 		</Stack>

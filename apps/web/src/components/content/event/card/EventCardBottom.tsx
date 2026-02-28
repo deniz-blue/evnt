@@ -3,9 +3,11 @@ import { useEventCardContext } from "./event-card-context";
 import { UtilEventSource } from "../../../../db/models/event-source";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
+import { useEventEnvelope } from "../event-envelope-context";
 
 export const EventCardBottom = () => {
-	const { source, isDraft } = useEventCardContext();
+	const { source } = useEventCardContext();
+	const { isDraft } = useEventEnvelope();
 
 	return (
 		<Stack>

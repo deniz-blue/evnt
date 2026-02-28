@@ -5,6 +5,7 @@ import { OverLayer } from "../../../base/layout/OverLayer";
 import { EvntMedia } from "../../../base/media/EvntMedia";
 import { Blurhash } from "../../../base/media/Blurhash";
 import type { ReactNode } from "react";
+import { useEventEnvelope } from "../event-envelope-context";
 
 export interface EventCardBackgroundProps {
 	backgroundDim?: number;
@@ -12,7 +13,8 @@ export interface EventCardBackgroundProps {
 };
 
 export const EventCardBackground = (props: EventCardBackgroundProps) => {
-	const { data, variant } = useEventCardContext();
+	const { variant } = useEventCardContext();
+	const { data } = useEventEnvelope();
 
 	const backgroundMedia = data?.components
 		?.find((c): c is EventComponent & { type: "splashMedia" } =>

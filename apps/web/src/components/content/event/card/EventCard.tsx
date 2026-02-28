@@ -1,19 +1,17 @@
 import { Box, Paper, Stack } from "@mantine/core";
 import { EventInstanceList } from "../EventInstanceList";
 import { type EventSource } from "../../../../db/models/event-source";
-import type { EventEnvelope } from "../../../../db/models/event-envelope";
 import { EventCardBottom } from "./EventCardBottom";
 import { EventCardTitle } from "./EventCardTitle";
 import { EventCardBackground } from "./EventCardBackground";
 import { EventCardContext } from "./event-card-context";
 import classes from "./event-card.module.css";
 
-export interface EventCardProps extends Omit<EventEnvelope, "draft"> {
+export interface EventCardProps {
 	variant?: "horizontal" | "card" | "inline";
 	source?: EventSource;
 	menu?: React.ReactNode;
 	loading?: boolean;
-	isDraft?: boolean;
 	embed?: boolean;
 	fullHeight?: boolean;
 };
@@ -38,8 +36,8 @@ export const EventCard = (props: EventCardProps) => {
 						<Stack>
 							<EventCardTitle />
 
-							{props.variant === "card" && !!props.data && (
-								<EventInstanceList value={props.data} />
+							{props.variant === "card" && (
+								<EventInstanceList />
 							)}
 						</Stack>
 

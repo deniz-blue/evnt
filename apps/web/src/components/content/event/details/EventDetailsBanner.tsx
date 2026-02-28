@@ -1,4 +1,4 @@
-import { Box, Collapse, Group, Loader, Modal, Stack, Title } from "@mantine/core";
+import { ActionIcon, Box, Collapse, Group, Loader, Menu, Modal, Stack, Title } from "@mantine/core";
 import { useEventDetailsContext } from "./event-details-context";
 import { Trans } from "../Trans";
 import { EnvelopeErrorBadge } from "../envelope/EnvelopeErrorBadge";
@@ -6,9 +6,17 @@ import type { EventComponent } from "@evnt/schema";
 import { OverLayer } from "../../../base/layout/OverLayer";
 import classes from "../card/event-card.module.css";
 import { EvntMedia } from "../../../base/media/EvntMedia";
+import { useEventEnvelope } from "../event-envelope-context";
+import { IconDots, IconDotsVertical } from "@tabler/icons-react";
+import { useActionsStore } from "../../../app/overlay/spotlight/useActionsStore";
+import { useShallow } from "zustand/shallow";
 
 export const EventDetailsBanner = () => {
-	const { loading, data, err, withModalCloseButton } = useEventDetailsContext();
+	const { data, err } = useEventEnvelope();
+	const { loading, withModalCloseButton } = useEventDetailsContext();
+	const actions = useActionsStore(
+		useShallow(state => Object.values(state.actions).filter(a => a.category === "Event"))
+	);
 
 	const splashMediaComponents = data?.components
 		?.filter((c): c is EventComponent & { type: "splashMedia" } =>
@@ -58,6 +66,28 @@ export const EventDetailsBanner = () => {
 							</Group>
 						</Stack>
 						<Stack h="100%" justify="start" align="start">
+							<Menu>
+								<Menu.Target>
+									<ActionIcon
+										size="input-md"
+										color="gray"
+										variant="subtle"
+									>
+										<IconDotsVertical />
+									</ActionIcon>
+								</Menu.Target>
+								<Menu.Dropdown>
+									{actions.map((action, i) => (
+										<Menu.Item
+											key={i}
+											leftSection={action.icon}
+											onClick={action.execute}
+										>
+											{action.label}
+										</Menu.Item>
+									))}
+								</Menu.Dropdown>
+							</Menu>
 							{withModalCloseButton && <Modal.CloseButton />}
 						</Stack>
 					</Group>

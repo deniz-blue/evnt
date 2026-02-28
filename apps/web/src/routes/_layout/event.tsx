@@ -10,6 +10,7 @@ import { useProvideAction } from "../../components/app/overlay/spotlight/useActi
 import { EventResolver } from "../../db/event-resolver";
 import { IconBraces, IconClipboard, IconCode, IconEdit, IconReload, IconShare } from "@tabler/icons-react";
 import { EventActions } from "../../lib/actions/event-actions";
+import { EventEnvelopeProvider } from "../../components/content/event/event-envelope-context";
 
 const SearchParamsSchema = z.object({
 	source: EventSourceSchema,
@@ -125,12 +126,11 @@ function EventPage() {
 				}}
 			>
 				<Stack>
-					<EventDetailsContent
-						source={source}
-						{...query?.data ?? {
-							data: null,
-						} as EventEnvelope}
-					/>
+					<EventEnvelopeProvider value={query.data ?? { data: null }}>
+						<EventDetailsContent
+							source={source}
+						/>
+					</EventEnvelopeProvider>
 				</Stack>
 			</Container>
 		</Stack>

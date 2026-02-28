@@ -6,6 +6,7 @@ import { UtilTranslations } from "@evnt/schema/utils";
 import { Trans } from "../Trans";
 import { Link } from "@tanstack/react-router";
 import { EnvelopeErrorBadge } from "../envelope/EnvelopeErrorBadge";
+import { useEventEnvelope } from "../event-envelope-context";
 
 const loaderTransition: MantineTransition = {
 	in: { opacity: 1, width: "1.5rem" },
@@ -20,7 +21,8 @@ const loadingTextTransition: MantineTransition = {
 } as const;
 
 export const EventCardTitle = () => {
-	const { data, loading, err, variant, menu, embed, source } = useEventCardContext();
+	const { data, err } = useEventEnvelope();
+	const { loading, variant, menu, embed, source } = useEventCardContext();
 	const { key } = useEventDetailsModal();
 
 	let title: ReactNode = <Text inherit inline span c="dimmed" fz="sm" fs="italic" children="<no title>" />;

@@ -1,6 +1,6 @@
 import { Button, Stack } from "@mantine/core";
 import { useLayersStore } from "../../../../db/useLayersStore";
-import { UtilEventSource, type EventSource } from "../../../../db/models/event-source";
+import { type EventSource } from "../../../../db/models/event-source";
 import { EventActions } from "../../../../lib/actions/event-actions";
 import { AsyncAction } from "../../../data/AsyncAction";
 

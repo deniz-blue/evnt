@@ -14,7 +14,6 @@ import { Route as EmbedRouteImport } from "./routes/embed"
 import { Route as LayoutRouteRouteImport } from "./routes/_layout/route"
 import { Route as LayoutIndexRouteImport } from "./routes/_layout/index"
 import { Route as OauthCallbackRouteImport } from "./routes/oauth.callback"
-import { Route as LayoutTestRouteImport } from "./routes/_layout/test"
 import { Route as LayoutNewRouteImport } from "./routes/_layout/new"
 import { Route as LayoutListRouteImport } from "./routes/_layout/list"
 import { Route as LayoutEventRouteImport } from "./routes/_layout/event"
@@ -44,11 +43,6 @@ const OauthCallbackRoute = OauthCallbackRouteImport.update({
   id: "/oauth/callback",
   path: "/oauth/callback",
   getParentRoute: () => rootRouteImport,
-} as any)
-const LayoutTestRoute = LayoutTestRouteImport.update({
-  id: "/test",
-  path: "/test",
-  getParentRoute: () => LayoutRouteRoute,
 } as any)
 const LayoutNewRoute = LayoutNewRouteImport.update({
   id: "/new",
@@ -85,7 +79,6 @@ export interface FileRoutesByFullPath {
   "/event": typeof LayoutEventRoute
   "/list": typeof LayoutListRoute
   "/new": typeof LayoutNewRoute
-  "/test": typeof LayoutTestRoute
   "/oauth/callback": typeof OauthCallbackRoute
 }
 export interface FileRoutesByTo {
@@ -96,7 +89,6 @@ export interface FileRoutesByTo {
   "/event": typeof LayoutEventRoute
   "/list": typeof LayoutListRoute
   "/new": typeof LayoutNewRoute
-  "/test": typeof LayoutTestRoute
   "/oauth/callback": typeof OauthCallbackRoute
   "/": typeof LayoutIndexRoute
 }
@@ -110,7 +102,6 @@ export interface FileRoutesById {
   "/_layout/event": typeof LayoutEventRoute
   "/_layout/list": typeof LayoutListRoute
   "/_layout/new": typeof LayoutNewRoute
-  "/_layout/test": typeof LayoutTestRoute
   "/oauth/callback": typeof OauthCallbackRoute
   "/_layout/": typeof LayoutIndexRoute
 }
@@ -125,7 +116,6 @@ export interface FileRouteTypes {
     | "/event"
     | "/list"
     | "/new"
-    | "/test"
     | "/oauth/callback"
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -136,7 +126,6 @@ export interface FileRouteTypes {
     | "/event"
     | "/list"
     | "/new"
-    | "/test"
     | "/oauth/callback"
     | "/"
   id:
@@ -149,7 +138,6 @@ export interface FileRouteTypes {
     | "/_layout/event"
     | "/_layout/list"
     | "/_layout/new"
-    | "/_layout/test"
     | "/oauth/callback"
     | "/_layout/"
   fileRoutesById: FileRoutesById
@@ -198,13 +186,6 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof OauthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/_layout/test": {
-      id: "/_layout/test"
-      path: "/test"
-      fullPath: "/test"
-      preLoaderRoute: typeof LayoutTestRouteImport
-      parentRoute: typeof LayoutRouteRoute
-    }
     "/_layout/new": {
       id: "/_layout/new"
       path: "/new"
@@ -249,7 +230,6 @@ interface LayoutRouteRouteChildren {
   LayoutEventRoute: typeof LayoutEventRoute
   LayoutListRoute: typeof LayoutListRoute
   LayoutNewRoute: typeof LayoutNewRoute
-  LayoutTestRoute: typeof LayoutTestRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
 }
 
@@ -259,7 +239,6 @@ const LayoutRouteRouteChildren: LayoutRouteRouteChildren = {
   LayoutEventRoute: LayoutEventRoute,
   LayoutListRoute: LayoutListRoute,
   LayoutNewRoute: LayoutNewRoute,
-  LayoutTestRoute: LayoutTestRoute,
   LayoutIndexRoute: LayoutIndexRoute,
 }
 

@@ -1,11 +1,11 @@
 import { Stack, Timeline } from "@mantine/core";
-import { useEventDetailsContext } from "./event-details-context";
 import { snippetInstance, snippetVenue, venueGoogleMapsLink, venueOpenStreetMapsLink } from "@evnt/pretty";
 import { Snippet } from "../../Snippet";
 import { ExternalLink } from "../../base/ExternalLink";
+import { useEventEnvelope } from "../event-envelope-context";
 
 export const EventDetailsInstanceList = () => {
-	const { data } = useEventDetailsContext();
+	const { data } = useEventEnvelope();
 
 	return (
 		<Stack>
@@ -16,7 +16,10 @@ export const EventDetailsInstanceList = () => {
 				}}
 			>
 				{data?.instances?.map((instance, i) => (
-					<Timeline.Item key={i}>
+					<Timeline.Item
+						key={i}
+						bullet={i + 1}
+					>
 						<Stack>
 							<Stack key={i} gap={0}>
 								{snippetInstance(instance).map((snippet, snipIndex) => (

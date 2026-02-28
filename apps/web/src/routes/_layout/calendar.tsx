@@ -10,6 +10,7 @@ import { useShallow } from "zustand/shallow";
 import { useEventQueries } from "../../db/useEventQuery";
 import { EventCard } from "../../components/content/event/card/EventCard";
 import { createFileRoute } from "@tanstack/react-router";
+import { EventEnvelopeProvider } from "../../components/content/event/event-envelope-context";
 
 export const Route = createFileRoute("/_layout/calendar")({
 	component: CalendarPage,
@@ -146,16 +147,16 @@ export const DayCard = ({
 			<ScrollArea h="100%" mah="100%" w="100%" scrollbars="y">
 				<Stack gap={0}>
 					{queries.map(({ query, source }, index) => (
-						<EventCard
+						<EventEnvelopeProvider
 							key={index}
-							variant="inline"
-							source={source}
-							loading={query.isFetching}
-							err={query.data?.err}
-							rev={query.data?.rev}
-							data={query.data?.draft ?? query.data?.data ?? null}
-							isDraft={!!query.data?.draft}
-						/>
+							value={query.data ?? { data: null }}
+						>
+							<EventCard
+								variant="inline"
+								source={source}
+								loading={query.isFetching}
+							/>
+						</EventEnvelopeProvider>
 					))}
 				</Stack>
 			</ScrollArea>

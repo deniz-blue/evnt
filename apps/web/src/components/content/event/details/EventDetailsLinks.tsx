@@ -1,10 +1,10 @@
 import { Stack } from "@mantine/core";
-import { useEventDetailsContext } from "./event-details-context";
 import { SmallTitle } from "../../base/SmallTitle";
 import { EventLinkButton } from "../components/EventLinkButton";
+import { useEventEnvelope } from "../event-envelope-context";
 
 export const EventDetailsLinks = () => {
-	const { data } = useEventDetailsContext();
+	const { data } = useEventEnvelope();
 
 	return (
 		<Stack gap={0}>
