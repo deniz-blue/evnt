@@ -48,26 +48,30 @@ function LayoutPage() {
 
 	useProvideAction({
 		label: "Go to Home",
+		category: "Navigation",
 		icon: <IconHome />,
-		onClick: () => navigate({ to: "/" }),
+		execute: () => navigate({ to: "/" }),
 	});
 
 	useProvideAction({
 		label: "Go to List view",
+		category: "Navigation",
 		icon: <IconList />,
-		onClick: () => navigate({ to: "/list" }),
+		execute: () => navigate({ to: "/list" }),
 	});
 
 	useProvideAction({
 		label: "Go to Calendar view",
+		category: "Navigation",
 		icon: <IconCalendar />,
-		onClick: () => navigate({ to: "/calendar" }),
+		execute: () => navigate({ to: "/calendar" }),
 	});
 
 	useProvideAction({
 		label: "Toggle Settings",
+		category: "Navigation",
 		icon: <IconSettings />,
-		onClick: () => navigate({
+		execute: () => navigate({
 			to: ".",
 			search: prev => ({
 				...prev,

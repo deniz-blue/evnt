@@ -2,8 +2,9 @@ import { create } from "zustand";
 
 export interface Action {
 	label?: string;
-	onClick?: () => void;
 	icon?: React.ReactNode;
+	category?: string;
+	execute?: () => void;
 };
 
 export interface ActionsStore {

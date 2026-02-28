@@ -32,7 +32,8 @@ function EventPage() {
 		label: "Edit event",
 		icon: <IconEdit />,
 		disabled: !UtilEventSource.isEditable(source),
-		onClick: () => navigate({
+		category: "Event",
+		execute: () => navigate({
 			to: "/edit",
 			search: {
 				source,
@@ -44,7 +45,8 @@ function EventPage() {
 		label: "Copy event share link",
 		icon: <IconShare />,
 		disabled: !UtilEventSource.isFromNetwork(source),
-		onClick: handleCopy(
+		category: "Event",
+		execute: handleCopy(
 			EventActions.getShareLink(source) ?? "",
 			"Event share link copied to clipboard",
 		),
@@ -56,7 +58,8 @@ function EventPage() {
 		label: "Copy event source",
 		icon: <IconClipboard />,
 		disabled: !UtilEventSource.isFromNetwork(source),
-		onClick: handleCopy(
+		category: "Event",
+		execute: handleCopy(
 			source,
 			"Event source copied to clipboard",
 		),
@@ -66,8 +69,9 @@ function EventPage() {
 
 	useProvideAction({
 		label: "Copy event JSON",
+		category: "Event",
 		icon: <IconBraces />,
-		onClick: handleAsyncCopy(
+		execute: handleAsyncCopy(
 			async (): Promise<string> => JSON.stringify(query.data?.data, null, 2) ?? "",
 			"Event JSON copied to clipboard",
 		),
@@ -77,18 +81,20 @@ function EventPage() {
 
 	useProvideAction({
 		label: "Refetch event data",
+		category: "Event",
 		icon: <IconReload />,
 		disabled: !UtilEventSource.isFromNetwork(source),
-		onClick: () => EventResolver.update(source),
+		execute: () => EventResolver.update(source),
 		id: "refetch-event",
 		deps: [source, query.refetch],
 	});
 
 	useProvideAction({
 		label: "Copy event embed link",
+		category: "Event",
 		icon: <IconCode />,
 		disabled: !UtilEventSource.isFromNetwork(source),
-		onClick: handleCopy(
+		execute: handleCopy(
 			EventActions.getEmbedLink(source) ?? "",
 			"Event embed link copied to clipboard",
 		),
@@ -98,9 +104,10 @@ function EventPage() {
 
 	useProvideAction({
 		label: "View on pds.ls",
+		category: "Event",
 		icon: <Text span inline inherit fz="xs">PDS</Text>,
 		disabled: UtilEventSource.getType(source) !== "at",
-		onClick: () => window.open(`https://pds.ls/${source}`, "_blank"),
+		execute: () => window.open(`https://pds.ls/${source}`, "_blank"),
 	});
 
 	return (

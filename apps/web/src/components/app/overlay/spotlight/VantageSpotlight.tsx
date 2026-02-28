@@ -9,8 +9,9 @@ import { useEventQuery } from "../../../../db/useEventQuery";
 import { EventCardTitle } from "../../../content/event/card/EventCardTitle";
 import { EventCardContext } from "../../../content/event/card/event-card-context";
 import { EventCardBackground } from "../../../content/event/card/EventCardBackground";
-import { Box } from "@mantine/core";
+import { Box, Loader, Paper, ScrollArea } from "@mantine/core";
 import { useActionsStore, type Action } from "./useActionsStore";
+import { useTranslations } from "../../../../stores/useLocaleStore";
 
 export const VantageSpotlight = () => {
 	const [query, setQuery] = useState("");
@@ -29,21 +30,33 @@ export const VantageSpotlight = () => {
 	if (UtilEventSource.is(query, false))
 		actions.push({
 			label: "View Event",
-			onClick: () => navigate({
+			execute: () => navigate({
 				to: "/event",
 				search: { source: query },
 			}),
 		});
 
-	let elements = actions
-		.filter(props => props.label?.toLowerCase().includes(query.toLowerCase()))
-		.map((props, index) => (
-			<Spotlight.Action
-				key={index}
-				leftSection={props.icon}
-				{...props}
-			/>
-		))
+	const filteredActions = actions
+		.filter(props => props.label?.toLowerCase().includes(query.toLowerCase()));
+
+	const categorizedActions = filteredActions
+		.reduce((acc, cur) => ({
+			...acc,
+			[cur.category || ""]: [...acc[cur.category || ""] || [], cur],
+		}), {} as Record<string, Action[]>);
+
+	const elements: ReactNode[] = Object.entries(categorizedActions).map(([category, actions]) => (
+		<Spotlight.ActionsGroup key={category} label={category}>
+			{actions.map((action, index) => (
+				<Spotlight.Action
+					key={index}
+					onClick={action.execute}
+					leftSection={action.icon}
+					label={action.label}
+				/>
+			))}
+		</Spotlight.ActionsGroup>
+	));
 
 	if (!!searchResults.length)
 		elements.push(
@@ -61,29 +74,64 @@ export const VantageSpotlight = () => {
 		<Spotlight.Root
 			query={query}
 			onQueryChange={setQuery}
+			triggerOnContentEditable
+			tagsToIgnore={[]}
+			shortcut={[
+				"mod + K",
+				"/",
+				"F1",
+				"mod + shift + P",
+			]}
+			styles={{
+				inner: {
+					padding: "2rem",
+					overflow: "scroll",
+				},
+				content: {
+					overflow: "visible",
+					borderRadius: "var(--mantine-radius-md)",
+				},
+			}}
 		>
-			<Spotlight.Search placeholder="Search..." leftSection={<IconSearch size={16} />} />
-			<Spotlight.ActionsList>
-				{elements.length > 0 ? elements : <Spotlight.Empty>Nothing found...</Spotlight.Empty>}
-			</Spotlight.ActionsList>
+			<Box pos="relative">
+				<Paper
+					shadow="xl"
+					withBorder
+					radius="md"
+					style={{
+						position: "sticky",
+						top: 0,
+						zIndex: 1,
+					}}
+				>
+					<Spotlight.Search
+						placeholder="Search..."
+						leftSection={<IconSearch size={16} />}
+					/>
+				</Paper>
+				<Spotlight.ActionsList
+					styles={{
+						actionsList: {
+							border: "none",
+						},
+					}}
+				>
+					{elements.length > 0 ? elements : <Spotlight.Empty>Nothing found...</Spotlight.Empty>}
+				</Spotlight.ActionsList>
+			</Box>
 		</Spotlight.Root>
 	);
 };
 
 export const SplotlightEventAction = ({ source }: { source: EventSource }) => {
 	const navigate = useNavigate();
-
+	const t = useTranslations();
 	const query = useEventQuery(source);
 
+	const label = t(query.data?.data?.name);
+
 	return (
-		<Spotlight.Action
-			description={source}
-			onClick={() => navigate({
-				to: "/event",
-				search: { source },
-			})}
-			pos="relative"
-		>
+		<Box pos="relative" style={{ overflow: "hidden" }}>
 			<EventCardContext
 				value={{
 					data: null,
@@ -92,10 +140,18 @@ export const SplotlightEventAction = ({ source }: { source: EventSource }) => {
 				}}
 			>
 				<EventCardBackground backgroundOpacity={0.5} />
-				<Box pos="relative" style={{ zIndex: 1 }}>
-					<EventCardTitle />
-				</Box>
+				<Spotlight.Action
+					label={label || "Loading..."}
+					description="Event"
+					leftSection={<IconCalendar />}
+					rightSection={query.isFetching && <Loader size="xs" />}
+					onClick={() => navigate({
+						to: "/event",
+						search: { source },
+					})}
+					pos="relative"
+				/>
 			</EventCardContext>
-		</Spotlight.Action >
+		</Box>
 	);
 };
