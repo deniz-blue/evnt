@@ -66,29 +66,31 @@ export const EventDetailsBanner = () => {
 							</Group>
 						</Stack>
 						<Stack h="100%" justify="start" align="start">
-							<Menu>
-								<Menu.Target>
-									<ActionIcon
-										size="input-md"
-										color="gray"
-										variant="subtle"
-									>
-										<IconDotsVertical />
-									</ActionIcon>
-								</Menu.Target>
-								<Menu.Dropdown>
-									{actions.map((action, i) => (
-										<Menu.Item
-											key={i}
-											leftSection={action.icon}
-											onClick={action.execute}
+							<Group>
+								<Menu>
+									<Menu.Target>
+										<ActionIcon
+											size="input-md"
+											color="gray"
+											variant="subtle"
 										>
-											{action.label}
-										</Menu.Item>
-									))}
-								</Menu.Dropdown>
-							</Menu>
-							{withModalCloseButton && <Modal.CloseButton />}
+											<IconDotsVertical />
+										</ActionIcon>
+									</Menu.Target>
+									<Menu.Dropdown>
+										{actions.map((action, i) => (
+											<Menu.Item
+												key={i}
+												leftSection={action.icon}
+												onClick={action.execute}
+											>
+												{action.label}
+											</Menu.Item>
+										))}
+									</Menu.Dropdown>
+								</Menu>
+								{withModalCloseButton && <Modal.CloseButton />}
+							</Group>
 						</Stack>
 					</Group>
 				</Stack>

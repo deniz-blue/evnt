@@ -6,6 +6,7 @@ import { UtilEventSource, type EventSource } from "../../../../db/models/event-s
 import { Code, Stack, Text } from "@mantine/core";
 import { RQResult } from "../../../data/RQResult";
 import { EventEnvelopeProvider } from "../../../content/event/event-envelope-context";
+import { useProvideEventActions } from "../../../../hooks/actions/useProvideEventActions";
 
 export const EventDetailsOverlay = () => {
 	const { close, useValue } = useEventDetailsModal();
@@ -32,6 +33,11 @@ export const EventDetailsOverlay = () => {
 
 export const EventDetailsOverlayHandler = ({ source }: { source: EventSource }) => {
 	const query = useEventQuery(source);
+
+	useProvideEventActions({
+		source,
+		data: query.data?.data ?? null,
+	});
 
 	return (
 		<RQResult query={query}>
