@@ -18,7 +18,7 @@ export const EventEnvelopeProvider = ({
 	<EventEnvelopeContext.Provider value={{
 		...value,
 		data: value.draft ?? value.data,
-		isDraft: value.draft !== null,
+		isDraft: !!value.draft,
 	}}>
 		{children}
 	</EventEnvelopeContext.Provider>

@@ -3,6 +3,8 @@ import { snippetInstance, snippetVenue, venueGoogleMapsLink, venueOpenStreetMaps
 import { Snippet } from "../../Snippet";
 import { ExternalLink } from "../../base/ExternalLink";
 import { useEventEnvelope } from "../event-envelope-context";
+import { UtilPartialDate, UtilPartialDateRange } from "@evnt/schema/utils";
+import type { PartialDate } from "@evnt/schema";
 
 export const EventDetailsInstanceList = () => {
 	const { data } = useEventEnvelope();
@@ -22,9 +24,72 @@ export const EventDetailsInstanceList = () => {
 					>
 						<Stack>
 							<Stack key={i} gap={0}>
-								{snippetInstance(instance).map((snippet, snipIndex) => (
-									<Snippet key={snipIndex} snippet={snippet} />
-								))}
+								{instance.start && (!instance.end || UtilPartialDateRange.isSameDay(instance)) && (
+									<>
+										<Snippet
+											snippet={{
+												icon: "calendar",
+												label: {
+													type: "partial-date",
+													value: UtilPartialDate.asDay(instance.start as PartialDate.Full),
+												},
+											}}
+										/>
+
+										{UtilPartialDate.hasTime(instance.start) && (!instance.end || !UtilPartialDate.hasTime(instance.end) || (
+											UtilPartialDate.getTimePart(instance.start) === UtilPartialDate.getTimePart(instance.end)
+										)) && (
+												<Snippet
+													snippet={{
+														icon: "clock",
+														label: {
+															type: "time",
+															value: UtilPartialDate.getTimePart(instance.start)!,
+															date: UtilPartialDate.asDay(instance.start! as PartialDate.Full),
+														},
+													}}
+												/>
+											)}
+
+										{UtilPartialDate.hasTime(instance.start) && instance.end && UtilPartialDate.hasTime(instance.end) && (
+											UtilPartialDate.getTimePart(instance.start) !== UtilPartialDate.getTimePart(instance.end)
+										) && (
+												<Snippet
+													snippet={{
+														icon: "clock",
+														label: {
+															type: "time-range",
+															value: {
+																start: {
+																	value: UtilPartialDate.getTimePart(instance.start)!,
+																	date: UtilPartialDate.asDay(instance.start! as PartialDate.Full),
+																},
+																end: {
+																	value: UtilPartialDate.getTimePart(instance.end)!,
+																	date: UtilPartialDate.asDay(instance.end! as PartialDate.Full),
+																},
+															},
+														},
+													}}
+												/>
+											)}
+									</>
+								)}
+
+								{instance.start && instance.end && !UtilPartialDateRange.isSameDay(instance) && (
+									<Snippet
+										snippet={{
+											icon: "calendar",
+											label: {
+												type: "date-time-range",
+												value: {
+													start: instance.start,
+													end: instance.end,
+												},
+											},
+										}}
+									/>
+								)}
 
 								{instance.venueIds
 									.map(venueId => data.venues?.find(v => v.venueId === venueId))

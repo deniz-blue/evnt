@@ -6,6 +6,7 @@ import { EventCardTitle } from "./EventCardTitle";
 import { EventCardBackground } from "./EventCardBackground";
 import { EventCardContext } from "./event-card-context";
 import classes from "./event-card.module.css";
+import { EventTimeframeBadge } from "../badges/EventTimeframeBadge";
 
 export interface EventCardProps {
 	variant?: "horizontal" | "card" | "inline";
@@ -34,7 +35,13 @@ export const EventCard = (props: EventCardProps) => {
 				<Box pos="relative" style={{ zIndex: 1 }} h="100%">
 					<Stack gap={4} h="100%" justify="space-between">
 						<Stack>
-							<EventCardTitle />
+							<Stack gap={0}>
+								<EventCardTitle />
+
+								{props.variant === "card" && (
+									<EventTimeframeBadge />
+								)}
+							</Stack>
 
 							{props.variant === "card" && (
 								<EventInstanceList />
