@@ -45,7 +45,7 @@ export const WidgetUpcomingEvents = () => {
 			<ScrollArea.Autosize maw="100%" scrollbars="x" offsetScrollbars p={4}>
 				<Group
 					wrap="nowrap"
-					mih={300}
+					// mih={300}
 					align="stretch"
 				>
 					{queries.map(({ query, source }, index) => (

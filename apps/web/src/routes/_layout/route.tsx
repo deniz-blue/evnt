@@ -1,6 +1,6 @@
-import { ActionIcon, Anchor, AppShell, Button, Code, Container, Flex, Group, Loader, Space, Text, Title, type ActionIconProps, type ButtonProps } from "@mantine/core";
-import { createFileRoute, Link, Outlet, useMatches, useNavigate, type ErrorComponentProps, createLink } from "@tanstack/react-router"
-import { IconCalendar, IconCalendarPlus, IconHome, IconList, IconSearch, IconSettings } from "@tabler/icons-react";
+import { ActionIcon, Anchor, AppShell, Code, Container, Flex, Group, Loader, Space, Text, Title } from "@mantine/core";
+import { createFileRoute, Link, Outlet, useMatches, type ErrorComponentProps } from "@tanstack/react-router"
+import { IconCalendar, IconList, IconSearch, IconSettings } from "@tabler/icons-react";
 import z from "zod";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { SettingsDrawer } from "../../components/app/overlay/settings/SettingsDrawer";
@@ -15,7 +15,7 @@ import { EventDetailsOverlay } from "../../components/app/overlay/event/EventDet
 import { AddEventMenu } from "../../components/app/AddEventMenu";
 import { VantageSpotlight } from "../../components/app/overlay/spotlight/VantageSpotlight";
 import { spotlight } from "@mantine/spotlight";
-import { useProvideAction } from "../../components/app/overlay/spotlight/useAction";
+import { useProvideNavActions } from "../../hooks/actions/useProvideNavActions";
 
 const SearchParamsSchema = z.object({
 	settings: z.string().optional(),
@@ -30,8 +30,6 @@ export const Route = createFileRoute("/_layout")({
 })
 
 function LayoutPage() {
-	const navigate = useNavigate();
-
 	const spaceless = useMatches({
 		select: (matches) => matches.some((match) => match.staticData?.spaceless),
 	});
@@ -40,46 +38,7 @@ function LayoutPage() {
 		select: (matches) => matches.some((match) => match.staticData?.hasEventForm),
 	});
 
-	useProvideAction({
-		label: "Go to Home",
-		category: "Navigation",
-		icon: <IconHome />,
-		execute: () => navigate({ to: "/" }),
-	});
-
-	useProvideAction({
-		label: "Go to List view",
-		category: "Navigation",
-		icon: <IconList />,
-		execute: () => navigate({ to: "/list" }),
-	});
-
-	useProvideAction({
-		label: "Go to Calendar view",
-		category: "Navigation",
-		icon: <IconCalendar />,
-		execute: () => navigate({ to: "/calendar" }),
-	});
-
-	useProvideAction({
-		label: "Create new event",
-		category: "Navigation",
-		icon: <IconCalendarPlus />,
-		execute: () => navigate({ to: "/new" }),
-	});
-
-	useProvideAction({
-		label: "Toggle Settings",
-		category: "Navigation",
-		icon: <IconSettings />,
-		execute: () => navigate({
-			to: ".",
-			search: prev => ({
-				...prev,
-				settings: prev.settings !== undefined ? undefined : "",
-			}),
-		}),
-	});
+	useProvideNavActions();
 
 	return (
 		<AppShell

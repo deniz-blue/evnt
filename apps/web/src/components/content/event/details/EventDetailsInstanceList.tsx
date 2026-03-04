@@ -96,7 +96,7 @@ export const EventDetailsInstanceList = () => {
 									.filter(venue => venue !== undefined)
 									.map((venue, index) => (
 										<Stack key={index} gap={0}>
-											<Snippet key={index} snippet={snippetVenue(venue!)} />
+											<Snippet key={index} snippet={snippetVenue(venue!, true)} />
 
 											<Stack gap={4} my={4} pl={28} fz="sm" align="start">
 												{venueGoogleMapsLink(venue) && (

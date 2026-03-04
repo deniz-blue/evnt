@@ -4,6 +4,7 @@ import { UtilPartialDate, UtilPartialDateRange, UtilTranslations } from "@evnt/s
 
 export const snippetEvent = (data: EventData, opts?: {
 	maxVenues?: number;
+	venueDetails?: boolean;
 }): TSnippet[] => {
 	const snippets: TSnippet[] = [];
 
@@ -40,7 +41,7 @@ export const snippetEvent = (data: EventData, opts?: {
 			for (const venueId of venueIds) {
 				const venue = data.venues?.find(v => v.venueId === venueId);
 				if (!venue) continue;
-				snippets.push(snippetVenue(venue));
+				snippets.push(snippetVenue(venue, opts?.venueDetails));
 			}
 		}
 
@@ -51,15 +52,17 @@ export const snippetEvent = (data: EventData, opts?: {
 	return snippets;
 };
 
-export const snippetVenue = (venue: Venue): TSnippet => {
+export const snippetVenue = (venue: Venue, detailed?: boolean): TSnippet => {
 	let sublabel: SnippetLabel | undefined = undefined;
 
-	if (venue.venueType === "physical" && venue.address) {
-		sublabel = { type: "address", value: venue.address };
-	} else if (venue.venueType === "online" && venue.url) {
-		sublabel = { type: "external-link", url: venue.url };
-	} else if (venue.venueType === "unknown") {
-		sublabel = undefined;
+	if (detailed) {
+		if (venue.venueType === "physical" && venue.address) {
+			sublabel = { type: "address", value: venue.address };
+		} else if (venue.venueType === "online" && venue.url) {
+			sublabel = { type: "external-link", url: venue.url };
+		} else if (venue.venueType === "unknown") {
+			sublabel = undefined;
+		}
 	}
 
 	return {

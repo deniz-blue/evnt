@@ -124,6 +124,9 @@ importers:
       '@mantine/notifications':
         specifier: 9.0.0-alpha.0
         version: 9.0.0-alpha.0(@mantine/core@9.0.0-alpha.0(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@mantine/schedule':
+        specifier: 9.0.0-alpha.0
+        version: 9.0.0-alpha.0(@mantine/core@9.0.0-alpha.0(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/dates@9.0.0-alpha.0(@mantine/core@9.0.0-alpha.0(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(dayjs@1.11.19)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@mantine/spotlight':
         specifier: ^8.3.15
         version: 8.3.15(@mantine/core@9.0.0-alpha.0(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -2013,6 +2016,15 @@ packages:
     resolution: {integrity: sha512-qGtVbEWnuH+ohv03VACA3cHyUGbfzOQmTeuUT4ZxXtsjdEQDAVOWMcoZaiH+2pmkTlpydgS1tXYPhmVI42s+dA==}
     peerDependencies:
       '@mantine/core': 9.0.0-alpha.0
+      '@mantine/hooks': 9.0.0-alpha.0
+      react: ^18.x || ^19.x
+      react-dom: ^18.x || ^19.x
+
+  '@mantine/schedule@9.0.0-alpha.0':
+    resolution: {integrity: sha512-NCF0KTAQ3h58smUw8e/T6Zc2VYlgL74iZIcfKAy9lak05h9G36MpPOQ5tIo1ibPii0Ddtrg0y4SujXs27QF/8g==}
+    peerDependencies:
+      '@mantine/core': 9.0.0-alpha.0
+      '@mantine/dates': 9.0.0-alpha.0
       '@mantine/hooks': 9.0.0-alpha.0
       react: ^18.x || ^19.x
       react-dom: ^18.x || ^19.x
@@ -7075,6 +7087,14 @@ snapshots:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
       react-transition-group: 4.4.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+
+  '@mantine/schedule@9.0.0-alpha.0(@mantine/core@9.0.0-alpha.0(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/dates@9.0.0-alpha.0(@mantine/core@9.0.0-alpha.0(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(dayjs@1.11.19)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    dependencies:
+      '@mantine/core': 9.0.0-alpha.0(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@mantine/dates': 9.0.0-alpha.0(@mantine/core@9.0.0-alpha.0(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(dayjs@1.11.19)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@mantine/hooks': 9.0.0-alpha.0(react@19.2.4)
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
 
   '@mantine/spotlight@8.3.15(@mantine/core@9.0.0-alpha.0(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.0.0-alpha.0(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
