@@ -9,6 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@atcute/client": "^4.2.1",
+    "@atcute/identity-resolver": "^1.2.2",
+    "@atcute/lexicons": "^1.2.9",
+    "@evnt/pretty": "workspace:*",
     "@mantine/core": "9.0.0-alpha.3",
     "@mantine/hooks": "9.0.0-alpha.3",
     "@vitejs/plugin-react": "^5.1.4",
@@ -16,6 +20,9 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@atcute/atproto": "^3.1.10",
+    "@cloudflare/workers-types": "^4.20260305.1",
+    "@evnt/schema": "workspace:*",
     "@types/node": "^25.3.3",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
