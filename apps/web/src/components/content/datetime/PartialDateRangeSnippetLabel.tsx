@@ -43,7 +43,8 @@ export const PartialDateRangeSnippetLabel = ({ value }: { value: Range<PartialDa
 		<Tooltip label={`meow`}>
 			<Text
 				component="time"
-				dateTime={parts.map(p => p.value).join("")}
+				role="group"
+				aria-label={parts.map(p => p.value).join("")}
 				inline
 				inherit
 			>

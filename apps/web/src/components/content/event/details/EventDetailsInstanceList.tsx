@@ -16,12 +16,14 @@ export const EventDetailsInstanceList = () => {
 				styles={{
 					itemBody: { paddingLeft: 0 },
 				}}
+				role="list"
 			>
 				{data?.instances?.map((instance, i) => (
 					<Timeline.Item
 						key={i}
 						bullet={i + 1}
 						tabIndex={0}
+						role="listitem"
 					>
 						<Stack>
 							<Stack key={i} gap={0}>

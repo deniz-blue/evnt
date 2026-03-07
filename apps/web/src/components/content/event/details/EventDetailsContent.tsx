@@ -34,24 +34,11 @@ export const EventDetailsContent = (props: EventDetailsContentProps) => {
 
 					{source && <LayerImportSection source={source} />}
 
-					<EventDetailsInstanceList />
-
-					<Stack gap={0}>
+					<Stack gap={0} component="section">
 						<SmallTitle padLeft>
-							description (wip)
+							instances
 						</SmallTitle>
-						<Group gap={4} wrap="nowrap">
-							<Box c="dimmed" display="flex">
-								<IconQuote />
-							</Box>
-							<Stack gap={4}>
-								{data?.description ? (
-									<MarkdownTranslations content={data.description} />
-								) : (
-									<Text c="dimmed" span fs="italic">No description provided.</Text>
-								)}
-							</Stack>
-						</Group>
+						<EventDetailsInstanceList />
 					</Stack>
 
 					<EventDetailsLinks />

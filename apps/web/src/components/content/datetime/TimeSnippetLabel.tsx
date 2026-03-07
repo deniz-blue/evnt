@@ -29,7 +29,8 @@ export const TimeSnippetLabel = ({
 		<Tooltip label={`${value} - UTC`}>
 			<Text
 				component="time"
-				dateTime={str ?? "Invalid Time"}
+				dateTime={str ?? undefined}
+				aria-label={`${str ?? "Invalid time"}`}
 				inline
 				inherit
 			>
