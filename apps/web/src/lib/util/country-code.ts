@@ -21,9 +21,9 @@ export class UtilCountryCode {
 		return this.getNameIn(countryCode, "en");
 	}
 
-	static getLabel(countryCode: string, language: string): string {
+	static getLabel(countryCode: string, userLanguage: string): string {
 		const upper = countryCode.toUpperCase();
-		const localizedName = this.getNameIn(upper, language);
+		const localizedName = this.getNameIn(upper, userLanguage);
 		const internationalName = this.getEnglishName(upper);
 		const localName = this.getLocalName(upper);
 

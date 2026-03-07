@@ -53,7 +53,7 @@ function FormPage() {
 
 	const fetchData = useSetAtom(useMemo(() => atom(null, async (get, set) => {
 		if (dataParam) {
-			set(dataAtom, dataParam);
+			set(dataAtom, EventDataSchema.parse(dataParam));
 		} else if (sourceParam) {
 			setLoading(true);
 			try {
@@ -61,7 +61,7 @@ function FormPage() {
 				if (!source) throw new Error("Invalid event source");
 				const resolved = await EventResolver.resolve(source);
 				if (!resolved.data) throw new Error("Failed to resolve event data");
-				set(dataAtom, resolved.data);
+				set(dataAtom, EventDataSchema.parse(resolved.data));
 			} catch (e) {
 				console.error("Failed to fetch event data from source", e);
 			} finally {

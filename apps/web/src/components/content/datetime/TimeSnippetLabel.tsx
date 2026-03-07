@@ -27,7 +27,12 @@ export const TimeSnippetLabel = ({
 
 	return (
 		<Tooltip label={`${value} - UTC`}>
-			<Text span inline inherit>
+			<Text
+				component="time"
+				dateTime={str ?? "Invalid Time"}
+				inline
+				inherit
+			>
 				{str ?? "Invalid"}
 			</Text>
 		</Tooltip>

@@ -103,6 +103,10 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
 					if (image) {
 						element.append(`<meta property="og:image" content="${image.url}" />`, { html: true });
 						element.append(`<meta property="twitter:image" content="${image.url}" />`, { html: true });
+						if (t(selected?.media.alt ?? {}))
+							element.append(`<meta property="og:image:alt" content="${t(selected?.media.alt ?? {})}" />`, { html: true });
+						if (image.mimeType)
+							element.append(`<meta property="og:image:type" content="${image.mimeType}" />`, { html: true });
 						if (image.dimensions) {
 							element.append(`<meta property="og:image:width" content="${image.dimensions.width}" />`, { html: true });
 							element.append(`<meta property="og:image:height" content="${image.dimensions.height}" />`, { html: true });

@@ -1,10 +1,14 @@
 import type { SnippetLabelProps } from "@evnt/pretty";
-import { Text } from "@mantine/core";
+import { Text, VisuallyHidden } from "@mantine/core";
 import { TimeSnippetLabel } from "./TimeSnippetLabel";
 
 export const TimeRangeSnippetLabel = ({ value }: SnippetLabelProps<"time-range">) => {
 	return (
-		<Text span inline inherit>
+		<Text
+			span
+			inline
+			inherit
+		>
 			<TimeSnippetLabel
 				value={value.start.value}
 				day={value.start.day}
@@ -15,7 +19,11 @@ export const TimeRangeSnippetLabel = ({ value }: SnippetLabelProps<"time-range">
 				inherit
 				c="dimmed"
 				children=" – "
+				aria-hidden
 			/>
+			<VisuallyHidden>
+				to
+			</VisuallyHidden>
 			<TimeSnippetLabel
 				value={value.end.value}
 				day={value.end.day}

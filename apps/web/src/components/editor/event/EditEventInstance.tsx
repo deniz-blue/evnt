@@ -99,7 +99,7 @@ export const EditEventInstanceVenues = ({
 						/>
 						<Box flex="1">
 							<VenueAtomDisplay
-								venue={focusAtom(data, o => o.prop("venues").valueOr([]).find((v) => v.venueId === venueId)) as EditAtom<Venue>}
+								venue={focusAtom(data, o => o.prop("venues").valueOr([]).find((v) => v.id === venueId)) as EditAtom<Venue>}
 								noSublabel
 							/>
 						</Box>
@@ -109,7 +109,7 @@ export const EditEventInstanceVenues = ({
 			<Group>
 				<VenueIdPicker
 					data={data}
-					filter={(venue) => !venueIds.includes(venue.venueId)}
+					filter={(venue) => !venueIds.includes(venue.id)}
 					label="Add"
 					onSelect={(venueId) => addVenueId(venueId)}
 				/>
@@ -139,8 +139,8 @@ export const VenueIdPicker = ({
 
 	const options = venues.map((venue) => (
 		<Combobox.Option
-			key={venue.venueId}
-			value={venue.venueId}
+			key={venue.id}
+			value={venue.id}
 		>
 			<Snippet snippet={snippetVenue(venue)} />
 		</Combobox.Option>

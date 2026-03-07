@@ -13,6 +13,7 @@ import { EventDetailsBanner } from "./EventDetailsBanner";
 import { EventDetailsInstanceList } from "./EventDetailsInstanceList";
 import { EventDetailsLinks } from "./EventDetailsLinks";
 import { useEventEnvelope } from "../event-envelope-context";
+import { EnvelopeErrorAlert } from "../envelope/EnvelopeErrorAlert";
 
 export interface EventDetailsContentProps {
 	source?: EventSource;
@@ -29,6 +30,8 @@ export const EventDetailsContent = (props: EventDetailsContentProps) => {
 			<EventDetailsBanner />
 			<Container mt="sm" w="100%">
 				<Stack>
+					<EnvelopeErrorAlert />
+
 					{source && <LayerImportSection source={source} />}
 
 					<EventDetailsInstanceList />

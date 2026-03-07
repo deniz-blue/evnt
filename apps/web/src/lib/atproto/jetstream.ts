@@ -7,9 +7,9 @@ import { $NSID } from "@evnt/schema";
 const JetstreamLogger = Logger.main.styledChild("Jetstream", "#88c0d0");
 
 export const createJetstream = ({
-
+	onUpdate,
 }: {
-	onCommit?: (source: EventSource.At, record: object, event: CommitEvent) => void;
+	onUpdate?: (source: EventSource.At, record: unknown, event: CommitEvent) => void;
 }) => {
 	let unmounted = false;
 	const subscription = new JetstreamSubscription({
@@ -31,15 +31,7 @@ export const createJetstream = ({
 				const source = UtilEventSource.at(event.did, event.commit.collection, event.commit.rkey);
 				JetstreamLogger.log(event.commit.operation + ":", source);
 
-				// if (event.commit.operation != "delete" && await DataDB.has(source)) {
-				// 	try {
-				// 		const data = EventDataSchema.parse(event.commit.record);
-				// 		await DataDB.put(source, { data });
-				// 	} catch (e) {
-				// 		console.error(e);
-				// 		await DataDB.delete(source);
-				// 	}
-				// }
+				if (event.commit.operation !== "delete") onUpdate?.(source, event.commit.record, event);
 			}
 		}
 	})();

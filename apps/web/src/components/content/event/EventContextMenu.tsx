@@ -20,7 +20,6 @@ import { EventResolver } from "../../../db/event-resolver";
 export const EventContextMenu = ({ source }: { source: EventSource }) => {
 	const noHover = useMediaQuery("(hover: none)");
 	const isPinned = useHomeStore((state) => state.pinnedEvents.includes(source));
-	const queryClient = useQueryClient();
 
 	const getData = async () => (await DataDB.get(source!))?.data ?? null;
 
@@ -40,7 +39,11 @@ export const EventContextMenu = ({ source }: { source: EventSource }) => {
 		},
 
 		ShareLink: handleCopy(EventActions.getShareLink(source), "Share link copied to clipboard"),
-		ShareLinkMarkdown: handleCopy(`[Event](<${EventActions.getShareLink(source)!}>)`, "Share link copied to clipboard"),
+		ShareLinkMarkdown: handleAsyncCopy(async () => {
+			const data = await getData();
+			const name = data?.name["en"] ?? data?.name[Object.keys(data.name)[0]!] ?? "Event";
+			return `[${name}](${EventActions.getShareLink(source)!})`;
+		}, "Share link copied to clipboard"),
 		QRCode: () => modals.open({
 			size: "md",
 			children: (

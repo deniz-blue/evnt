@@ -34,6 +34,7 @@ export const AddEventMenu = () => {
 				<ActionIcon
 					size="input-md"
 					color="gray"
+					aria-label="Add Event"
 				>
 					<IconPlus />
 					<input

@@ -21,6 +21,7 @@ export const EventDetailsInstanceList = () => {
 					<Timeline.Item
 						key={i}
 						bullet={i + 1}
+						tabIndex={0}
 					>
 						<Stack>
 							<Stack key={i} gap={0}>

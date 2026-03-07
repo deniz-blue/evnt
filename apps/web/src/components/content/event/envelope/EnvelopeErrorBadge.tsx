@@ -1,29 +1,12 @@
 import { Badge, Stack, Text, Tooltip } from "@mantine/core";
-import type { EventEnvelope } from "../../../../db/models/event-envelope";
-import z from "zod";
+import { getEnvelopeErrorMeta } from "./envelope-error-meta";
+import { useEventEnvelope } from "../event-envelope-context";
 
-export const EnvelopeErrorBadge = ({ err }: { err?: EventEnvelope.Error }) => {
+export const EnvelopeErrorBadge = () => {
+	const { err } = useEventEnvelope();
 	if (!err) return null;
 
-	let color: "red" | "yellow" = "red";
-	let message = "";
-	let details = "";
-
-	if (err.kind === "json-parse" || err.kind === "validation") {
-		color = "yellow";
-	} else {
-		color = "red";
-	};
-
-	if (err.kind === "fetch") details = err.message;
-	if (err.kind === "json-parse") details = err.message;
-	if (err.kind === "validation") details = z.prettifyError(err);
-	if (err.kind === "xrpc") details = `${err.error}: ${err.message}`;
-
-	if (err.kind === "fetch") message = "Fetch Error";
-	if (err.kind === "json-parse") message = "JSON Parse Error";
-	if (err.kind === "validation") message = "Validation Error";
-	if (err.kind === "xrpc") message = "XRPC Error";
+	const { color, message, details, status } = getEnvelopeErrorMeta(err);
 
 	return (
 		<Tooltip label={(
@@ -35,7 +18,7 @@ export const EnvelopeErrorBadge = ({ err }: { err?: EventEnvelope.Error }) => {
 			</Stack>
 		)} multiline>
 			<Badge color={color} variant="outline">
-				{"status" in err && err.status ? err.status : "ERR"}
+				{status ?? "ERR"}
 			</Badge>
 		</Tooltip>
 	);

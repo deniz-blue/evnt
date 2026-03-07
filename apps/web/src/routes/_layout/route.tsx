@@ -1,4 +1,4 @@
-import { ActionIcon, Anchor, AppShell, Code, Container, Flex, Group, Loader, Space, Text, Title } from "@mantine/core";
+import { ActionIcon, Anchor, AppShell, Code, Container, Flex, Group, Loader, Space, Text, Title, type ActionIconProps } from "@mantine/core";
 import { createFileRoute, Link, Outlet, useMatches, type ErrorComponentProps } from "@tanstack/react-router"
 import { IconCalendar, IconList, IconSearch, IconSettings } from "@tabler/icons-react";
 import z from "zod";
@@ -58,6 +58,7 @@ function LayoutPage() {
 									<NavButton
 										icon={<IconList />}
 										isActive={isActive}
+										aria-label="List View"
 									/>
 								)}
 							</Link>
@@ -66,6 +67,7 @@ function LayoutPage() {
 									<NavButton
 										icon={<IconCalendar />}
 										isActive={isActive}
+										aria-label="Calendar View"
 									/>
 								)}
 							</Link>
@@ -76,6 +78,7 @@ function LayoutPage() {
 							color="gray"
 							size="input-md"
 							onClick={spotlight.toggle}
+							aria-label="Search and Actions"
 						>
 							<IconSearch />
 						</ActionIcon>
@@ -85,6 +88,7 @@ function LayoutPage() {
 						<ActionIcon
 							size="input-md"
 							color="gray"
+							aria-label="Settings"
 							renderRoot={(props) => (
 								<Link
 									to="."
@@ -115,15 +119,17 @@ function LayoutPage() {
 const NavButton = ({
 	icon,
 	isActive,
+	...props
 }: {
 	icon: React.ReactNode;
 	isActive?: boolean;
-}) => {
+} & React.AriaAttributes) => {
 	return (
 		<ActionIcon
 			color="gray"
 			size="input-md"
 			variant={isActive ? "light" : "subtle"}
+			{...props}
 		>
 			{icon}
 		</ActionIcon>
@@ -171,12 +177,20 @@ const Logo = () => {
 				variant="subtle"
 				color="gray"
 				p={0}
+				aria-label="Home"
 			>
 				<Flex align="center" justify="center">
-					<img src="/icon.svg" alt="@evnt Viewer Logo" width={32} height={32} style={{
-						scale: loading ? "0.7" : "1",
-						transition: "0.2s",
-					}} />
+					<img
+						src="/icon.svg"
+						alt="@evnt Viewer Logo"
+						aria-hidden
+						width={32}
+						height={32}
+						style={{
+							scale: loading ? "0.7" : "1",
+							transition: "0.2s",
+						}}
+					/>
 					<Loader
 						pos="absolute"
 						width="100%"

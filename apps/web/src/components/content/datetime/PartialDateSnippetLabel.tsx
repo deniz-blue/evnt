@@ -16,7 +16,12 @@ export const PartialDateSnippetLabel = ({
 	const userTimezone = useLocaleStore(store => store.timezone);
 
 	return (
-		<Text span inline inherit>
+		<Text
+			component="time"
+			dateTime={value}
+			inline
+			inherit
+		>
 			{UtilPartialDate.toIntlString(value, {
 				locale: language || userLanguage,
 				timezone: timezone || userTimezone,

@@ -29,10 +29,10 @@ DataDB.onUpdate((source) => {
 });
 
 createJetstream({
-	onCommit: async (source, record, event) => {
-		if (event.commit.operation == "delete") return; // TODO
-		if (!(await DataDB.has(source))) return; // if not in db skip (otherwise we might download every event on atproto lol)
+	onUpdate: async (source, record, event) => {
+		if (!(await DataDB.has(source))) return console.debug("Skipped jetstream event because not in db"); // if not in db skip (otherwise we might download every event on atproto lol)
 		const envelope = EventResolver.fromJsonObject(record);
+		console.debug("Jetstream event commit", { source, record, event, envelope });
 		await DataDB.put(source, envelope);
 	},
 });
