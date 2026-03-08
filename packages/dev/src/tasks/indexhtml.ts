@@ -1,5 +1,5 @@
 export const indexhtml = () => {
-    const redirector = "https://event.nya.pub";
+    const redirector = "https://eventsl.ink";
 
     return (
         `<!DOCTYPE html>

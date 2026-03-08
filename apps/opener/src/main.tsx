@@ -14,7 +14,7 @@ async function main() {
 		const url = params.get("setInstanceUrl")!;
 		setInstanceUrl(url);
 		new BroadcastChannel(BroadcastChannelKey).postMessage("instanceUrlUpdated");
-		console.log("[event.nya.pub] Set instance URL to", url);
+		console.log("[eventsl.ink] Set instance URL to", url);
 		window.history.replaceState({}, document.title, window.location.pathname);
 		uiMessage = Strings.Message.Set(url);
 		// No return - show UI

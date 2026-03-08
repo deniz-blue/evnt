@@ -63,7 +63,7 @@ flowchart TD
 
 ## Development
 
-- Go to [this link](https://event.nya.pub/?setInstanceUrl=http://127.0.0.1:5173) to set the instance URL for development 
+- Go to [this link](https://eventsl.ink/?setInstanceUrl=http://127.0.0.1:5173) to set the instance URL for development 
 
 ```bash
 cd apps/web

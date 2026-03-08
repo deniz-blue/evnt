@@ -96,7 +96,7 @@ export default defineConfig({
 				},
 				scope: "/",
 				scope_extensions: [
-					{ type: "origin", origin: "https://event.nya.pub" },
+					{ type: "origin", origin: "https://eventsl.ink" },
 				],
 				shortcuts: [
 					{

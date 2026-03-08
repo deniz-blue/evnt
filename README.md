@@ -14,11 +14,11 @@ _Links:_
   - [Markdown Documentation](./docs/SCHEMA.md) _(generated)_
   - [ATProto Lexicon](./event-data.lexicon.json) _(generated, also bad)_
 - 🔗 [Event Source](./docs/SOURCE.md)
-- 🔗 [Application Links Format](./docs/LINKS.md) _event.nya.pub_
+- 🔗 [Application Links Format](./docs/LINKS.md) _eventsl.ink_
 
 ## Applications
 
-- [Application Selector](https://event.nya.pub) (event.nya.pub)
+- [Application Selector](https://eventsl.ink) (eventsl.ink)
 
 | Name                                      | Description     | Plat.                                                                                                                 | Lang.    | Source Code                                                 |
 |-------------------------------------------|-----------------|-----------------------------------------------------------------------------------------------------------------------|----------|-------------------------------------------------------------|
@@ -27,7 +27,7 @@ _Links:_
 
 Applications are the different clients that can be used to view and interact with events.
 
-Applications share links to the application selector (event.nya.pub)
+Applications share links to the application selector (eventsl.ink)
 
 Events can be served over **HTTP** or [ATProto](https://atproto.com).
 

@@ -32,7 +32,7 @@ The operations are differentiated by the `action` parameter.
 
 **Examples:**
 
-- [Link to FOSDEM 2026](<https://event.nya.pub/?action=view-event&source=https%3A%2F%2Fdeniz.blue%2Fevents-data%2Fevents%2F2026%2Ffoss%2Ffosdem26.json>)
+- [Link to FOSDEM 2026](<https://eventsl.ink/?action=view-event&source=https%3A%2F%2Fdeniz.blue%2Fevents-data%2Fevents%2F2026%2Ffoss%2Ffosdem26.json>)
 
 ## `?action=view-index`
 
@@ -51,5 +51,5 @@ Views an `.index.json`.
 
 **Examples:**
 
-- [Set Instance URL to 127.0.0.1:5173](https://event.nya.pub/?setInstanceUrl=http://127.0.0.1:5173/)
-- [Clear Instance URL](https://event.nya.pub/?clearInstanceUrl)
+- [Set Instance URL to 127.0.0.1:5173](https://eventsl.ink/?setInstanceUrl=http://127.0.0.1:5173/)
+- [Clear Instance URL](https://eventsl.ink/?clearInstanceUrl)

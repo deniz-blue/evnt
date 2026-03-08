@@ -40,7 +40,7 @@ export const getHtmlUrl = async () => {
 };
 
 export const eventlink = (entry: EventEntry, htmlUrl: string) => {
-	return `https://event.nya.pub/?${new URLSearchParams({
+	return `https://eventsl.ink/?${new URLSearchParams({
 		action: "view-event",
 		url: `${htmlUrl.replace(/\/$/, "")}/${entry.relativepath}`,
 	}).toString()}`;

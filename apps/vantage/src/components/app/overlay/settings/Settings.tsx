@@ -27,7 +27,7 @@ export const Settings = () => {
 
 			<ATProtoSettings />
 
-			<Divider label="event.nya.pub" />
+			<Divider label="eventsl.ink" />
 
 			<Button
 				component="a"
