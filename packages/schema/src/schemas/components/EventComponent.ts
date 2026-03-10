@@ -35,3 +35,35 @@ export const EventComponentSchema = UnknownEventComponentSchema.superRefine((obj
 			});
 	}
 }).meta({ id: "EventComponent" }) as z.ZodType<KnownEventComponent | UnknownEventComponent>;
+
+
+EventComponentSchema._zod.processJSONSchema = (ctx, json, params) => {
+	const xor = z.xor([
+		...Object.entries(KnownEventComponentsMap).map(([type, schema]) =>
+			z.strictObject({
+				type: z.literal(type),
+				data: schema,
+			})
+		),
+	]);
+
+	const internals = xor._zod;
+	internals.processJSONSchema?.(ctx, json, params);
+
+	json.oneOf ??= [];
+
+	json.oneOf.push({
+		type: "object",
+		properties: {
+			type: {
+				type: "string",
+				not: {
+					anyOf: Object.keys(KnownEventComponentsMap).map((type) => ({ const: type })),
+				},
+			},
+			data: { type: "object" },
+		},
+		required: ["type", "data"],
+		additionalProperties: false,
+	});
+};
