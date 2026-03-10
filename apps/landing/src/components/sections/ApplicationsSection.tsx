@@ -71,7 +71,7 @@ export const ApplicationsSection = () => {
 			</Stack>
 
 			<Text>
-				If you're building an application using evnt, please let us know!
+				If you're building an application using Evnt, please let us know!
 			</Text>
 		</Section>
 	)

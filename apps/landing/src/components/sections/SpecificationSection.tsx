@@ -1,15 +1,29 @@
-import { Anchor, Code, List, Text } from "@mantine/core";
+import { Anchor, Button, Code, List, Stack, Text } from "@mantine/core";
 import { Section } from "../Section";
-import { CodeHighlight } from "@mantine/code-highlight";
+import { CodeHighlight, CodeHighlightTabs } from "@mantine/code-highlight";
+import { IconExternalLink } from "@tabler/icons-react";
 
 export const SpecificationSection = () => {
 	return (
 		<Section title="Specification">
 			<Text>
-				You can find the specification for evnt in <Anchor href="https://github.com/deniz-blue/evnt/blob/main/docs/README.md" target="_blank" rel="noopener noreferrer">
+				You can find the specification for Evnt in <Anchor href="https://github.com/deniz-blue/evnt/blob/main/docs/README.md" target="_blank" rel="noopener noreferrer">
 					docs/README.md
 				</Anchor> file in the GitHub repository.
 			</Text>
+
+			<Stack align="center">
+				<Button
+					component="a"
+					href="https://github.com/deniz-blue/evnt/blob/main/docs/README.md"
+					target="_blank"
+					rel="noopener noreferrer"
+					rightSection={<IconExternalLink />}
+					variant="light"
+				>
+					View on GitHub
+				</Button>
+			</Stack>
 
 			<Text>
 				We have a npm package for the schema that uses <Anchor href="https://zod.dev" target="_blank" rel="noopener noreferrer">
@@ -18,6 +32,14 @@ export const SpecificationSection = () => {
 					@evnt/schema
 				</Anchor>.
 			</Text>
+
+			<CodeHighlightTabs
+				code={[
+					{ language: "bash", code: "pnpm add @evnt/schema", fileName: "pnpm" },
+					{ language: "bash", code: "npm install @evnt/schema", fileName: "npm" },
+					{ language: "bash", code: "yarn add @evnt/schema", fileName: "yarn" },
+				]}
+			/>
 
 			<Text>
 				We also auto-generate a couple things using the <Code>@evnt/schema</Code> code:
@@ -44,16 +66,6 @@ export const SpecificationSection = () => {
 						A <Anchor href="https://github.com/deniz-blue/evnt/blob/main/docs/SCHEMA.md" target="_blank" rel="noopener noreferrer">
 							markdown document
 						</Anchor> that documents all the type information.
-					</Text>
-				</List.Item>
-
-				<List.Item>
-					<Text>
-						A poorly made <Anchor href="https://atproto.com/guides/lexicon">
-							ATProto Lexicon
-						</Anchor> available at <Anchor href="https://github.com/deniz-blue/evnt/blob/main/event-data.lexicon.json" target="_blank" rel="noopener noreferrer">
-							event-data.lexicon.json
-						</Anchor>. Lexicons do not support the neccesary features to fully represent the evnt schema. ATProto records for Evnt data should be under the <Code>directory.evnt.event</Code> collection.
 					</Text>
 				</List.Item>
 			</List>

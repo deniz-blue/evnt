@@ -1,4 +1,4 @@
-import { Button, Center, Flex, Group, Paper, Stack, Text, Title } from "@mantine/core";
+import { Alert, Box, Button, Center, Flex, Group, Paper, Stack, Text, Title } from "@mantine/core";
 import { IconArrowDown, IconExternalLink } from "@tabler/icons-react";
 import type { EventData } from "@evnt/schema";
 
@@ -51,61 +51,59 @@ export const HeroSection = () => {
 	);
 
 	return (
-		<Flex mih="calc(100svh - 60px)" display="flex">
+		<Flex mih="calc(100svh - 60px)" display="flex" w="100%">
 			<Stack justify="space-between" align="start" w="100%">
 				<Center flex="1" w="100%">
-					<Stack w="100%">
-						<Stack gap={0} align="start">
-							<Text size="xs" c="dimmed">
-								(Open Evnt)
-							</Text>
-							<Title order={1}>
-								EVNT
-							</Title>
-							<Text>
-								A standardized, open-source data format for representing events
-							</Text>
-						</Stack>
+					<Stack>
+						<Group justify="space-between" w="100%" wrap="nowrap">
+							<Stack w="100%">
+								<Stack gap={0} align="start">
+									<Text size="xs" c="dimmed">
+										(Open Evnt)
+									</Text>
+									<Title order={1}>
+										EVNT
+									</Title>
+									<Text>
+										A standardized, open-source data format for representing events
+									</Text>
+								</Stack>
 
-						<Group gap={4}>
-							<Button
-								component="a"
-								href="https://github.com/deniz-blue/evnt"
-								target="_blank"
-								rightSection={<IconExternalLink />}
-								variant="light"
-							>
-								GitHub
-							</Button>
-							<Button
-								component="a"
-								href="#applications"
-								rightSection={<IconArrowDown />}
-								variant="light"
-								color="green"
-							>
-								Apps
-							</Button>
+								<Group gap={4}>
+									<Button
+										component="a"
+										href="https://github.com/deniz-blue/evnt"
+										target="_blank"
+										rightSection={<IconExternalLink />}
+										variant="light"
+									>
+										GitHub
+									</Button>
+									<Button
+										component="a"
+										href="#applications"
+										rightSection={<IconArrowDown />}
+										variant="light"
+										color="green"
+									>
+										Apps
+									</Button>
+								</Group>
+
+								<Box hiddenFrom="sm">
+									{cardPart}
+								</Box>
+							</Stack>
+							<Box visibleFrom="sm">
+								{cardPart}
+							</Box>
 						</Group>
 
-						{cardPart}
-
-						{/* <Box visibleFrom="sm">
-							<Group w="100%" wrap="nowrap">
-								{codePart}
-								<Box flex="0">
-									<IconArrowRight />
-								</Box>
-								{cardPart}
-							</Group>
-						</Box>
-						<Box hiddenFrom="sm">
-							<Stack w="100%" align="center">
-								{codePart}
-								<IconArrowDown />
-								{cardPart}
-							</Stack>
-						</Box> */}
+						<Alert color="dark.8" variant="light">
+							<Text inherit>
+								Events are complicated. Existing tooling is too unspecific and flawed. We aim to fix that.
+							</Text>
+						</Alert>
 					</Stack>
 				</Center>
 				<Center p="md" w="100%">

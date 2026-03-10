@@ -4,6 +4,8 @@
 
 This document defines the data structures and types used for the @evnt Event format.
 
+*Skip to [main type][#eventdata]*
+
 See [Changelog](./CHANGELOG.md) for recent changes to the data format.
 
 - [Types](#types)
@@ -161,6 +163,7 @@ The main data structure representing an event is `EventData`.
 Important fields:
 - `v`: The version of the data format. Currently `0`. Required.
 - `name`: [`Translations`](#translations); Required. The name of the event.
+
 - `venues`: Array of [`Venue`](#venue)s.
 - `instances`: Array of [`EventInstance`](#eventinstance)s.
 - `components`: Array of [`EventComponent`](#eventcomponent)s.
@@ -173,6 +176,8 @@ Consumers should not use `venues` to display a list of venues for an event, but 
 - **Venues** represent **where** an event takes place.
 - **Instances** represent **when** an event takes place.
 - **Components** represent **additional information** (not tied to a specific venue or instance) about an event.
+
+The smallest valid event data object is: `{ v: 0, name: {} }`.
 
 See the [schema documentation](./SCHEMA.md#event-data-schema) for the full definition.
 
@@ -203,7 +208,7 @@ This object includes:
 _Examples_:
 
 ```ts
-{
+let venue: PhysicalVenue = {
 	id: "venue-1",
 	type: "physical",
 	name: { en: "Central Park", es: "Parque Central" },
@@ -225,7 +230,7 @@ This object includes:
 _Examples_:
 
 ```ts
-{
+let venue: OnlineVenue = {
 	id: "venue-2",
 	type: "online",
 	name: { en: "YouTube Live" },
@@ -291,13 +296,17 @@ An `EventComponent` represents additional information about an event that is not
 
 Each component has a `type` field that defines the type of the component and a `data` field that contains the relevant data for that type.
 
-Table of component types:
+Table of defined component types:
 
 | `type`        | `data` type                                   |
 |---------------|-----------------------------------------------|
 | `link`        | [LinkComponent](#linkcomponent)               |
 | `source`      | [SourceComponent](#sourcecomponent)           |
 | `splashMedia` | [SplashMediaComponent](#splashmediacomponent) |
+
+Note that this list is **not exhaustive** and applications can define their own component types as needed. The only requirement is that the `type` field should be a string and the `data` field should atleast be an object.
+
+⚠️ It is **strongly** recommended to prefix custom component types with the application name or a unique identifier to avoid conflicts with other applications (e.g. `myapp:customComponent`). If you define something with a generic name and coincidentally the specification later defines a component with the same name, it can cause conflicts and issues with data compatibility.
 
 ```ts
 let component: EventComponent = {
@@ -319,7 +328,7 @@ Required fields:
 
 Optional fields:
 - `name`: [`Translations`](#translations) representing the name of the link.
-- `description`: [`Translations`](#translations) representing a description of the link.
+- ~~`description`: [`Translations`](#translations) representing a description of the link.~~ ⚠️ Might change
 - `disabled`: A boolean indicating whether the link is disabled. This can be used to represent links that are no longer valid or temporarily unavailable.
 - `opensAt`: A [`PartialDate`](#partialdate) representing the date and/or time when the link becomes active or valid. This can be used for links that are not yet active but will become active in the future (e.g., a ticketing page that opens at a specific date and time).
 - `closesAt`: A [`PartialDate`](#partialdate) representing the date and/or time when the link becomes inactive or invalid. This can be used for links that are only valid for a certain period of time (e.g., a form for registering to a competition that closes at a specific date and time).
@@ -330,6 +339,14 @@ A `SourceComponent` represents a source of information about the event, such as 
 
 Required fields:
 - `url`: The URL of the source.
+
+```ts
+let link: LinkComponent = {
+	url: "https://www.example.com/event-registration-form",
+	name: { en: "Event Registration Form" },
+	closesAt: "2025-10-01T23:59",
+}
+```
 
 ### `SplashMediaComponent`
 

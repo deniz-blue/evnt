@@ -6,6 +6,8 @@ import { FeaturesSection } from "./sections/FeaturesSection";
 import { ExampleSection } from "./sections/ExampleSection";
 import { ApplicationsSection } from "./sections/ApplicationsSection";
 import { SpecificationSection } from "./sections/SpecificationSection";
+import { ATProtoSection } from "./sections/ATProtoSection";
+import { ComparisionSection } from "./sections/ComparisionSection";
 
 export const LandingPage = () => {
 	return (
@@ -16,6 +18,8 @@ export const LandingPage = () => {
 				<FeaturesSection />
 				<ApplicationsSection />
 				<SpecificationSection />
+				<ATProtoSection />
+				<ComparisionSection />
 				<ExampleSection />
 				<ValidatorSection />
 				<Space h="100dvh" />
