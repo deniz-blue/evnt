@@ -20,12 +20,16 @@ export const parseIntent = (url: URL): Intent | null => {
 	// Legacy format
 	if (
 		url.searchParams.get("action") === "view-event"
-	) return {
-		type: "event",
-		url: (
-			url.searchParams.get("source")?.startsWith("http") ? url.searchParams.get("source") : undefined
-		) ?? url.searchParams.get("url") ?? undefined,
-		at: url.searchParams.get("source")?.startsWith("at") ? url.searchParams.get("source")! : undefined,
+	) {
+		let intent: EventIntent = {
+			type: "event",
+		};
+
+		let source = url.searchParams.get("source") ?? url.searchParams.get("url") ?? undefined;
+		if (source?.startsWith("at")) intent.at = source;
+		else if (source?.startsWith("http")) intent.url = source;
+
+		return intent;
 	};
 
 	return null;
