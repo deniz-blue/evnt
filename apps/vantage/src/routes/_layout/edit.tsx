@@ -11,6 +11,7 @@ import { useEventQuery } from "../../db/useEventQuery";
 import { useMutation } from "@tanstack/react-query";
 import { EventMutator } from "../../db/event-mutator";
 import z from "zod";
+import { useEditorCollapseState } from "../../components/editor/collapse-state";
 
 const RouteSearchSchema = z.object({
 	source: EventSourceSchema,
@@ -36,7 +37,18 @@ function EditPage() {
 	useEffect(() => {
 		if (!query?.data) return;
 		setDataAtom(prev => prev ?? query.data?.data ?? null);
+		if (query.data?.data) {
+			useEditorCollapseState.setState({
+				collapsed: [
+					...query.data.data.venues?.map(venue => `venue::${venue.id}`) ?? [],
+					...query.data.data.instances?.map((_, i) => `instance::${i}`) ?? [],
+					...query.data.data.components?.map((_, i) => `component::${i}`) ?? [],
+				],
+			});
+		}
 	}, [query?.data ?? null]);
+
+	useEffect(() => () => useEditorCollapseState.setState({ collapsed: [] }), []);
 
 	const navigate = useNavigate();
 

@@ -23,7 +23,7 @@ export const EventEditor = ({
 
 	return (
 		<Stack gap={0}>
-			<Tabs defaultValue="form">
+			<Tabs defaultValue="form" keepMounted={false}>
 				<Paper
 					pos="sticky"
 					top="calc(var(--safe-area-inset-top) + var(--app-shell-header-height, 0px))"

@@ -10,13 +10,13 @@ import { UtilCountryCode } from "../../../lib/util/country-code";
 import { useLocaleStore } from "../../../stores/useLocaleStore";
 
 export const EditVenuePhysical = ({ data }: { data: EditAtom<PhysicalVenue> }) => {
-	const hasAddress = useAtomValue(useMemo(() => atom((get) => !!get(data).address), [data]));
-	const addAddress = useSetAtom(useMemo(() => atom(null, (get, set) => {
-		set(data, prev => ({
-			...prev,
-			address: {},
-		}));
-	}), [data]));
+	// const hasAddress = useAtomValue(useMemo(() => atom((get) => !!get(data).address), [data]));
+	// const addAddress = useSetAtom(useMemo(() => atom(null, (get, set) => {
+	// 	set(data, prev => ({
+	// 		...prev,
+	// 		address: {},
+	// 	}));
+	// }), [data]));
 	const deleteAddress = useSetAtom(useMemo(() => atom(null, (get, set) => {
 		set(data, prev => ({
 			...prev,
@@ -24,12 +24,14 @@ export const EditVenuePhysical = ({ data }: { data: EditAtom<PhysicalVenue> }) =
 		}));
 	}), [data]));
 
+	const addressAtom = useMemo(() => focusAtom(data, o => o.prop("address").valueOr({})) as EditAtom<Address>, [data]);
+
 	return (
 		<Stack>
 			<Text fw="bold">Physical Venue Details</Text>
 
 			<EditAddress
-				data={focusAtom(data, o => o.prop("address").valueOr({})) as EditAtom<Address>}
+				data={addressAtom}
 				onDelete={deleteAddress}
 			/>
 			{/* {hasAddress ? (
@@ -47,6 +49,10 @@ export const EditAddress = ({
 	data: EditAtom<Address>;
 	onDelete?: () => void;
 }) => {
+	const countryCodeAtom = useMemo(() => focusAtom(data, o => o.prop("countryCode")), [data]);
+	const postalCodeAtom = useMemo(() => focusAtom(data, o => o.prop("postalCode")), [data]);
+	const addrAtom = useMemo(() => focusAtom(data, o => o.prop("addr")), [data]);
+
 	return (
 		<Stack>
 			<Group>
@@ -66,7 +72,7 @@ export const EditAddress = ({
 				<Grid.Col span={6}>
 					<Deatom
 						component={CountryCodePicker}
-						atom={focusAtom(data, o => o.prop("countryCode"))}
+						atom={countryCodeAtom}
 					/>
 				</Grid.Col>
 				<Grid.Col span={6}>
@@ -79,7 +85,7 @@ export const EditAddress = ({
 						</Stack>
 						<DeatomOptional
 							component={ClearableTextInput}
-							atom={focusAtom(data, o => o.prop("postalCode"))}
+							atom={postalCodeAtom}
 							set={() => ""}
 							setLabel="Set Postal Code"
 							placeholder="12345"
@@ -98,7 +104,7 @@ export const EditAddress = ({
 				</Stack>
 				<DeatomOptional
 					component={ClearableTextInput}
-					atom={focusAtom(data, o => o.prop("addr"))}
+					atom={addrAtom}
 					set={() => ""}
 					setLabel="Set Address Line"
 					placeholder="123 Main St, Anytown, NY 12345"

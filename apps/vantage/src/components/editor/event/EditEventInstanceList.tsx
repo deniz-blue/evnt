@@ -7,8 +7,22 @@ import type { EditAtom } from "../edit-atom";
 import { useMemo } from "react";
 
 export const EditEventInstanceList = ({ data }: { data: EditAtom<EventData> }) => {
-	const length = useAtomValue(useMemo(() => atom((get) => get(data).instances?.length ?? 0), [data]));
+	const lengthAtom = useMemo(() => atom((get) => get(data).instances?.length ?? 0), [data]);
+	const length = useAtomValue(lengthAtom);
 	const setData = useSetAtom(data);
+
+	const children = new Array(length).fill(0).map((_, i) => (
+		<EditEventInstance
+			key={i}
+			index={i}
+			data={data}
+			instance={focusAtom(data, o => o.prop("instances").valueOr([]).at(i)) as EditAtom<EventInstance>}
+			onDelete={() => setData(prev => ({
+				...prev,
+				instances: (prev.instances ?? []).filter((_, index) => index !== i),
+			}))}
+		/>
+	));
 
 	return (
 		<Stack gap={4}>
@@ -46,17 +60,7 @@ export const EditEventInstanceList = ({ data }: { data: EditAtom<EventData> }) =
 			)}
 
 			<Stack>
-				{new Array(length).fill(0).map((_, i) => (
-					<EditEventInstance
-						key={i}
-						data={data}
-						instance={focusAtom(data, o => o.prop("instances").valueOr([]).at(i)) as EditAtom<EventInstance>}
-						onDelete={() => setData(prev => ({
-							...prev,
-							instances: (prev.instances ?? []).filter((_, index) => index !== i),
-						}))}
-					/>
-				))}
+				{children}
 			</Stack>
 		</Stack>
 	);

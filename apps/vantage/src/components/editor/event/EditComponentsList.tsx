@@ -1,9 +1,9 @@
 import { atom, useAtomValue, useSetAtom } from "jotai";
-import { useMemo, type ComponentType, type ReactNode } from "react";
+import { useMemo } from "react";
 import type { EditAtom } from "../edit-atom";
 import type { EventComponent, EventData } from "@evnt/schema";
 import { Button, Group, Input, Menu, Paper, Stack, Text, Title } from "@mantine/core";
-import { IconChevronDown, IconExternalLink, IconLink } from "@tabler/icons-react";
+import { IconChevronDown } from "@tabler/icons-react";
 import { EditComponent } from "./EditComponent";
 import { focusAtom } from "jotai-optics";
 import { EventComponentRegistry } from "./event-components";
@@ -20,6 +20,17 @@ export const EditComponentsList = ({ data }: { data: EditAtom<EventData> }) => {
 			components: [...(prev.components ?? []), component],
 		}));
 	}), [data]));
+
+	const children = useMemo(() => {
+		return indexes.map((i) => (
+			<EditComponent
+				key={i}
+				index={i}
+				data={data}
+				component={focusAtom(data, o => o.prop("components").valueOr([]).at(i)) as EditAtom<EventComponent>}
+			/>
+		));
+	}, [indexes, data]);
 
 	return (
 		<Stack gap={4}>
@@ -62,13 +73,7 @@ export const EditComponentsList = ({ data }: { data: EditAtom<EventData> }) => {
 					</Stack>
 				</Paper>
 			)}
-			{indexes.map((i) => (
-				<EditComponent
-					key={i}
-					data={data}
-					component={focusAtom(data, o => o.prop("components").valueOr([]).at(i)) as EditAtom<EventComponent>}
-				/>
-			))}
+			{children}
 		</Stack >
 	);
 };

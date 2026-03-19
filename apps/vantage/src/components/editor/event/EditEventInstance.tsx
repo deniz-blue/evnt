@@ -10,27 +10,31 @@ import { Snippet } from "../../content/Snippet";
 import { snippetInstance, snippetVenue } from "@evnt/pretty";
 import { VenueAtomDisplay } from "./EditVenue";
 import { UtilPartialDate } from "@evnt/schema/utils";
-import { CollapsiblePaper } from "./CollapsiblePaper";
+import { CollapsiblePaper } from "../CollapsiblePaper";
 
 export const EditEventInstance = ({
 	data,
 	instance,
 	onDelete,
+	index,
 }: {
 	data: EditAtom<EventData>;
 	instance: EditAtom<EventInstance>;
+	index: number;
 	onDelete: () => void;
 }) => {
 	const getInstanceData = useSetAtom(useMemo(() => atom(null, (get) => {
 		return get(instance);
 	}), []));
 
+	const startAtom = useMemo(() => focusAtom(instance, o => o.prop("start")), [instance]);
+	const endAtom = useMemo(() => focusAtom(instance, o => o.prop("end")), [instance]);
+
 	return (
 		<CollapsiblePaper
 			onDelete={onDelete}
-			title={(
-				<InstanceAtomDisplay instance={instance} />
-			)}
+			id={`instance::${index}`}
+			title={<InstanceAtomDisplay instance={instance} />}
 		>
 			<EditEventInstanceVenues
 				data={data}
@@ -48,7 +52,7 @@ export const EditEventInstance = ({
 						</Stack>
 						<DeatomOptional
 							component={PartialDateInput}
-							atom={focusAtom(instance, o => o.prop(field))}
+							atom={field === "start" ? startAtom : endAtom}
 							set={() => {
 								if (field == "start") return UtilPartialDate.thisMonth();
 								const instance = getInstanceData();
@@ -145,8 +149,6 @@ export const VenueIdPicker = ({
 			<Snippet snippet={snippetVenue(venue)} />
 		</Combobox.Option>
 	));
-
-	if (!venues.length) return null;
 
 	return (
 		<Combobox

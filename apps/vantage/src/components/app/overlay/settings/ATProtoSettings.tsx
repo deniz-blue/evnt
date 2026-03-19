@@ -1,15 +1,12 @@
-import { ActionIcon, Avatar, Button, Code, Group, Input, Loader, Menu, Paper, Stack, Text, TextInput, Tooltip } from "@mantine/core";
+import { ActionIcon, Avatar, Button, Group, Input, Menu, Paper, Stack, Text, TextInput } from "@mantine/core";
 import { getAvatarOfDid, useATProtoAuthStore } from "../../../../lib/atproto/useATProtoStore";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import { IconArrowRight, IconCheck, IconDots, IconExternalLink, IconPlus, IconX } from "@tabler/icons-react";
-import { ExternalLink } from "../../../content/base/ExternalLink";
 import { useAtProtoHandleQuery } from "../../../../lib/atproto/useAtProtoHandleQuery";
 import type { Did } from "@atcute/lexicons";
 
 export const ATProtoSettings = () => {
-	const session = useATProtoAuthStore(store => store.session);
-
 	return (
 		<Stack>
 			<ATProtoAccountsList />
@@ -63,7 +60,7 @@ export const ATProtoAccountItem = ({ did }: { did: Did }) => {
 					onClick={() => signIn(did)}
 				>
 					<Text span inline c={isCurrent ? "unset" : "dimmed"}>
-						{handle.data?.slice(5) ?? did}
+						{handle.data ?? did}
 					</Text>
 				</Button>
 				<Menu>

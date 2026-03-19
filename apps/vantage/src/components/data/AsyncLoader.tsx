@@ -5,9 +5,11 @@ import { CenteredLoader } from "../content/base/CenteredLoader";
 export const AsyncLoader = <T,>({
 	children,
 	fetcher,
+	loaderProps,
 }: {
 	children: (value: T) => React.ReactNode;
 	fetcher: () => Promise<T>;
+	loaderProps?: React.ComponentProps<typeof Loader>;
 }) => {
 	const [data, setData] = useState<T | null>(null);
 	const [error, setError] = useState<Error | null>(null);
@@ -31,7 +33,7 @@ export const AsyncLoader = <T,>({
 
 	if (loading) {
 		return (
-			<CenteredLoader />
+			<CenteredLoader loaderProps={loaderProps} />
 		);
 	}
 

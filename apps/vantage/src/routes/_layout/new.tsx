@@ -5,9 +5,12 @@ import { atom, useSetAtom } from "jotai";
 import { useMemo } from "react";
 import { EventActions } from "../../lib/actions/event-actions";
 import { FormPageTemplate } from "../form";
-import { ActionIcon, Button, Group, Menu } from "@mantine/core";
-import { IconChevronDown } from "@tabler/icons-react";
+import { Avatar, Button, Group, Menu, Text } from "@mantine/core";
+import { IconChevronDown, IconWorldOff } from "@tabler/icons-react";
 import type { EventSource } from "../../db/models/event-source";
+import { getAvatarOfDid, useATProtoAuthStore } from "../../lib/atproto/useATProtoStore";
+import type { AtprotoDid } from "@atcute/lexicons/syntax";
+import { useAtProtoHandleQuery } from "../../lib/atproto/useAtProtoHandleQuery";
 
 export const Route = createFileRoute("/_layout/new")({
 	component: NewPage,
@@ -18,7 +21,8 @@ export const Route = createFileRoute("/_layout/new")({
 
 function NewPage() {
 	const dataAtom = useMemo(() => atom<EventData | null>({ v: 0, name: {} }), []);
-
+	const agent = useATProtoAuthStore(store => store.agent);
+	const handle = useAtProtoHandleQuery(agent?.sub as AtprotoDid);
 	const navigate = useNavigate();
 
 	type Payload = { where: EventSource.Type; data: EventData };
@@ -49,27 +53,37 @@ function NewPage() {
 			button={(
 				<Menu>
 					<Group gap={0}>
-						<Button
-							color="green"
-							onClick={() => create("local")}
-							loading={mutation.isPending}
-						>
-							Create
-						</Button>
 						<Menu.Target>
-							<ActionIcon
-								size="input-sm"
+							<Button
 								color="green"
+								loading={mutation.isPending}
+								rightSection={<IconChevronDown size={16} />}
 							>
-								<IconChevronDown size={16} />
-							</ActionIcon>
+								Create
+							</Button>
 						</Menu.Target>
 					</Group>
 					<Menu.Dropdown>
+						<Menu.Label>Create...</Menu.Label>
+						<Menu.Item
+							onClick={() => create("local")}
+							leftSection={<IconWorldOff />}
+						>
+							Locally
+						</Menu.Item>
 						<Menu.Item
 							onClick={() => create("at")}
+							disabled={!agent}
+							leftSection={(
+								<Avatar
+									src={agent ? getAvatarOfDid(agent?.sub) : null}
+									size={24}
+								/>
+							)}
 						>
-							Create on ATProto
+							<Text inherit ff="monospace">
+								{handle.data ? `@${handle.data}` : (agent?.sub ? agent.sub : "AT Protocol")}
+							</Text>
 						</Menu.Item>
 					</Menu.Dropdown>
 				</Menu>

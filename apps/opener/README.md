@@ -1,3 +1,3 @@
-# redirector
+# opener
 
-See [APPS.md > Redirector](../../docs/APPS.md#redirector)
+opens links

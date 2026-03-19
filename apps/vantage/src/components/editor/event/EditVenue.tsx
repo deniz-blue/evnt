@@ -1,16 +1,16 @@
 import type { EventData, Venue, VenueType } from "@evnt/schema";
 import { Deatom, type EditAtom } from "../edit-atom";
-import { Button, CloseButton, Group, Input, Paper, SegmentedControl, SimpleGrid, Stack, Text, type SegmentedControlProps } from "@mantine/core";
+import { Button, Group, Input, SegmentedControl, Stack, Text, type SegmentedControlProps } from "@mantine/core";
 import { atom, useAtomValue, useSetAtom } from "jotai";
-import { useMemo, type ComponentType, type ReactNode } from "react";
-import { IconGlobe, IconMapPin, IconQuestionMark, IconWorld } from "@tabler/icons-react";
+import { useMemo, type ComponentType } from "react";
+import { IconMapPin, IconQuestionMark, IconWorld } from "@tabler/icons-react";
 import { TranslationsInput } from "../../base/input/TranslationsInput";
 import { focusAtom } from "jotai-optics";
 import { EditVenuePhysical } from "./EditVenuePhysical";
 import { EditVenueOnline } from "./EditVenueOnline";
 import { Snippet } from "../../content/Snippet";
 import { snippetVenue } from "@evnt/pretty";
-import { CollapsiblePaper } from "./CollapsiblePaper";
+import { CollapsiblePaper } from "../CollapsiblePaper";
 
 export const EditVenue = ({
 	venue,
@@ -53,26 +53,30 @@ export const EditVenue = ({
 	}), [venue]));
 
 	const onDelete = useSetAtom(useMemo(() => atom(null, (get, set) => {
+		console.log("Deleting venue with id", venueId);
 		set(data, prev => ({
 			...prev,
 			venues: prev.venues?.filter((venue) => venue.id !== venueId),
 			instances: prev.instances?.map(instance => ({
 				...instance,
-				venueIds: instance.venueIds?.filter((venueId) => venueId !== venueId),
+				venueIds: instance.venueIds?.filter(id => id !== venueId),
 			})) ?? [],
 		}));
-	}), [data]));
+	}), [data, venueId]));
+
+	const nameAtom = useMemo(() => focusAtom(venue, o => o.prop("name")), [venue]);
 
 	return (
 		<CollapsiblePaper
 			title={(
 				<VenueAtomDisplay venue={venue} />
 			)}
+			id={`venue::${venueId}`}
 			onDelete={onDelete}
 		>
 			<Deatom
 				component={TranslationsInput}
-				atom={focusAtom(venue, o => o.prop("name"))}
+				atom={nameAtom}
 				label="Venue Name"
 				description="Place name, URL description, etc."
 			/>
@@ -122,7 +126,7 @@ export const VenueTypePicker = ({
 	value,
 	onChange,
 	...props
-}: Omit<SegmentedControlProps, "value" | "onChange" | "data"> & {
+}: Omit<SegmentedControlProps<VenueType>, "value" | "onChange" | "data"> & {
 	value: VenueType;
 	onChange: (value: VenueType) => void;
 }) => {
@@ -135,15 +139,14 @@ export const VenueTypePicker = ({
 	);
 
 	return (
-		<SegmentedControl
+		<SegmentedControl<VenueType>
 			data={[
 				{ label: label(IconQuestionMark, "Unknown"), value: "unknown" },
 				{ label: label(IconMapPin, "Physical"), value: "physical" },
 				{ label: label(IconWorld, "Online"), value: "online" },
 			]}
-			style={{}}
 			value={value}
-			onChange={onChange as any}
+			onChange={onChange}
 			{...props}
 		/>
 	);

@@ -6,12 +6,19 @@ import { TranslationsInput } from "../../../base/input/TranslationsInput";
 import { ClearableSwitch } from "../../../base/input/ClearableSwitch";
 import { PartialDateInput } from "../../../base/input/PartialDateInput";
 import { UtilPartialDate } from "@evnt/schema/utils";
+import { useMemo } from "react";
 
 export const EditComponentLink = ({ data }: { data: EditAtom<LinkComponent> }) => {
+	const urlAtom = useMemo(() => focusAtom(data, o => o.prop("url")), [data]);
+	const nameAtom = useMemo(() => focusAtom(data, o => o.prop("name")), [data]);
+	const disabledAtom = useMemo(() => focusAtom(data, o => o.prop("disabled").valueOr(false)), [data]);
+	const opensAtAtom = useMemo(() => focusAtom(data, o => o.prop("opensAt")), [data]);
+	const closesAtAtom = useMemo(() => focusAtom(data, o => o.prop("closesAt")), [data]);
+
 	return (
 		<Stack>
 			<Deatom
-				atom={focusAtom(data, o => o.prop("url"))}
+				atom={urlAtom}
 				component={TextInput}
 				label="URL"
 				placeholder="https://example.com"
@@ -28,7 +35,7 @@ export const EditComponentLink = ({ data }: { data: EditAtom<LinkComponent> }) =
 					</Input.Description>
 				</Stack>
 				<DeatomOptional
-					atom={focusAtom(data, o => o.prop("name"))}
+					atom={nameAtom}
 					component={TranslationsInput}
 					set={{}}
 					setLabel="Add Link Name"
@@ -38,7 +45,7 @@ export const EditComponentLink = ({ data }: { data: EditAtom<LinkComponent> }) =
 
 			<Deatom
 				component={ClearableSwitch}
-				atom={focusAtom(data, o => o.prop("disabled").valueOr(false))}
+				atom={disabledAtom}
 				label="Disabled"
 				description="If disabled, the link will be shown as disabled and not clickable. Useful for indicating upcoming links or temporarily unavailable links."
 				color="red"
@@ -55,7 +62,7 @@ export const EditComponentLink = ({ data }: { data: EditAtom<LinkComponent> }) =
 						</Stack>
 						<DeatomOptional
 							component={PartialDateInput}
-							atom={focusAtom(data, o => o.prop(field))}
+							atom={field === "opensAt" ? opensAtAtom : closesAtAtom}
 							set={() => UtilPartialDate.thisMonth()}
 						/>
 					</Stack>

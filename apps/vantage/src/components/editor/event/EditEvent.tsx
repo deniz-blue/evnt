@@ -1,4 +1,4 @@
-import { Stack, Text, Title } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { EditEventDetails } from "./EditEventDetails";
 import { EditEventInstanceList } from "./EditEventInstanceList";
 import type { EventData } from "../../../../../../packages/schema/src/schemas/EventData";

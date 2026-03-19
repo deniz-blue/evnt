@@ -1,5 +1,4 @@
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 import { VitePWA } from "vite-plugin-pwa";
 import metadata from "./public/oauth-client-metadata.json" with { type: "json" };
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
@@ -30,8 +29,11 @@ export default defineConfig({
 		port: SERVER_PORT,
 	},
 
+	resolve: {
+		tsconfigPaths: true,
+	},
+
 	plugins: [
-		tsconfigPaths(),
 		tanstackRouter({
 			target: "react",
 			routesDirectory: "./src/routes",

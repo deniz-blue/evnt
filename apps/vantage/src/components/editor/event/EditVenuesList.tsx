@@ -19,13 +19,8 @@ export const EditVenuesList = ({
 	addLabel?: ReactNode;
 	buttons?: ReactNode;
 }) => {
-	const indexes = useAtomValue(useMemo(() => atom((get) => {
-		const snap = get(data)
-		return (snap.venues ?? []).map((venue, i) => [venue, i] as const).filter(([venue, i]) => {
-			if (filter && !filter(venue, snap)) return false;
-			return true;
-		}).map(([_, i]) => i);
-	}), [data]));
+	const lengthAtom = useMemo(() => atom((get) => get(data).venues?.length ?? 0), [data]);
+	const length = useAtomValue(lengthAtom);
 
 	const addVenue = useSetAtom(useMemo(() => atom(null, (get, set) => {
 		let id = get(data).venues?.length ?? 0;
@@ -48,11 +43,19 @@ export const EditVenuesList = ({
 		});
 	}), [data, onAddUpdate]));
 
+	const children = new Array(length).fill(null).map((_, i) => (
+		<EditVenue
+			key={i}
+			data={data}
+			venue={focusAtom(data, o => o.prop("venues").valueOr([]).at(i)) as EditAtom<Venue>}
+		/>
+	));
+
 	return (
 		<Stack gap={4}>
 			<Group gap={4} justify="space-between">
 				<Title order={4}>
-					Venues ({indexes.length})
+					Venues ({length})
 				</Title>
 				<Button
 					onClick={addVenue}
@@ -60,7 +63,7 @@ export const EditVenuesList = ({
 					{addLabel}
 				</Button>
 			</Group>
-			{indexes.length === 0 && (
+			{length === 0 && (
 				<Paper bg="dark" p="md" py="xl" ta="center">
 					<Stack h="100%" align="center" justify="center">
 						<Text c="dimmed">
@@ -73,13 +76,7 @@ export const EditVenuesList = ({
 				</Paper>
 			)}
 			<Stack>
-				{indexes.map((i) => (
-					<EditVenue
-						key={i}
-						data={data}
-						venue={focusAtom(data, o => o.prop("venues").valueOr([]).at(i)) as EditAtom<Venue>}
-					/>
-				))}
+				{children}
 			</Stack>
 		</Stack>
 	);

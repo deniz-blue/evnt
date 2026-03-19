@@ -3,14 +3,15 @@ import type { EventComponent, EventComponentType, EventData } from "@evnt/schema
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useMemo } from "react";
 import { focusAtom } from "jotai-optics";
-import { CollapsiblePaper } from "./CollapsiblePaper";
+import { CollapsiblePaper } from "../CollapsiblePaper";
 import { EventComponentRegistry } from "./event-components";
 import { Trans } from "../../content/event/Trans";
 import { IconQuestionMark } from "@tabler/icons-react";
 
-export const EditComponent = ({ component, data }: {
+export const EditComponent = ({ component, data, index }: {
 	data: EditAtom<EventData>;
 	component: EditAtom<EventComponent>;
+	index: number;
 }) => {
 	const type: EventComponentType = useAtomValue(useMemo(() => atom((get) => get(component).type), [component]));
 
@@ -45,6 +46,7 @@ export const EditComponent = ({ component, data }: {
 			icon={<Icon />}
 			title={<Trans t={label} />}
 			onDelete={onDelete}
+			id={`component::${index}`}
 		>
 			<EditComponent data={componentDataAtom} />
 		</CollapsiblePaper>
