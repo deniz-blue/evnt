@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { BroadcastChannelKey, getInstanceUrl, IsDeveloperMode } from "../api";
 import { Anchor, Center, Collapse, Container, Group, Image, Loader, Paper, Spoiler, Stack, Text } from "@mantine/core";
+import type { Intent } from "../../lib/intent";
 
 export interface PageProps {
 	message?: string;
+	intent?: Intent;
 };
 
-export const usePublicInstances = () => {
+// @ts-ignore Will use later...
+export const usePublicInstances = ({ intent }: { intent?: Intent }) => {
 	const INSTANCES_URL = "https://raw.githubusercontent.com/deniz-blue/events-format/refs/heads/main/data/instances.json";
 	const [data, setData] = useState<{
 		instances: InstanceInfo[];
@@ -24,6 +27,13 @@ export const usePublicInstances = () => {
 			{ url: "http://localhost:5173" },
 			{ url: "web+evnt://" },
 		] : []),
+
+		// ...((intent?.type == "event" && intent?.at?.includes("community.lexicon.calendar.event")) ? [
+		// 	{
+		// 		url: "https://smokesignal.events",
+		// 		name: "Smoke Signal",
+		// 	} as InstanceInfo
+		// ] : []),
 	];
 }
 
@@ -74,9 +84,10 @@ export const useCountdown = ({
 
 export const Page = ({
 	message,
+	intent,
 }: PageProps) => {
 	const [preferredInstanceUrl, setPreferredInstanceUrl] = useState<string | null>(getInstanceUrl());
-	const publicInstances = usePublicInstances();
+	const publicInstances = usePublicInstances({ intent });
 
 	const dateRef = useRef(new Date(Date.now() + 1000 * 5));
 	const { cancel, count } = useCountdown({
@@ -216,6 +227,7 @@ export const InstanceCard = ({
 							w={32}
 							h={32}
 							onLoad={() => setIconLoaded(true)}
+							bdrs="50%"
 						/>
 					</Collapse>
 					<Stack gap={0} flex="1">

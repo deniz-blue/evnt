@@ -1,6 +1,7 @@
 import { Strings } from "./strings.ts";
 import { BroadcastChannelKey, clearInstanceUrl, debug, getInstanceUrl, setInstanceUrl } from "./api.ts";
 import { render } from "./app.tsx";
+import { parseIntent } from "../lib/intent.ts";
 import "./init.ts";
 
 async function main() {
@@ -34,18 +35,18 @@ async function main() {
 		return;
 	};
 
-	const shouldRedirect = !!params.has("action");
-	if (shouldRedirect) {
-		if (getInstanceUrl()) {
-			window.location.replace(`${getInstanceUrl()}?${params.toString()}`);
-			return;
-		};
+	const intent = parseIntent(new URL(window.location.href)) ?? undefined;
+	debug("Parsed intent:", intent);
 
-		uiMessage = Strings.Message.SelectToContinue(params);
-	};
+	if (intent && getInstanceUrl())
+		return window.location.replace(`${getInstanceUrl()}?${new URLSearchParams(intent)}`);
+
+	if (intent)
+		uiMessage = Strings.Message.SelectToContinue(intent);
 
 	render({
 		message: uiMessage || Strings.Message.None,
+		intent,
 	});
 };
 
