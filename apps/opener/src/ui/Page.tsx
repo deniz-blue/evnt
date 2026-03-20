@@ -1,102 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
-import { BroadcastChannelKey, getInstanceUrl, IsDeveloperMode } from "../api";
-import { Anchor, Center, Collapse, Container, Group, Image, Loader, Paper, Spoiler, Stack, Text } from "@mantine/core";
-import type { Intent } from "../../lib/intent";
+import { useEffect, useState } from "react";
+import { BroadcastChannelKey, getInstanceUrl } from "../api";
+import { Anchor, Code, Collapse, Container, Group, Image, Paper, Spoiler, Stack, Text } from "@mantine/core";
+import { usePublicInstances, type Redirectable } from "./instance-list";
+import { useUIMessage } from "./ui-stores";
 
-export interface PageProps {
-	message?: string;
-	intent?: Intent;
-};
-
-// @ts-ignore Will use later...
-export const usePublicInstances = ({ intent }: { intent?: Intent }) => {
-	const INSTANCES_URL = "https://raw.githubusercontent.com/deniz-blue/events-format/refs/heads/main/data/instances.json";
-	const [data, setData] = useState<{
-		instances: InstanceInfo[];
-	} | null>(null);
-
-	useEffect(() => {
-		fetch(INSTANCES_URL)
-			.then(res => res.json())
-			.then(setData);
-	}, []);
-
-	return [
-		...(data?.instances || []),
-		...(IsDeveloperMode ? [
-			{ url: "http://localhost:5173" },
-			{ url: "web+evnt://" },
-		] : []),
-
-		// ...((intent?.type == "event" && intent?.at?.includes("community.lexicon.calendar.event")) ? [
-		// 	{
-		// 		url: "https://smokesignal.events",
-		// 		name: "Smoke Signal",
-		// 	} as InstanceInfo
-		// ] : []),
-	];
-}
-
-// This is not that great lmao
-export const useCountdown = ({
-	callback,
-	target,
-	deps,
-}: {
-	deps: React.DependencyList;
-	target: Date;
-	callback: () => void;
-}) => {
-	const [enabled, setEnabled] = useState(true);
-	const timeoutRef = useRef<number | null>(null);
-	const [count, setCount] = useState<number | null>(null);
-
-	useEffect(() => {
-		if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
-		if (enabled) timeoutRef.current = setTimeout(() => {
-			callback();
-			setCount(0);
-		}, target.getTime() - Date.now());
-
-		const get = () => Math.round(Math.max(0, target.getTime() - Date.now()) / 1000);
-
-		setCount(enabled ? get() : null);
-
-		const interval = setInterval(() => {
-			if (enabled) setCount(get());
-		}, 1000);
-
-		return () => {
-			clearInterval(interval);
-		};
-	}, [enabled, target.getTime(), ...deps]);
-
-	const cancel = () => {
-		setEnabled(false);
-	};
-
-	return {
-		count,
-		cancel,
-	};
-};
-
-export const Page = ({
-	message,
-	intent,
-}: PageProps) => {
+export const Page = () => {
 	const [preferredInstanceUrl, setPreferredInstanceUrl] = useState<string | null>(getInstanceUrl());
-	const publicInstances = usePublicInstances({ intent });
-
-	const dateRef = useRef(new Date(Date.now() + 1000 * 5));
-	const { cancel, count } = useCountdown({
-		callback: () => {
-			window.location.href = (preferredInstanceUrl || publicInstances[0]?.url || "#") + "?" + new URLSearchParams(intent);
-		},
-		target: dateRef.current,
-		deps: [publicInstances],
-	});
+	const redirectables = usePublicInstances();
+	const message = useUIMessage();
 
 	useEffect(() => {
 		new BroadcastChannel(BroadcastChannelKey).onmessage = () => {
@@ -119,30 +30,11 @@ export const Page = ({
 					</Text>
 				)}
 
-				<Collapse expanded={count !== null}>
-					{(count === 0) ? (
-						<Text ta="start" c="yellow">
-							Redirecting...
-						</Text>
-					) : (
-						<Text ta="start" c="dimmed">
-							Redirecting to first application in <Text c="yellow" fw="bold" inherit span>
-								{count}
-							</Text>... <Anchor style={{ cursor: "pointer" }} onClick={cancel}>Cancel</Anchor>
-						</Text>
-					)}
-				</Collapse>
-
 				<Stack gap={0} w="100%">
 					<Stack w="100%">
-						{publicInstances.map(instance => (
-							<InstanceCard key={instance.url} instance={instance} intent={intent} />
+						{redirectables.map((redirectable) => (
+							<InstanceCard key={redirectable.url} info={redirectable} />
 						))}
-						{publicInstances.length === 0 && (
-							<Center w="100%">
-								<Loader />
-							</Center>
-						)}
 					</Stack>
 				</Stack>
 
@@ -154,23 +46,35 @@ export const Page = ({
 						showLabel="What's this?"
 						hideLabel="Show less"
 						styles={{ control: { fontSize: "var(--mantine-font-size-sm)" } }}
-						onExpandedChange={expanded => expanded && cancel()}
 						maxHeight={0}
 						w="100%"
 					>
 						<Stack gap="xs" fz="sm" mb="md">
 							<Text inherit>
-								<Text span inherit fw="bold">Evnt</Text> is a new open format for describing events, and this page is a redirector that sends you to the appropriate application to view the event, based on your preferences.
+								<Text span inherit fw="bold">eventsl.ink</Text> is a redirector for viewing and sharing events.
+
+								This site allows you to pick your preferred event viewer application.
 							</Text>
 
-							<Anchor
-								href="https://evnt.directory"
-								target="_blank"
-								rel="noopener noreferrer"
-								inherit
-							>
-								Learn more about Evnt ↗
-							</Anchor>
+							<Text inherit>
+								This site supports opening <Anchor
+									href="https://evnt.directory"
+									target="_blank"
+									rel="noopener noreferrer"
+									inherit
+								>
+									Evnt ↗
+								</Anchor> and <Code>
+									<Anchor
+										href="https://lexicon.community"
+										unstyled
+										c="blue"
+										inherit
+									>
+										community.lexicon
+									</Anchor>.calendar.event
+								</Code> based events.
+							</Text>
 						</Stack>
 					</Spoiler>
 				</Stack>
@@ -179,34 +83,51 @@ export const Page = ({
 	)
 }
 
-export interface InstanceInfo {
-	url: string;
-	name?: string;
-	description?: string;
-};
+
 
 export const InstanceCard = ({
-	instance,
-	intent,
+	info,
 }: {
-	instance: InstanceInfo;
-	intent?: Intent;
+	info: Redirectable;
 }) => {
 	const [iconLoaded, setIconLoaded] = useState(false);
 
-	const isProtocol = instance.url.startsWith("web+evnt://");
+	// const isProtocol = info.url.startsWith("web+evnt://");
 
-	const name = isProtocol
-		? "web+evnt"
-		: (instance.name || new URL(instance.url).host);
+	// const name = isProtocol
+	// 	? "web+evnt"
+	// 	: (info.name || new URL(info.url).host);
 
-	const label = isProtocol
-		? `Protocol Handler`
-		: new URL(instance.url).origin;
+	// const label = isProtocol
+	// 	? `Protocol Handler`
+	// 	: new URL(info.url).origin;
+
+	// const href = useMemo(() => {
+	// 	const intentStr = new URLSearchParams(intent ?? {}).toString();
+	// 	if (!info.redirectTo) return info.url + "?" + intentStr;
+
+	// 	let map: Partial<Record<string, string>> = {
+	// 		intent: intentStr,
+	// 	};
+
+	// 	if (intent?.at) {
+	// 		const r = parseResourceUri(intent.at);
+	// 		if (r.ok) {
+	// 			map["aturi"] = intent.at;
+	// 			map["aturi-repository"] = r.value.repo;
+	// 			map["aturi-collection"] = r.value.collection;
+	// 			map["aturi-rkey"] = r.value.rkey;
+	// 		};
+	// 	}
+
+	// 	return info.redirectTo.replace(/{([^}]+)}/g, (_, key) => {
+	// 		return map[key] || "";
+	// 	});
+	// }, [info, intent]);
 
 	return (
 		<Anchor
-			href={instance.url + "?" + new URLSearchParams(intent)}
+			href={info.url}
 			unstyled
 			w="100%"
 			c="unset"
@@ -224,8 +145,8 @@ export const InstanceCard = ({
 				<Group wrap="nowrap" gap="xs">
 					<Collapse expanded={!!iconLoaded} orientation="vertical">
 						<Image
-							src={`${instance.url.replace(/\/$/, "")}/favicon.ico`}
-							alt={`${new URL(instance.url).host} favicon`}
+							src={info.faviconUrl}
+							alt={`${info.title} favicon`}
 							w={32}
 							h={32}
 							onLoad={() => setIconLoaded(true)}
@@ -234,10 +155,10 @@ export const InstanceCard = ({
 					</Collapse>
 					<Stack gap={0} flex="1">
 						<Text>
-							{name}
+							{info.title}
 						</Text>
 						<Text fz="xs" c="dimmed">
-							{label}
+							{info.label}
 						</Text>
 					</Stack>
 				</Group>

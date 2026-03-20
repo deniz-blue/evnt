@@ -3,6 +3,7 @@ import { BroadcastChannelKey, clearInstanceUrl, debug, getInstanceUrl, setInstan
 import { render } from "./app.tsx";
 import { parseIntent } from "../lib/intent.ts";
 import "./init.ts";
+import { useIntent, useUIMessage } from "./ui/ui-stores.ts";
 
 async function main() {
 	const isIframe = window.self !== window.top;
@@ -44,10 +45,9 @@ async function main() {
 	if (intent)
 		uiMessage = Strings.Message.SelectToContinue(intent);
 
-	render({
-		message: uiMessage || Strings.Message.None,
-		intent,
-	});
+	useIntent.setState(intent ?? null);
+	useUIMessage.setState(uiMessage || Strings.Message.None);
+	render();
 };
 
 main();
