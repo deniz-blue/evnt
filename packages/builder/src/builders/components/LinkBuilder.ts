@@ -4,7 +4,7 @@ import type { EventBuilder } from "../EventBuilder";
 import { createTranslationAdder } from "../../utils/helpers";
 
 export class LinkBuilder extends ComponentBuilder<"link"> {
-	constructor(data: LinkComponent = { url: "" }, public parent?: EventBuilder) {
+	constructor(data: LinkComponent = { url: "" }, parent?: EventBuilder) {
 		super({ type: "link", data }, parent);
 	}
 

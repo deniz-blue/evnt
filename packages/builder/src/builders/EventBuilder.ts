@@ -1,4 +1,4 @@
-import type { EventData, EventStatus, KnownEventComponent, LinkComponent, OnlineVenue, PhysicalVenue, UnknownVenue } from "@evnt/schema";
+import type { EventData, EventStatus, KnownEventComponent, LinkComponent } from "@evnt/schema";
 import { createBuilderAdder, createTranslationAdder } from "../utils/helpers";
 import { InstanceBuilder } from "./InstanceBuilder";
 import { UnknownVenueBuilder } from "./venues/UnknownVenueBuilder";

@@ -3,6 +3,7 @@ import type { EventIntent } from "./intent";
 import { Client, simpleFetchHandler } from "@atcute/client";
 import { parseResourceUri } from "@atcute/lexicons";
 import { type EventData, EventDataSchema } from "@evnt/schema";
+import { convertFromLexicon } from "@evnt/convert/community-lexicon";
 import type { } from "@atcute/atproto";
 
 const actorResolver = new LocalActorResolver({
@@ -47,7 +48,11 @@ export const fetchATProtoRecord = async (atUri: string): Promise<Record<string, 
 
 export const fetchEventData = async (intent: EventIntent): Promise<EventData | null> => {
 	if (intent.at) {
-		return EventDataSchema.parse(await fetchATProtoRecord(intent.at));
+		const record = await fetchATProtoRecord(intent.at);
+		if (!record) return null;
+		if (record.$type === "community.lexicon.calendar.event") {
+			return convertFromLexicon(record as any);
+		} else return EventDataSchema.parse(record);
 	} else if (intent.url) {
 		const res = await fetch(intent.url);
 		if (!res.ok) return null;

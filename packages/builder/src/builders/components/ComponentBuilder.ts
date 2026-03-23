@@ -3,8 +3,10 @@ import type { EventBuilder } from "../EventBuilder";
 
 export class ComponentBuilder<Type extends KnownEventComponent["type"], Data = Extract<KnownEventComponent, { type: Type }>["data"]> {
 	component: { type: Type; data: Data };
-	constructor(component: { type: Type; data: Data }, public parent?: EventBuilder) {
+	parent?: EventBuilder;
+	constructor(component: { type: Type; data: Data }, parent?: EventBuilder) {
 		this.component = component;
+		this.parent = parent;
 	}
 
 	build(): EventComponent {

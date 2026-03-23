@@ -3,10 +3,12 @@ import type { EventBuilder } from "./EventBuilder";
 
 export class InstanceBuilder {
 	instance: EventInstance;
-	constructor(instance?: EventInstance, public parent?: EventBuilder) {
+	parent?: EventBuilder;
+	constructor(instance?: EventInstance, parent?: EventBuilder) {
 		this.instance = instance ?? {
 			venueIds: [],
 		};
+		this.parent = parent;
 	}
 
 	build = () => this.instance;

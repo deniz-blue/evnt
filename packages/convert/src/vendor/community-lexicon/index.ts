@@ -38,6 +38,8 @@ export const convertFromLexicon = (
 ): EventData => {
 	const builder = new EventBuilder();
 
+	if (event.name) builder.setName(event.name, language);
+
 	for (let [index, location] of (event.locations || []).entries()) {
 		switch (location.$type) {
 			case "community.lexicon.calendar.event#uri":
@@ -77,7 +79,7 @@ export const convertFromLexicon = (
 	for (let link of event.uris || [])
 		builder.addLink(l => l.setUrl(link.uri).setName(link.name ?? "", language));
 
-	for (let [index, media] of (event.media || []).entries()) {
+	for (let [_index, media] of (event.media || []).entries()) {
 		builder.data.components?.push({
 			type: "splashMedia",
 			data: {
