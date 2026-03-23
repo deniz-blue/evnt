@@ -1,34 +1,37 @@
 {
-  "name": "@evnt/convert",
-  "version": "0.0.1",
-  "type": "module",
-  "author": "deniz.blue",
-  "private": true,
-  "keywords": [],
-  "files": [
-    "/dist"
-  ],
-  "exports": {
-    ".": "./src/index.ts",
-    "./vendor/facebook": "./src/vendor/facebook/index.ts",
-    "./vendor/google": "./src/vendor/google/index.ts",
-    "./vendor/icalendar": "./src/vendor/icalendar/index.ts",
-    "./vendor/schema-org": "./src/vendor/schema-org/index.ts"
-  },
-  "scripts": {
-    "gen": "tsx ./scripts/gen.ts"
-  },
-  "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "@types/node": "^25.0.6",
-    "tsx": "^4.21.0",
-    "typescript": "^5.6.3"
-  },
-  "dependencies": {
-    "@evnt/schema": "workspace:*",
-    "googleapis": "^170.0.0",
-    "ical.js": "^2.2.1",
-    "schema-dts": "^1.1.5",
-    "zod": "^4.3.5"
-  }
+	"name": "@evnt/convert",
+	"version": "0.0.1",
+	"type": "module",
+	"author": "deniz.blue",
+	"private": true,
+	"keywords": [],
+	"files": [
+		"/dist"
+	],
+	"exports": {
+		".": "./src/index.ts",
+		"./google": "./src/vendor/google/index.ts",
+		"./community-lexicon": "./src/vendor/community-lexicon/index.ts",
+		"./icalendar": "./src/vendor/icalendar/index.ts",
+		"./schema-org": "./src/vendor/schema-org/index.ts"
+	},
+	"scripts": {
+		"gen": "tsx ./scripts/gen.ts"
+	},
+	"devDependencies": {
+		"@atcute/lex-cli": "^2.5.3",
+		"@atcute/lexicons": "^1.2.9",
+		"@evnt/builder": "workspace:*",
+		"@repo/typescript-config": "workspace:*",
+		"@types/node": "^25.0.6",
+		"tsx": "^4.21.0",
+		"typescript": "^5.6.3"
+	},
+	"dependencies": {
+		"@evnt/schema": "workspace:*",
+		"googleapis": "^170.0.0",
+		"ical.js": "^2.2.1",
+		"schema-dts": "^1.1.5",
+		"zod": "^4.3.5"
+	}
 }

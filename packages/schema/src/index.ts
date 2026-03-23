@@ -8,6 +8,7 @@ export * from "./schemas/EventInstance";
 export * from "./schemas/enums/EventStatus";
 export * from "./schemas/venue/PhysicalVenue";
 export * from "./schemas/venue/OnlineVenue";
+export * from "./schemas/venue/UnknownVenue";
 export * from "./schemas/venue/VenueType";
 export * from "./schemas/components/EventComponent";
 export * from "./schemas/components/LinkComponent";
