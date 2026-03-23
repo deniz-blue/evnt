@@ -12,6 +12,7 @@
     "@atcute/client": "^4.2.1",
     "@atcute/identity-resolver": "^1.2.2",
     "@atcute/lexicons": "^1.2.9",
+    "@deniz-blue/vite-plugins": "^1.0.0",
     "@evnt/convert": "workspace:*",
     "@evnt/pretty": "workspace:*",
     "@mantine/core": "9.0.0-alpha.3",

@@ -11,24 +11,25 @@
 	"license": "ISC",
 	"packageManager": "pnpm@10.28.0",
 	"dependencies": {
+		"@deniz-blue/vite-plugins": "^1.0.0",
 		"@evnt/schema": "workspace:*",
 		"@mantine/code-highlight": "9.0.0-alpha.4",
 		"@mantine/core": "9.0.0-alpha.4",
 		"@mantine/hooks": "9.0.0-alpha.4",
-		"@tabler/icons-react": "^3.36.1",
+		"@tabler/icons-react": "^3.40.0",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
-		"shiki": "^4.0.1",
+		"shiki": "^4.0.2",
 		"zod": "^4.3.6"
 	},
 	"devDependencies": {
 		"@repo/typescript-config": "workspace:*",
-		"@types/node": "^25.3.5",
+		"@types/node": "^25.5.0",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
-		"@vitejs/plugin-react": "^5.1.4",
+		"@vitejs/plugin-react": "^5.2.0",
 		"typescript": "^5.9.3",
-		"vite": "8.0.0-beta.16",
+		"vite": "8.0.2",
 		"vite-tsconfig-paths": "^6.1.1"
 	}
 }
