@@ -77,7 +77,7 @@ export const BaseSnippet = ({
 }>) => {
 	return (
 		<Group gap={4} wrap="nowrap" align="start">
-			<Box miw={24} mah={24} display="flex">
+			<Box miw={24} w={24} h={24} mah={24} display="flex">
 				{icon}
 			</Box>
 			<Stack flex="1" gap="calc(1rem - 12px)" pt="calc(1rem - 12px)" align="start">

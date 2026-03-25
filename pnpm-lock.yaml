@@ -194,6 +194,9 @@ importers:
       '@atcute/tid':
         specifier: ^1.1.2
         version: 1.1.2
+      '@deniz-blue/vite-plugins':
+        specifier: ^1.0.1
+        version: 1.0.1(vite@8.0.2(@types/node@25.5.0)(esbuild@0.27.4)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))
       '@evnt/convert':
         specifier: workspace:*
         version: link:../../packages/convert
@@ -1335,6 +1338,11 @@ packages:
 
   '@deniz-blue/vite-plugins@1.0.0':
     resolution: {integrity: sha512-/5I3qGfjQRgOYYkXoGWKoKJvH4ulwehVqXQHtHnCivYHivSaMCCohFDSjiJMymlgv4SNW+xs0p6r2cpilXTSmg==}
+    peerDependencies:
+      vite: ^8.0.1
+
+  '@deniz-blue/vite-plugins@1.0.1':
+    resolution: {integrity: sha512-s9aNP/kcNTYYVJONH77HcF7f4jvFpV+XJBxd+Yq0rBUbhukjKtzJckS/QAtq36ZJXTNafUtc5Be8lBGmzHb9Mw==}
     peerDependencies:
       vite: ^8.0.1
 
@@ -6656,6 +6664,10 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.9
 
   '@deniz-blue/vite-plugins@1.0.0(vite@8.0.2(@types/node@25.5.0)(esbuild@0.27.4)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))':
+    dependencies:
+      vite: 8.0.2(@types/node@25.5.0)(esbuild@0.27.4)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
+
+  '@deniz-blue/vite-plugins@1.0.1(vite@8.0.2(@types/node@25.5.0)(esbuild@0.27.4)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
       vite: 8.0.2(@types/node@25.5.0)(esbuild@0.27.4)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
 

@@ -13,7 +13,7 @@ export const useSearchParamKey = <Key extends keyof Search>(key: Key) => {
 	}) as unknown as Search[Key];
 
 	const open = useCallback((value: string) => {
-		navigate({ search: { [key]: value }, to: "." });
+		navigate({ search: (prev) => ({ ...prev, [key]: value }), to: "." });
 	}, [key]);
 
 	const openLink = useCallback((value: string) => {
@@ -24,7 +24,11 @@ export const useSearchParamKey = <Key extends keyof Search>(key: Key) => {
 	}, [key]);
 
 	const close = useCallback(() => {
-		navigate({ search: { [key]: undefined }, to: "." });
+		navigate({
+			search: (prev) => ({ ...prev, [key]: undefined }),
+			to: ".",
+			replace: true,
+		});
 	}, [key]);
 
 	const toggle = useCallback((value?: string) => {

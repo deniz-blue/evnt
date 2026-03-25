@@ -22,13 +22,17 @@ export const EventLinkButton = ({
 			target="_blank"
 
 			leftSection={disabled ? <IconLinkOff /> : <IconLink />}
-			rightSection={<IconExternalLink />}
 
 			color={disabled ? "gray.2" : undefined}
-			variant="light"
-			justify={"space-between"}
+			variant="transparent"
+			justify="start"
+			size="compact-xs"
 			ta="center"
 			h="auto"
+			p={0}
+			styles={{
+				section: { marginInlineEnd: 4 },
+			}}
 		>
 			<Stack gap={0} py={subtitle ? 4 : "xs"}>
 				<Text inline c={disabled ? "gray.4" : undefined}>

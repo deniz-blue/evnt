@@ -1,8 +1,6 @@
-import { ActionIcon, Code, Container, Stack, Text, Tooltip } from "@mantine/core";
-import { SmallTitle } from "../../base/SmallTitle";
-import { UtilEventSource, type EventSource } from "../../../../db/models/event-source";
+import { ActionIcon, Box, Code, Container, Grid, Stack, Text, Tooltip } from "@mantine/core";
+import { type EventSource } from "../../../../db/models/event-source";
 import { LayerImportSection } from "./LayerImportSection";
-import { ExternalLink } from "../../base/ExternalLink";
 import { IconReload } from "@tabler/icons-react";
 import { useEventQuery } from "../../../../db/useEventQuery";
 import { AsyncAction } from "../../../data/AsyncAction";
@@ -12,6 +10,7 @@ import { EventDetailsBanner } from "./EventDetailsBanner";
 import { EventDetailsInstanceList } from "./EventDetailsInstanceList";
 import { EventDetailsLinks } from "./EventDetailsLinks";
 import { EnvelopeErrorAlert } from "../envelope/EnvelopeErrorAlert";
+import { EventDetailsSource } from "./EventDetailsSource";
 
 export interface EventDetailsContentProps {
 	source?: EventSource;
@@ -30,38 +29,27 @@ export const EventDetailsContent = (props: EventDetailsContentProps) => {
 					<EnvelopeErrorAlert />
 
 					{source && <LayerImportSection source={source} />}
-
-					<Stack gap={0} component="section">
-						<SmallTitle padLeft>
-							instances
-						</SmallTitle>
-						<EventDetailsInstanceList />
-					</Stack>
-
-					<EventDetailsLinks />
-
-					<Stack gap={0}>
-						<Text c="dimmed" fz="xs">
-							{source && ["http", "https"].includes(UtilEventSource.getType(source)) && (
-								<Text span inherit>
-									Source: <ExternalLink href={source} />
-								</Text>
-							)}
-
-							{source && UtilEventSource.getType(source) == "at" && (
-								<Text span inherit>
-									Source: <Code>{source}</Code>
-								</Text>
-							)}
-
-							{source && UtilEventSource.getType(source) == "local" && (
-								<Text span inherit>
-									Source: Locally saved
-								</Text>
-							)}
-						</Text>
-					</Stack>
 				</Stack>
+
+				<Grid>
+					<Grid.Col
+						span={{ base: 12, md: "auto" }}
+						order={{ base: 1, md: 2 }}
+					>
+						<Stack>
+							<EventDetailsInstanceList />
+						</Stack>
+					</Grid.Col>
+					<Grid.Col
+						span={{ base: 12, md: 4 }}
+						order={{ base: 2, md: 1 }}
+					>
+						<Stack>
+							<EventDetailsLinks />
+							<EventDetailsSource source={source} />
+						</Stack>
+					</Grid.Col>
+				</Grid>
 			</Container>
 		</EventDetailsContext>
 	);
