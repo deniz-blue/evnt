@@ -1,15 +1,14 @@
 import { Spotlight } from "@mantine/spotlight";
-import { IconCalendar, IconHome, IconList, IconSearch } from "@tabler/icons-react";
+import { IconCalendar, IconSearch } from "@tabler/icons-react";
 import { useState, type ReactNode } from "react";
 import { UtilEventSource, type EventSource } from "../../../../db/models/event-source";
-import { useMatches, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useCacheEventsStore } from "../../../../lib/cache/useCacheEventsStore";
 import { useShallow } from "zustand/shallow";
 import { useEventQuery } from "../../../../db/useEventQuery";
-import { EventCardTitle } from "../../../content/event/card/EventCardTitle";
 import { EventCardContext } from "../../../content/event/card/event-card-context";
 import { EventCardBackground } from "../../../content/event/card/EventCardBackground";
-import { Box, Loader, Paper, ScrollArea } from "@mantine/core";
+import { Box, Loader, Paper } from "@mantine/core";
 import { useActionsStore, type Action } from "./useActionsStore";
 import { useTranslations } from "../../../../stores/useLocaleStore";
 
@@ -27,17 +26,18 @@ export const VantageSpotlight = () => {
 	const actions: Action[] = [];
 	actions.push(...Object.values(providedActions));
 
+	const filteredActions = actions
+		.filter(props => props.label?.toLowerCase().includes(query.toLowerCase()));
+
 	if (UtilEventSource.is(query, false))
-		actions.push({
+		filteredActions.push({
 			label: "View Event",
+			icon: <IconCalendar />,
 			execute: () => navigate({
 				to: "/event",
 				search: { source: query },
 			}),
 		});
-
-	const filteredActions = actions
-		.filter(props => props.label?.toLowerCase().includes(query.toLowerCase()));
 
 	const categorizedActions = filteredActions
 		.reduce((acc, cur) => ({
