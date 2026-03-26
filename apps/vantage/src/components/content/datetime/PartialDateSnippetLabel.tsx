@@ -15,19 +15,31 @@ export const PartialDateSnippetLabel = ({
 	const userLanguage = useLocaleStore(store => store.language);
 	const userTimezone = useLocaleStore(store => store.timezone);
 
-	const text = UtilPartialDate.toIntlString(value, {
-		locale: language || userLanguage,
-		timezone: timezone || userTimezone,
+	const fmt = new Intl.DateTimeFormat(language || userLanguage, {
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+		hour: UtilPartialDate.hasTime(value) ? "numeric" : undefined,
+		minute: UtilPartialDate.hasTime(value) ? "numeric" : undefined,
+		hour12: false,
+		timeZone: timezone || userTimezone,
 	});
+
+	const parts = fmt.formatToParts(UtilPartialDate.toLowDate(value));
 
 	return (
 		<Text
 			component="time"
 			dateTime={value}
+			aria-label={parts.map(p => p.value).join("")}
 			inline
 			inherit
 		>
-			{text}
+			{parts.map((p, i) => (
+				<Text key={i} span inline inherit c={(p.type === "literal" && p.value.trim() !== ":") ? "dimmed" : undefined}>
+					{p.value}
+				</Text>
+			))}
 		</Text>
 	)
 };
