@@ -10,6 +10,8 @@ export const EventInstanceList = () => {
 
 	const snippets = snippetEvent(value, {
 		maxVenues: 3,
+		maxInstances: 5,
+		maxGroups: 5,
 	});
 
 	return (

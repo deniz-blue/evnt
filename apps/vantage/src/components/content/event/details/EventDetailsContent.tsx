@@ -13,6 +13,8 @@ import { EnvelopeErrorAlert } from "../envelope/EnvelopeErrorAlert";
 import { EventDetailsSource } from "./EventDetailsSource";
 import { EventActions } from "../../../../lib/actions/event-actions";
 import { EventDetailsAlternatives } from "./EventDetailsAlternatives";
+import { useEventEnvelope } from "../event-envelope-context";
+import { RichTextRenderer } from "./RichTextRenderer";
 
 export interface EventDetailsContentProps {
 	source?: EventSource;
@@ -48,6 +50,8 @@ export const EventDetailsContent = (props: EventDetailsContentProps) => {
 								{source && <LayerImportSection source={source} />}
 
 								<EventDetailsInstanceList />
+
+								<EventDetailsDescriptionList />
 							</Stack>
 						</Grid.Col>
 						<Grid.Col
@@ -65,6 +69,18 @@ export const EventDetailsContent = (props: EventDetailsContentProps) => {
 			</Stack>
 		</EventDetailsContext>
 	);
+};
+
+export const EventDetailsDescriptionList = () => {
+	const { data } = useEventEnvelope();
+
+	const bskyRichTextComp: any = data?.components?.find(x => x.type === "app.bsky.richtext")?.data;
+
+	if (!bskyRichTextComp) return null;
+
+	return (
+		<RichTextRenderer content={bskyRichTextComp.text} facets={bskyRichTextComp.facets} />
+	)
 };
 
 export const EventRefetchButton = ({ source }: { source: EventSource }) => {

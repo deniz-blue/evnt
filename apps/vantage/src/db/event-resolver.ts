@@ -2,7 +2,7 @@ import { EventDataSchema, type EventData, type Venue } from "@evnt/schema";
 import { UtilEventSource, type EventSource } from "./models/event-source";
 import { DataDB } from "./data-db";
 import { Client, simpleFetchHandler, type FailedClientResponse } from "@atcute/client";
-import { parseCanonicalResourceUri, type Did } from "@atcute/lexicons/syntax";
+import { parseCanonicalResourceUri, type AtprotoDid, type Did } from "@atcute/lexicons/syntax";
 import type { EventEnvelope } from "./models/event-envelope";
 import { tryCatch, tryCatchAsync } from "../lib/util/trynull";
 import { ZodError } from "zod";
@@ -196,16 +196,16 @@ export class EventResolver {
 		}
 
 		return {
-			...this.fromAtProtoRecord(res.data.value),
+			...this.fromAtProtoRecord(res.data.value, parsed.value.repo as AtprotoDid),
 			rev: {
 				cid: res.data.cid,
 			},
 		};
 	}
 
-	static fromAtProtoRecord(record: Record<string, unknown>): EventEnvelope {
+	static fromAtProtoRecord(record: Record<string, unknown>, did?: AtprotoDid): EventEnvelope {
 		if (record.$type === "community.lexicon.calendar.event") {
-			const data = convertFromCommunityLexicon(record as any);
+			const data = convertFromCommunityLexicon(record as any, { did });
 			return {
 				data,
 				err: undefined,

@@ -62,7 +62,7 @@ export const useProvideActionList = (
 				return { actions: newActions };
 			});
 		};
-	}, [generatedIdPrefix]);
+	}, [generatedIdPrefix, actions]);
 
 	return null;
 };

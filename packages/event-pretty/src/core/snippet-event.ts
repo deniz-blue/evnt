@@ -4,39 +4,52 @@ import { UtilPartialDate, UtilPartialDateRange, UtilTranslations } from "@evnt/s
 
 export const snippetEvent = (data: EventData, opts?: {
 	maxVenues?: number;
+	maxInstances?: number;
+	maxGroups?: number;
 	venueDetails?: boolean;
 }): TSnippet[] => {
 	const snippets: TSnippet[] = [];
 
-	const groupedInstances = data.instances?.reduce((acc, instance) => {
+	let groupedInstances = data.instances?.reduce((acc, instance) => {
 		const key = JSON.stringify(instance.venueIds.sort());
 		acc[key] = acc[key] || [];
 		acc[key].push(instance);
 		return acc;
 	}, {} as Record<string, EventInstance[]>);
 
+	const snippetVenueAmount = (venueIds: string[]): TSnippet => {
+		let hasPhysical = false;
+		let hasOnline = false;
+		for (let venueId of venueIds) {
+			const venue = data.venues?.find(v => v.id === venueId);
+			if (!venue) continue;
+			if (venue.type === "physical") hasPhysical = true;
+			if (venue.type === "online") hasOnline = true;
+		};
+
+		return {
+			icon: hasPhysical && hasOnline ? "venue-mixed" : hasPhysical ? "venue-physical" : (hasOnline ? "venue-online" : "venue-unknown"),
+			label: {
+				type: "translations",
+				value: {
+					en: `${venueIds.length} locations`,
+				},
+			},
+		};
+	};
+
+	if (Object.keys(groupedInstances || {}).length > (opts?.maxGroups ?? Infinity)) {
+		let key = JSON.stringify(data.venues?.map(v => v.id).sort() ?? []);
+		groupedInstances = {
+			[key]: data.instances ?? [],
+		};
+	}
+
 	for (const [venueIdsJson, instances] of Object.entries(groupedInstances ?? {})) {
 		const venueIds = JSON.parse(venueIdsJson) as string[];
 
 		if (venueIds.length > (opts?.maxVenues ?? Infinity)) {
-			let hasPhysical = false;
-			let hasOnline = false;
-			for (let venueId of venueIds) {
-				const venue = data.venues?.find(v => v.id === venueId);
-				if (!venue) continue;
-				if (venue.type === "physical") hasPhysical = true;
-				if (venue.type === "online") hasOnline = true;
-			};
-
-			snippets.push({
-				icon: hasPhysical && hasOnline ? "venue-mixed" : hasPhysical ? "venue-physical" : (hasOnline ? "venue-online" : "venue-unknown"),
-				label: {
-					type: "translations",
-					value: {
-						en: `${venueIds.length} venues`,
-					},
-				},
-			});
+			snippets.push(snippetVenueAmount(venueIds));
 		} else {
 			for (const venueId of venueIds) {
 				const venue = data.venues?.find(v => v.id === venueId);
@@ -45,8 +58,7 @@ export const snippetEvent = (data: EventData, opts?: {
 			}
 		}
 
-
-		snippets.push(...snippetInstances(instances));
+		snippets.push(...snippetInstances(instances, opts?.maxInstances));
 	}
 
 	return snippets;
@@ -87,8 +99,8 @@ export const venueOpenStreetMapsLink = (venue: Venue): string | null => {
 	return null;
 }
 
-export const snippetInstances = (instances: EventInstance[]): TSnippet[] => {
-	const snippets: TSnippet[] = [];
+export const snippetInstances = (instances: EventInstance[], maxInstances?: number): TSnippet[] => {
+	let snippets: TSnippet[] = [];
 
 	// Group instances by date (the ones that have the same time will be grouped together)
 	// Consecutive days will also be grouped together if they have the same times-per-day
@@ -199,6 +211,25 @@ export const snippetInstances = (instances: EventInstance[]): TSnippet[] => {
 	// Rest of em
 	for (const instance of ungroupedByDate) {
 		snippets.push(...snippetInstance(instance));
+	}
+
+	if (maxInstances && snippets.length > maxInstances) {
+		const dates = instances.flatMap(i => [i.start, i.end]).filter((d): d is PartialDate => !!d).sort((a, b) => UtilPartialDate.compare(a, b));
+		const earliest = dates[0];
+		const latest = dates[dates.length - 1];
+
+		if (earliest) snippets = [
+			{
+				icon: "calendar",
+				label: {
+					type: "date-time-range",
+					value: {
+						start: earliest,
+						end: latest ?? earliest,
+					}
+				}
+			}
+		];
 	}
 
 	return snippets;

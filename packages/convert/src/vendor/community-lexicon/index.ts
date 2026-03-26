@@ -2,6 +2,7 @@ import type { EventData, Media } from "@evnt/schema";
 import type { CommunityLexiconCalendarEvent } from "../../lexicons";
 import { EventBuilder } from "@evnt/builder";
 import { UtilPartialDate } from "@evnt/schema/utils";
+import type { AtprotoDid } from "@atcute/lexicons/syntax";
 
 export interface LexiconEvent extends CommunityLexiconCalendarEvent.Main {
 	facets?: {
@@ -32,7 +33,9 @@ export const convertFromLexicon = (
 	event: LexiconEvent,
 	{
 		language = "en",
+		did,
 	}: {
+		did?: AtprotoDid;
 		language?: string;
 	} = {},
 ): EventData => {
@@ -80,18 +83,37 @@ export const convertFromLexicon = (
 		builder.addLink(l => l.setUrl(link.uri).setName(link.name ?? "", language));
 
 	for (let [_index, media] of (event.media || []).entries()) {
-		builder.data.components?.push({
+		if (did) builder.data.components?.push({
 			type: "splashMedia",
 			data: {
 				media: {
 					alt: media.alt ? { [language]: media.alt } : undefined,
 					sources: [
-						// TODO: support atproto blobs
+						{
+							// FIXME: hacky!
+							url: `https://blobs.blue/${did}/blob/${media.content.ref.$link}`,
+							mimeType: media.content.mimeType,
+						}
 					],
 				} as Media,
-				roles: media.role ? [media.role] : [],
+				roles: [
+					...(media.role ? [media.role] : []),
+					"background",
+					"poster",
+				],
 			},
 		})
+	}
+
+	if (event.description) {
+		builder.addCustomComponent("app.bsky.richtext", {
+			text: event.description,
+			facets: event.facets,
+		});
+	};
+
+	if (event.additionalData) {
+		builder.addCustomComponent("community.lexicon.calendar.event:additionalData", event.additionalData);
 	}
 
 	return builder.build();

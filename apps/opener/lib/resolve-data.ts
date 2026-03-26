@@ -1,10 +1,11 @@
 import { CompositeDidDocumentResolver, CompositeHandleResolver, DohJsonHandleResolver, LocalActorResolver, PlcDidDocumentResolver, WebDidDocumentResolver, WellKnownHandleResolver } from "@atcute/identity-resolver";
 import type { EventIntent } from "./intent";
 import { Client, simpleFetchHandler } from "@atcute/client";
-import { parseResourceUri } from "@atcute/lexicons";
+import { ParsedResourceUri, parseResourceUri } from "@atcute/lexicons";
 import { type EventData, EventDataSchema } from "@evnt/schema";
 import { convertFromLexicon } from "@evnt/convert/community-lexicon";
 import type { } from "@atcute/atproto";
+import { AtprotoDid } from "@atcute/lexicons/syntax";
 
 const actorResolver = new LocalActorResolver({
 	handleResolver: new CompositeHandleResolver({
@@ -21,11 +22,9 @@ const actorResolver = new LocalActorResolver({
 	}),
 });
 
-export const fetchATProtoRecord = async (atUri: string): Promise<Record<string, unknown> | null> => {
-	const parsed = parseResourceUri(atUri);
-	if (!parsed.ok || !parsed.value.collection || !parsed.value.rkey) return null;
-
-	const { pds } = await actorResolver.resolve(parsed.value.repo);
+export const fetchATProtoRecord = async (aturi: ParsedResourceUri): Promise<Record<string, unknown> | null> => {
+	if (!aturi.collection || !aturi.rkey) return null;
+	const { pds } = await actorResolver.resolve(aturi.repo);
 
 	const rpc = new Client({
 		handler: simpleFetchHandler({
@@ -35,9 +34,9 @@ export const fetchATProtoRecord = async (atUri: string): Promise<Record<string, 
 
 	const res = await rpc.get("com.atproto.repo.getRecord", {
 		params: {
-			repo: parsed.value.repo,
-			collection: parsed.value.collection,
-			rkey: parsed.value.rkey,
+			repo: aturi.repo,
+			collection: aturi.collection,
+			rkey: aturi.rkey,
 		},
 	});
 
@@ -48,10 +47,12 @@ export const fetchATProtoRecord = async (atUri: string): Promise<Record<string, 
 
 export const fetchEventData = async (intent: EventIntent): Promise<EventData | null> => {
 	if (intent.at) {
-		const record = await fetchATProtoRecord(intent.at);
+		const parsed = parseResourceUri(intent.at);
+		if (!parsed.ok) return null;
+		const record = await fetchATProtoRecord(parsed.value);
 		if (!record) return null;
 		if (record.$type === "community.lexicon.calendar.event") {
-			return convertFromLexicon(record as any);
+			return convertFromLexicon(record as any, { did: parsed.value.repo as AtprotoDid });
 		} else return EventDataSchema.parse(record);
 	} else if (intent.url) {
 		const res = await fetch(intent.url);

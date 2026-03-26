@@ -8,6 +8,7 @@
 	},
 	"dependencies": {
 		"@atcute/atproto": "^3.1.10",
+		"@atcute/bluesky-richtext-segmenter": "^3.0.0",
 		"@atcute/client": "^4.2.1",
 		"@atcute/identity": "^1.1.4",
 		"@atcute/identity-resolver": "^1.2.2",
