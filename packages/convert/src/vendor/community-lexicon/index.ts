@@ -76,6 +76,7 @@ export const convertFromLexicon = (
 		builder.addInstance(i => i
 			.setStart(event.startsAt ? UtilPartialDate.fromDate(new Date(event.startsAt)) : undefined)
 			.setEnd(event.endsAt ? UtilPartialDate.fromDate(new Date(event.endsAt)) : undefined)
+			.addAllVenues()
 		);
 	}
 

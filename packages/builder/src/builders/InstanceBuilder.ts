@@ -20,6 +20,7 @@ export class InstanceBuilder {
 
 	addAllVenues() {
 		this.instance.venueIds.push(...this.parent?.data.venues?.map(v => v.id) ?? []);
+		return this;
 	}
 
 	setStart(start?: PartialDate) {
