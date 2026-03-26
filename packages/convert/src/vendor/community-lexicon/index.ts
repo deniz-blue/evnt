@@ -1,6 +1,6 @@
-import type { EventData, Media } from "@evnt/schema";
+import type { EventData, Media, PhysicalVenue } from "@evnt/schema";
 import type { CommunityLexiconCalendarEvent } from "../../lexicons";
-import { EventBuilder } from "@evnt/builder";
+import { EventBuilder, PhysicalVenueBuilder } from "@evnt/builder";
 import { UtilPartialDate } from "@evnt/schema/utils";
 import type { AtprotoDid } from "@atcute/lexicons/syntax";
 
@@ -43,6 +43,17 @@ export const convertFromLexicon = (
 
 	if (event.name) builder.setName(event.name, language);
 
+	const upsertPhysicalVenue = (name: string, fn: (b: PhysicalVenueBuilder) => PhysicalVenueBuilder) => {
+		const idx = builder.data.venues?.findIndex(v => v.type === "physical" && v.name[language] === name);
+		builder.data.venues ??= [];
+		if (idx !== undefined && idx >= 0) {
+			const venue = builder.data.venues[idx]!;
+			builder.data.venues![idx]! = fn(new PhysicalVenueBuilder(venue as PhysicalVenue, builder)).build();
+		} else {
+			builder.addPhysicalVenue(b => fn(b).setName(name, language));
+		}
+	};
+
 	for (let [index, location] of (event.locations || []).entries()) {
 		switch (location.$type) {
 			case "community.lexicon.calendar.event#uri":
@@ -53,15 +64,24 @@ export const convertFromLexicon = (
 				);
 				break;
 			case "community.lexicon.location.address":
-				builder.addPhysicalVenue(v => v
+				upsertPhysicalVenue(location.name ?? "", b => b
 					.setId(index.toString())
-					.setName(location.name ?? "", language)
 					.setCountryCode(location.country)
 					.setAddressLine([
 						location.street,
 						location.locality,
 						location.region,
 					].filter(Boolean).join(" "))
+				);
+				break;
+			case "community.lexicon.location.fsq":
+			case "community.lexicon.location.geo":
+				upsertPhysicalVenue(location.name ?? "", b => b
+					.setId(index.toString())
+					.setCoordinates({
+						lat: parseInt(location.latitude ?? "0"),
+						lng: parseInt(location.longitude ?? "0"),
+					})
 				);
 				break;
 			default:

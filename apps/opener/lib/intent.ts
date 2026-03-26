@@ -10,11 +10,20 @@ export type Intent = EventIntent;
 export const parseIntent = (url: URL): Intent | null => {
 	if (
 		(url.pathname === "/event" || url.pathname === "/e")
-	) return {
-		type: "event",
-		url: url.searchParams.get("url") ?? undefined,
-		at: url.searchParams.get("at") ?? undefined,
-		data: url.searchParams.get("data") ?? undefined,
+	) {
+		let intent: EventIntent = {
+			type: "event",
+		};
+
+		const urlParam = url.searchParams.get("url");
+		const at = url.searchParams.get("at");
+		const data = url.searchParams.get("data");
+
+		if (urlParam) intent.url = urlParam;
+		if (at) intent.at = at;
+		if (data) intent.data = data;
+
+		return intent;
 	};
 
 	// Legacy format
