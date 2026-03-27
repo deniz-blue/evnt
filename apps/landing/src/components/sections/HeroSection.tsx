@@ -58,14 +58,11 @@ export const HeroSection = () => {
 						<Group justify="space-between" w="100%" wrap="nowrap">
 							<Stack w="100%">
 								<Stack gap={0} align="start">
-									<Text size="xs" c="dimmed">
-										(Open Evnt)
-									</Text>
 									<Title order={1}>
-										EVNT
+										Open Evnt
 									</Title>
 									<Text>
-										A standardized, open-source data format for representing events
+										A modern data format for events.
 									</Text>
 								</Stack>
 
@@ -113,12 +110,6 @@ export const HeroSection = () => {
 								{cardPart}
 							</Box>
 						</Group>
-
-						<Alert color="dark.8" variant="light">
-							<Text inherit>
-								Events are complicated. Existing tooling is too unspecific and flawed. We aim to fix that.
-							</Text>
-						</Alert>
 					</Stack>
 				</Center>
 				<Center p="md" w="100%">
