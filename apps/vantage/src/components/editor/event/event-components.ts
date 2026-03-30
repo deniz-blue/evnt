@@ -1,18 +1,21 @@
 import type { KnownEventComponent, Translations } from "@evnt/schema";
-import { IconExternalLink, IconLink, IconPhoto } from "@tabler/icons-react";
+import { IconExternalLink, IconLetterCase, IconLink, IconPhoto } from "@tabler/icons-react";
 import type { FC } from "react";
 import type { EditAtom } from "../edit-atom";
 import { EditComponentLink } from "./components/EditComponentLink";
 import { EditComponentSource } from "./components/EditComponentSource";
 import { EditComponentSplashMedia } from "./components/EditComponentSplashMedia";
+import { EditComponentBlueSkyRichText, type AppBlueSkyRichTextComponent } from "./components/EditBlueSkyRichText";
+
+export type AppKnownComponent = KnownEventComponent | { type: "app.bsky.richtext"; data: AppBlueSkyRichTextComponent };
 
 export const EventComponentRegistry: {
-	[Type in KnownEventComponent["type"]]?: {
+	[Type in AppKnownComponent["type"]]?: {
 		label: Translations;
 		desc?: Translations;
 		icon: FC<{ size?: number }> | any; // Stupid typescript
-		createData?: KnownEventComponent;
-		editComponent?: FC<{ data: EditAtom<(KnownEventComponent & { type: Type })["data"]> }>;
+		createData?: AppKnownComponent;
+		editComponent?: FC<{ data: EditAtom<(AppKnownComponent & { type: Type })["data"]> }>;
 	};
 } = {
 	link: {
@@ -35,5 +38,12 @@ export const EventComponentRegistry: {
 		icon: IconPhoto,
 		createData: { type: "splashMedia", data: { media: { sources: [] }, roles: [] } },
 		editComponent: EditComponentSplashMedia,
+	},
+	"app.bsky.richtext": {
+		label: { en: "Rich Text (BlueSky)" },
+		desc: { en: "Rich text content (BlueSky format)" },
+		icon: IconLetterCase,
+		createData: { type: "app.bsky.richtext", data: { text: "", facets: [] } },
+		editComponent: EditComponentBlueSkyRichText,
 	},
 };
