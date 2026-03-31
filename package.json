@@ -1,6 +1,6 @@
 {
 	"private": true,
-	"packageManager": "pnpm@11.0.0-beta.2",
+	"packageManager": "pnpm@11.0.0-beta.6",
 	"devDependencies": {
 		"turbo": "^2.7.2"
 	}
