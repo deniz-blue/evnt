@@ -1,12 +1,14 @@
 🔙 [@evnt Project](../README.md)
 
-**Evnt Specification**
+**Open Evnt Specification v 0.1**
 
-This document defines the data structures and types used for [Evnt](https://evnt.directory).
+This document defines the data structures and types used for [Open Evnt](https://evnt.directory).
 
 The main data structure is [`EventData`](#eventdata), which represents a single event. Event data should be represented as a JSON object.
 
 See [Changelog](./CHANGELOG.md) for recent changes to the data format.
+
+__Table of Contents__
 
 - [Types](#types)
 	- [`Translations`](#translations)
@@ -27,6 +29,7 @@ See [Changelog](./CHANGELOG.md) for recent changes to the data format.
 		- [`LinkComponent`](#linkcomponent)
 		- [`SourceComponent`](#sourcecomponent)
 		- [`SplashMediaComponent`](#splashmediacomponent)
+		- [`app.bsky.richtext`](#appbskyrichtext)
 
 # Types
 
@@ -46,7 +49,7 @@ interface Translations {
 	en: "Example",
 	tr: "Örnek",
 	lt: "Pavyzdys",
-	"zn-Hans-CN": "示例",
+	"zh-Hans-CN": "示例",
 }
 ```
 
@@ -60,38 +63,52 @@ When creating or editing event data, applications;
 
 ## `PartialDate`
 
-A `PartialDate` is defined as a **modified** [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date and time string. The value does **not** include a timezone component and all values are **forced** to be in the **UTC timezone**.
+A `PartialDate` is a **string** representing a date and/or time with varying levels of precision. It is designed to allow for representing dates where not all components are known or relevant.
 
-This type allows us to define dates where we dont know enough information to define a full date. An event might be known to take place on April but the exact day might be unknown.
+`PartialDate` is adapted from [RFC 9557](https://www.rfc-editor.org/rfc/rfc9557) (which is based on RFC 3339 and ISO 8601) but with some modifications to better suit our use case.
 
-Atleast the year must be specified.
+A `PartialDate` can have four levels of precision: year, month, day and time. Each level of precision is optional, but they must be provided in order (i.e. you cannot have a day without a month or a month without a year).
 
-In order, the following components are allowed:
-- Year (e.g. `2025`)
-- Month (e.g. `2025-11`)
-- Day (e.g. `2025-11-12`)
-- Time (e.g. `2025-11-12T11:00`)
+A `PartialDate` **should** include an IANA Timezone identifier wrapped in square brackets at the end of the string to indicate the timezone of the date and time. If the timezone is not specified, it should be assumed to be in UTC for backwards compatibility.
 
-Examples:
-- `2025`
-- `2025-11`
-- `2025-11-12`
-- `2025-11-12T11:00`
-- `2021-11-03T00:00`
+A `PartialDate` must not include a timezone component (e.g. `Z` or `+02:00`) or a seconds component, as these are not supported by the format.
 
-⚠️ **Invalid** examples:
-- `2025-11T12:00` (missing day)
-- `2025-11-12T11:00Z` (includes timezone component)
-- `2025-11-12T11:00+02:00` (includes timezone component)
-- `2025-11-12T11:00:00` (includes seconds component)
-- `2025-11-12T11` (missing minutes component)
-- `2025-11-12T11:00:00.000` (includes milliseconds component)
+__Examples:__
+
+- `2025[Europe/London]` - 2025 in the Europe/London timezone
+- `2025-11[Europe/London]` - November 2025 in the Europe/London timezone
+- `2025-11-12[Europe/London]` - 12th November 2025 in the Europe/London timezone
+- `2025-11-12T11:00[Europe/London]` - 12th November 2025 at 11:00 (11 AM) in the Europe/London timezone
+- `2021-11-03T00:00[Europe/London]` - 3rd November 2021 at 00:00 (midnight) in the Europe/London timezone
+
+__Invalid examples:__
+
+- ❌ `2025-11-12T11:00Z` - timezone component is not allowed
+- ❌ `2025-11-12T11:00+02:00` - timezone component is not allowed
+- ❌ `2025-11-12T11:00:00[Europe/London]` - seconds component is not allowed
+- ❌ `2025-11-12T11[Europe/London]` - time component must include minutes
+- ❌ `2025-11T11:00[Europe/London]` - time component cannot be provided without a day
+- ❌ `2025T11:00[Europe/London]` - year cannot be provided without a month and day 
+
+__ABNF Notation:__
+
+```
+partial-date = date [ "T" time ] [ "[" timezone "]" ]
+date = year [ "-" month [ "-" day ] ]
+time = hour ":" minute
+year = 4DIGIT
+month = 2DIGIT ; 01-12
+day = 2DIGIT ; 01-31
+hour = 2DIGIT ; 00-23
+minute = 2DIGIT ; 00-59
+timezone = *( ALPHA / DIGIT / "-" / "_" / "/" )
+```
 
 ## `EventStatus`
 
 The `EventStatus` enum defines the possible schedule/planning state of an event instance or the whole event. This enum does not define the tense of the event (past, present, future) but rather the current state of the event planning or execution.
 
-_Table of variants_:
+__Table of variants__:
 
 | Variant     | Description                                                                           | Date Validity |
 |-------------|---------------------------------------------------------------------------------------|---------------|
@@ -101,7 +118,11 @@ _Table of variants_:
 | `cancelled` | The event has been cancelled and will not take place.                                 | ❌             |
 | `suspended` | No guarantees if the event will continue as planned, will get postponed or cancelled. | ❌             |
 
-_Hellish Graph_:
+__Note:__ The `planned` status is the default and should be used for events that are planned to occur or have occurred as scheduled. The other statuses should be used to indicate changes in the planning or execution of the event.
+
+__Note:__ The "date validity" column in the table is how the dates of an event instance should be treated based on the status of the event. For `planned` events, the dates can be considered valid and can be used for scheduling and display purposes. For `uncertain`, `postponed`, `cancelled` and `suspended` events, the dates should be treated as potentially invalid or subject to change, and applications should take this into account when displaying or using the dates of these events. Applications can choose how to visually represent the different statuses of events, such as using different colors, icons or labels to indicate the status of an event instance.
+
+__Graph__:
 
 ```mermaid
 graph LR;
@@ -126,10 +147,12 @@ graph LR;
 
 A `Media` object represents a media item, such as an image or video.
 
-Required fields:
+__Required fields:__
+
 - `sources`: An array of [`MediaSource`](#mediasource)s.
 
-Optional fields:
+__Optional fields:__
+
 - `alt`: [`Translations`](#translations) representing alternative text for the media, which can be used for accessibility.
 - `presentation`: Optional object for presentation information;
   - `blurhash`: [BlurHash](https://blurha.sh/)
@@ -158,10 +181,12 @@ let media: Media = {
 
 A `MediaSource` represents a source of a media item, such as an image or video.
 
-Required fields:
+__Required fields:__
+
 - `url`: The URL of the media source.
 
-Optional fields:
+__Optional fields:__
+
 - `mimeType`: The MIME type of the media source, such as `image/jpeg`, `video/mp4` etc.
 - `dimensions`: Optional object with `width` and `height` properties representing the dimensions of the media in pixels.
 
@@ -171,7 +196,7 @@ The main data structure representing an event is `EventData`.
 
 ```ts
 {
-	"v": 0,
+	v: "0.1",
 	name: {
 		en: "Example Event",
 		lt: "Pavyzdys Renginys",
@@ -179,9 +204,12 @@ The main data structure representing an event is `EventData`.
 }
 ```
 
-Important fields:
-- `v`: The version of the data format. Currently `0`. Required.
+__Required fields:__
+
+- `v`: The version of the data format. Currently `"0.1"`. Required.
 - `name`: [`Translations`](#translations); Required. The name of the event.
+
+__Optional fields:__
 
 - `venues`: Array of [`Venue`](#venue)s.
 - `instances`: Array of [`EventInstance`](#eventinstance)s.
@@ -196,9 +224,9 @@ Consumers should not use `venues` to display a list of venues for an event, but 
 - **Instances** represent **when** an event takes place.
 - **Components** represent **additional information** (not tied to a specific venue or instance) about an event.
 
-The smallest valid event data object is: `{ v: 0, name: {} }`.
+The smallest valid event data object is: `{ v: "0.1", name: {} }`.
 
-See the [schema documentation](./SCHEMA.md#event-data-schema) for the full definition.
+For providing a description of an event, it is recommended to use a component (e.g. a custom `com.myapp.description` component or the `app.bsky.richtext` component).
 
 ## Venues
 
@@ -206,10 +234,13 @@ See the [schema documentation](./SCHEMA.md#event-data-schema) for the full defin
 
 A `Venue` represents a location where an event takes place.
 
-All venues have the following properties:
+__Required fields:__
+
 - `id`: A **unique** identifier for the venue. This is used to link the venue to `EventInstance` objects.
 - `type`: The type of the venue, either `physical`, `online` or `unknown`.
 - `name`: The name of the venue as a [`Translations`](#translations) object.
+
+Venue IDs are only valid per event and do not have to be globally unique. This means that two different events can have venues with the same ID without causing any conflicts. However, within a single event, all venue IDs must be unique.
 
 Types of venues:
 - [`PhysicalVenue`](#physicalvenue): A real-world location where an event takes place.
@@ -220,7 +251,13 @@ Types of venues:
 
 A [`PhysicalVenue`](./SCHEMA.md#physicalvenue) represents a real-world location where an event takes place.
 
-This object includes:
+__Required fields:__
+
+- `id`, `type`, `name` (inherited from `Venue`)
+- `type` field must be set to `physical`
+
+__Optional fields:__
+
 - `address`: Optional physical address information.
 - `coordinates`: Optional latitude and longitude coordinates.
 
@@ -243,10 +280,16 @@ let venue: PhysicalVenue = {
 
 An [`OnlineVenue`](./SCHEMA.md#onlinevenue) represents an online location where an event takes place, such as a website or streaming platform.
 
-This object includes:
+__Required fields:__
+
+- `id`, `type`, `name` (inherited from `Venue`)
+- `type` field must be set to `online`
+
+__Optional fields:__
+
 - `url`: The URL where the event can be accessed.
 
-_Examples_:
+__Examples:__
 
 ```ts
 let venue: OnlineVenue = {
@@ -261,6 +304,11 @@ let venue: OnlineVenue = {
 
 An `UnknownVenue` represents a venue that is not known if it is online or physical.
 
+__Required fields:__
+
+- `id`, `type`, `name` (inherited from `Venue`)
+- `type` field must be set to `unknown`
+
 This is primarily intended to be used for data scrapers when they know that an event has a venue but they cannot determine any information about it. This allows them to still link the event instance to a venue without having to provide any additional information.
 
 ## Instances
@@ -273,15 +321,19 @@ If an event has multiple occurrences (e.g., a conference with multiple days), ea
 
 If an event spans multiple days (such as a Game Jam or a Festival longer than 24 hours), it should be represented as a single `EventInstance` with a start and end date.
 
-Required fields:
+__Required fields:__
+
 - `venueIds`: An array of strings linking this instance to one or more `Venue` objects. This field can be an empty array if the venue is not known.
 
-Optional fields:
+__Optional fields:__
+
 - `start`: A [`PartialDate`](#partialdate) representing the start date and/or time of the event instance
 - `end`: A [`PartialDate`](#partialdate) representing the end date and/or time of the event instance
 - `status`: An [`EventStatus`](#eventstatus) representing the current status of the event instance
 
-_Examples_:
+__Note:__ The `start` and `end` fields are optional to allow for representing events where the date and time are not known or not relevant. However, if both `start` and `end` are provided, `end`'s PartialDate precision must be same or lower than `start`'s PartialDate precision (e.g. if `start` defines a date, `end` cannot define a specific time).
+
+__Examples:__
 
 ```ts
 let instance: EventInstance = {
@@ -313,28 +365,26 @@ let event: EventData = {
 
 An `EventComponent` represents additional information about an event that is not tied to a specific venue or instance. This can be used to represent links, sources or any other relevant information about an event.
 
-Each component has a `type` field that defines the type of the component and a `data` field that contains the relevant data for that type.
+An `EventComponent` has a `$type` field that defines the type of the component.
 
-Table of defined component types:
+__Defined Component Types:__
 
-| `type`        | `data` type                                   |
-|---------------|-----------------------------------------------|
-| `link`        | [LinkComponent](#linkcomponent)               |
-| `source`      | [SourceComponent](#sourcecomponent)           |
-| `splashMedia` | [SplashMediaComponent](#splashmediacomponent) |
+| `$type`             | type                                          |
+|---------------------|-----------------------------------------------|
+| `link`              | [LinkComponent](#linkcomponent)               |
+| `source`            | [SourceComponent](#sourcecomponent)           |
+| `splashMedia`       | [SplashMediaComponent](#splashmediacomponent) |
+| `app.bsky.richtext` | [AppBskyRichtextComponent](#appbskyrichtext)  |
 
-Note that this list is **not exhaustive** and applications can define their own component types as needed. The only requirement is that the `type` field should be a string and the `data` field should atleast be an object.
+Note that this list is **not exhaustive** and applications can define their own component types as needed. The only requirement is that the `$type` field should be a string.
 
 ⚠️ It is **strongly** recommended to prefix custom component types with the application name or a unique identifier to avoid conflicts with other applications (e.g. `myapp:customComponent`). If you define something with a generic name and coincidentally the specification later defines a component with the same name, it can cause conflicts and issues with data compatibility.
 
 ```ts
 let component: EventComponent = {
-	type: "link",
-	data: {
-		url: "https://www.example.com",
-		name: { en: "Example Website" },
-		description: { en: "The official website of the event" },
-	},
+	$type: "link",
+	url: "https://www.example.com",
+	name: { en: "Example Website" },
 }
 ```
 
@@ -342,12 +392,13 @@ let component: EventComponent = {
 
 A `LinkComponent` represents a link related to the event, such as a website, social media page, ticketing page etc.
 
-Required fields:
+__Required fields:__
+
+- `$type`: Must be set to `link`
 - `url`: The URL of the link.
 
 Optional fields:
-- `name`: [`Translations`](#translations) representing the name of the link.
-- ~~`description`: [`Translations`](#translations) representing a description of the link.~~ ⚠️ Might change
+- `name`: [`Translations`](#translations) representing the name of the link. This can be used to provide a human-readable name for the link, which can be displayed in applications instead of the raw URL.
 - `disabled`: A boolean indicating whether the link is disabled. This can be used to represent links that are no longer valid or temporarily unavailable.
 - `opensAt`: A [`PartialDate`](#partialdate) representing the date and/or time when the link becomes active or valid. This can be used for links that are not yet active but will become active in the future (e.g., a ticketing page that opens at a specific date and time).
 - `closesAt`: A [`PartialDate`](#partialdate) representing the date and/or time when the link becomes inactive or invalid. This can be used for links that are only valid for a certain period of time (e.g., a form for registering to a competition that closes at a specific date and time).
@@ -356,14 +407,15 @@ Optional fields:
 
 A `SourceComponent` represents a source of information about the event, such as a news article, a social media post, an official announcement etc.
 
-Required fields:
+__Required fields:__
+
+- `$type`: Must be set to `source`
 - `url`: The URL of the source.
 
 ```ts
-let link: LinkComponent = {
-	url: "https://www.example.com/event-registration-form",
-	name: { en: "Event Registration Form" },
-	closesAt: "2025-10-01T23:59",
+let source: SourceComponent = {
+	$type: "source",
+	url: "https://www.example.com/event-news",
 }
 ```
 
@@ -373,6 +425,27 @@ A `SplashMediaComponent` represents a media item (such as an image or video) tha
 
 Splash media is a media item that can be used to represent the event in a visual way, such as a cover image or a promotional video. This can be used by applications to display a visually appealing representation of the event.
 
-Required fields:
+__Required fields:__
+
 - `media`: A [`Media`](#media) object representing the media item.
 - `roles`: A string array representing the roles of the splash media. This can be used to differentiate between different types of splash media (e.g., `background`, `thumbnail`, `poster` etc.) and allow applications to choose the most appropriate media item for a specific context. The only currently defined role is `background`, but applications can define their own roles as needed.
+
+### `app.bsky.richtext`
+
+This component type can be used to represent rich text content related to the event. It uses the same format as the [Rich Text](https://docs.bsky.app/docs/advanced-guides/post-richtext) format defined by Bluesky, which allows for representing complex text content with formatting, links, mentions and other features.
+
+This component was added for converting `community.lexicon.calendar.event` records from/to `EventData` objects, but applications can use it for any purpose they want.
+
+```ts
+let richtextComponent: AppBskyRichtextComponent = {
+	$type: "app.bsky.richtext",
+	text: "Go to this site to see more details",
+	facets: [{
+		index: { byteStart: 6, byteEnd: 15 },
+		features: [{
+			$type: "app.bsky.richtext.facet#link",
+			uri: "https://example.com",
+		}],
+	}],
+};
+```
