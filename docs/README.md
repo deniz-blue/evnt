@@ -397,7 +397,8 @@ __Required fields:__
 - `$type`: Must be set to `link`
 - `url`: The URL of the link.
 
-Optional fields:
+__Optional fields:__
+
 - `name`: [`Translations`](#translations) representing the name of the link. This can be used to provide a human-readable name for the link, which can be displayed in applications instead of the raw URL.
 - `disabled`: A boolean indicating whether the link is disabled. This can be used to represent links that are no longer valid or temporarily unavailable.
 - `opensAt`: A [`PartialDate`](#partialdate) representing the date and/or time when the link becomes active or valid. This can be used for links that are not yet active but will become active in the future (e.g., a ticketing page that opens at a specific date and time).

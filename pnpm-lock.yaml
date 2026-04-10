@@ -616,6 +616,18 @@ importers:
         specifier: ^4.17.0
         version: 4.65.0(@cloudflare/workers-types@4.20260317.1)
 
+  lexicons:
+    devDependencies:
+      '@atcute/lex-cli':
+        specifier: ^2.5.3
+        version: 2.5.3
+      '@atcute/lexicon-doc':
+        specifier: ^2.2.0
+        version: 2.2.0
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.2
+
   packages/builder:
     dependencies:
       '@evnt/schema':
@@ -871,8 +883,8 @@ packages:
     resolution: {integrity: sha512-829rvezMOfRkJQRKvupNT8TWT/YYffJ2QsB80D9aPjkXSogrETZA7xZcPaMZBXg+mJaVbLO9S4ThPQmlF0L4UQ==}
     hasBin: true
 
-  '@atcute/lexicon-doc@2.1.2':
-    resolution: {integrity: sha512-jTLcOka7b8BIn2SnIZm2m7l6unlJ0gpgW1MnRpSqNbly/AvyRUR/GREduh/QmjT4SGasDm8vdhrM0kOSPFpDLQ==}
+  '@atcute/lexicon-doc@2.2.0':
+    resolution: {integrity: sha512-6l4lDlL6KPLDGknRh6HlfGbv98haUgQ0DFaAr1yA4vA95b8YYZUZ4/370ENpiq+d6Lv0tdDAMvOon2mynrp3pQ==}
 
   '@atcute/lexicon-resolver@0.1.6':
     resolution: {integrity: sha512-wJC/ChmpP7k+ywpOd07CMvioXjIGaFpF3bDwXLi/086LYjSWHOvtW6pyC+mqP5wLhjyH2hn4wmi77Buew1l1aw==}
@@ -882,6 +894,9 @@ packages:
 
   '@atcute/lexicons@1.2.9':
     resolution: {integrity: sha512-/RRHm2Cw9o8Mcsrq0eo8fjS9okKYLGfuFwrQ0YoP/6sdSDsXshaTLJsvLlcUcaDaSJ1YFOuHIo3zr2Om2F/16g==}
+
+  '@atcute/lexicons@1.3.0':
+    resolution: {integrity: sha512-Eq5y+9onnCXNVUlNiMf31beSXHKqptB7lUo/68YbhlmxdaR7ooywHmahya9goP5AsmlYEA1z+dRPXIDAa9O7cg==}
 
   '@atcute/mst@1.0.0':
     resolution: {integrity: sha512-pMce2efib+dmKtnGnIvJZitVncJkpr3AmhyfgfYllni8KzsaDGsJmuGavSVpuojAhQe+6jYwHFtpm/beiiH4uw==}
@@ -918,6 +933,9 @@ packages:
 
   '@atcute/util-text@1.1.1':
     resolution: {integrity: sha512-JH0SxzUQJAmbOBTYyhxQbkkI6M33YpjlVLEcbP5GYt43xgFArzV0FJVmEpvIj0kjsmphHB45b6IitdvxPdec9w==}
+
+  '@atcute/util-text@1.2.0':
+    resolution: {integrity: sha512-b8WSh+Z7K601eUFFmTFj8QPKDO8Ic0VDDj63sdKzpkm+ySQKsYT5nXekViGqFVKbyKj1V5FyvZvgXad6/aI4QQ==}
 
   '@atcute/varint@2.0.0':
     resolution: {integrity: sha512-CEY/oVK/nVpL4e5y3sdenLETDL6/Xu5xsE/0TupK+f0Yv8jcD60t2gD8SHROWSvUwYLdkjczLCSA7YrtnjCzWw==}
@@ -5394,6 +5412,11 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  typescript@6.0.2:
+    resolution: {integrity: sha512-bGdAIrZ0wiGDo5l8c++HWtbaNCWTS4UTv7RaTH/ThVIgjkveJt83m74bBHMJkuCbslY8ixgLBVZJIOiQlQTjfQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   unbox-primitive@1.1.0:
     resolution: {integrity: sha512-nWJ91DjeOkej/TA8pXQ3myruKpKEYgqvpw9lz4OPHj/NWFNluYrjbz9j01CJ8yKQd2g4jFoOkINCTW2I5LEEyw==}
     engines: {node: '>= 0.4'}
@@ -6044,7 +6067,7 @@ snapshots:
     dependencies:
       '@atcute/identity': 1.1.4
       '@atcute/identity-resolver': 1.2.2(@atcute/identity@1.1.4)
-      '@atcute/lexicon-doc': 2.1.2
+      '@atcute/lexicon-doc': 2.2.0
       '@atcute/lexicon-resolver': 0.1.6(@atcute/identity-resolver@1.2.2(@atcute/identity@1.1.4))(@atcute/identity@1.1.4)
       '@atcute/lexicons': 1.2.9
       '@badrap/valita': 0.4.6
@@ -6053,12 +6076,12 @@ snapshots:
       picocolors: 1.1.1
       prettier: 3.8.1
 
-  '@atcute/lexicon-doc@2.1.2':
+  '@atcute/lexicon-doc@2.2.0':
     dependencies:
       '@atcute/identity': 1.1.4
-      '@atcute/lexicons': 1.2.9
+      '@atcute/lexicons': 1.3.0
       '@atcute/uint8array': 1.1.1
-      '@atcute/util-text': 1.1.1
+      '@atcute/util-text': 1.2.0
       '@badrap/valita': 0.4.6
 
   '@atcute/lexicon-resolver@0.1.6(@atcute/identity-resolver@1.2.2(@atcute/identity@1.1.4))(@atcute/identity@1.1.4)':
@@ -6066,7 +6089,7 @@ snapshots:
       '@atcute/crypto': 2.4.1
       '@atcute/identity': 1.1.4
       '@atcute/identity-resolver': 1.2.2(@atcute/identity@1.1.4)
-      '@atcute/lexicon-doc': 2.1.2
+      '@atcute/lexicon-doc': 2.2.0
       '@atcute/lexicons': 1.2.9
       '@atcute/repo': 0.1.3
       '@atcute/util-fetch': 1.0.5
@@ -6076,6 +6099,13 @@ snapshots:
     dependencies:
       '@atcute/uint8array': 1.1.1
       '@atcute/util-text': 1.1.1
+      '@standard-schema/spec': 1.1.0
+      esm-env: 1.2.2
+
+  '@atcute/lexicons@1.3.0':
+    dependencies:
+      '@atcute/uint8array': 1.1.1
+      '@atcute/util-text': 1.2.0
       '@standard-schema/spec': 1.1.0
       esm-env: 1.2.2
 
@@ -6142,6 +6172,10 @@ snapshots:
       '@badrap/valita': 0.4.6
 
   '@atcute/util-text@1.1.1':
+    dependencies:
+      unicode-segmenter: 0.14.5
+
+  '@atcute/util-text@1.2.0':
     dependencies:
       unicode-segmenter: 0.14.5
 
@@ -10826,6 +10860,8 @@ snapshots:
       reflect.getprototypeof: 1.0.10
 
   typescript@5.9.3: {}
+
+  typescript@6.0.2: {}
 
   unbox-primitive@1.1.0:
     dependencies:

@@ -1,0 +1,18 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "lexicons",
+	"private": true,
+	"version": "1.0.0",
+	"scripts": {
+		"build": "lex-cli export"
+	},
+	"author": "deniz.blue <deniz@deniz.blue>",
+	"license": "MIT",
+	"packageManager": "pnpm@11.0.0-beta.6",
+	"type": "module",
+	"devDependencies": {
+		"@atcute/lex-cli": "^2.5.3",
+		"@atcute/lexicon-doc": "^2.2.0",
+		"typescript": "^6.0.2"
+	}
+}
