@@ -15,10 +15,6 @@ export * from "./schemas/components/LinkComponent";
 export * from "./schemas/components/SourceComponent";
 export * from "./schemas/components/SplashMediaComponent";
 
-// Unstable
-// export * from "./schemas/organizer/Organizer";
-// export * from "./schemas/activity/EventActivity";
-
 import type { EventData, $NSID } from "./schemas/EventData";
 import type { } from "@atcute/lexicons/ambient";
 declare module "@atcute/lexicons/ambient" {

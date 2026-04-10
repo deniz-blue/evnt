@@ -12,7 +12,7 @@ test("venueIds reference", () => {
 		v: 0,
 		name: {},
 		venues: [
-			{ id: "venue1", type: "unknown", name: {} },
+			{ id: "venue1", $type: "directory.evnt.venue.physical", name: {} },
 		],
 		instances: [
 			{ venueIds: ["venue1"] },
@@ -23,7 +23,7 @@ test("venueIds reference", () => {
 		v: 0,
 		name: {},
 		venues: [
-			{ id: "venue1", type: "unknown", name: {} },
+			{ id: "venue1", $type: "directory.evnt.venue.physical", name: {} },
 		],
 		instances: [
 			{ venueIds: ["venue2"] },
@@ -37,7 +37,7 @@ describe("components", () => {
 			v: 0,
 			name: {},
 			components: [
-				{ type: "link", data: { missing: "url field" } },
+				{ $type: "directory.evnt.component.link", missing: "url field" },
 			],
 		})).toThrow();
 
@@ -45,7 +45,7 @@ describe("components", () => {
 			v: 0,
 			name: {},
 			components: [
-				{ type: "link", data: { url: "https://example.com" } },
+				{ $type: "directory.evnt.component.link", url: "https://example.com" },
 			],
 		})).not.toThrow();
 	});
@@ -55,7 +55,7 @@ describe("components", () => {
 			v: 0,
 			name: {},
 			components: [
-				{ type: "test-component", data: { some: "data" } },
+				{ $type: "test-component", some: "data" },
 			],
 		})).not.toThrow();
 	});

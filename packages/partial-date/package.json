@@ -1,0 +1,18 @@
+{
+  "name": "partial-date",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@11.0.0-beta.6",
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^6.0.2",
+    "vitest": "^4.0.18"
+  }
+}

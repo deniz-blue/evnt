@@ -5,7 +5,7 @@ import { UnknownVenueSchema } from "./UnknownVenue";
 import { preprocessVenue } from "./BaseVenue";
 
 export type Venue = z.infer<typeof VenueSchema>;
-export const VenueSchema = z.preprocess(preprocessVenue, z.discriminatedUnion("type", [
+export const VenueSchema = z.preprocess(preprocessVenue, z.discriminatedUnion("$type", [
 	PhysicalVenueSchema,
 	OnlineVenueSchema,
 	UnknownVenueSchema,
