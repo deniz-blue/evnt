@@ -4,8 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"gen": "pnpm run gen:typelex && pnpm run gen:scriptables",
-		"gen:scriptables": "tsx ./src/gen.ts",
+		"gen": "tsx ./src/gen.ts",
 		"dev": "tsx watch ./src/gen.ts"
 	},
 	"keywords": [],

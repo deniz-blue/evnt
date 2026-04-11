@@ -2,24 +2,22 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
+    "$type": {
+      "description": "The type of the event data",
+      "type": "string",
+      "const": "directory.evnt.event"
+    },
     "v": {
       "type": "number",
       "const": 0,
       "description": "The version of the Event Data schema"
-    },
-    "id": {
-      "type": "string"
     },
     "name": {
       "description": "The name of the event",
       "$ref": "#/$defs/Translations"
     },
     "label": {
-      "description": "!unstable(#9)",
-      "$ref": "#/$defs/Translations"
-    },
-    "description": {
-      "description": "A short description of the event",
+      "description": "A secondary label for the event",
       "$ref": "#/$defs/Translations"
     },
     "status": {
@@ -62,7 +60,7 @@
       "type": "object",
       "propertyNames": {
         "type": "string",
-        "description": "BCP37 or ISO 639-1 language code"
+        "description": "BCP37 language code"
       },
       "additionalProperties": {
         "type": "string"
@@ -141,9 +139,9 @@
     "PhysicalVenue": {
       "type": "object",
       "properties": {
-        "type": {
+        "$type": {
           "type": "string",
-          "const": "physical"
+          "const": "directory.evnt.venue.physical"
         },
         "id": {
           "type": "string",
@@ -159,13 +157,10 @@
         "coordinates": {
           "description": "Approximate coordinates",
           "$ref": "#/$defs/LatLng"
-        },
-        "googleMapsPlaceId": {
-          "type": "string"
         }
       },
       "required": [
-        "type",
+        "$type",
         "id",
         "name"
       ],
@@ -215,9 +210,9 @@
     "OnlineVenue": {
       "type": "object",
       "properties": {
-        "type": {
+        "$type": {
           "type": "string",
-          "const": "online"
+          "const": "directory.evnt.venue.online"
         },
         "id": {
           "type": "string",
@@ -232,7 +227,7 @@
         }
       },
       "required": [
-        "type",
+        "$type",
         "id",
         "name"
       ],
@@ -242,9 +237,9 @@
     "UnknownVenue": {
       "type": "object",
       "properties": {
-        "type": {
+        "$type": {
           "type": "string",
-          "const": "unknown"
+          "const": "directory.evnt.venue.unknown"
         },
         "id": {
           "type": "string",
@@ -256,7 +251,7 @@
         }
       },
       "required": [
-        "type",
+        "$type",
         "id",
         "name"
       ],
@@ -298,172 +293,128 @@
       "description": "A part of an event that can occur at a known or unknown date and/or time and a known or unknown place or places."
     },
     "PartialDate": {
-      "type": "string",
       "id": "PartialDate",
-      "description": "An ISO 8601 date and time string that may be incomplete (e.g. '2023', '2023-05') and does not include timezone information (forced UTC)",
-      "regex": "^\\d{4}(-\\d{2}(-\\d{2}(T\\d{2}:\\d{2})?)?)?$",
+      "description": "A date string that can have varying levels of precision (year, month, day, time) with a timezone",
+      "regex": "/^(?<year>\\d{4})(?:-(?<month>\\d{2})(?:-(?<day>\\d{2})(?:T(?<time>(?<hour>\\d{2}):(?<minute>\\d{2}))?)?)?)?(?:\\[(?<timezone>[\\w\\/]+)\\])?$/",
       "examples": [
-        "2023",
-        "2023-05",
-        "2023-05-15",
-        "2023-05-15T13:45"
+        "2023[Europe/Vilnius]",
+        "2023-05[Europe/Vilnius]",
+        "2023-05-15[Europe/Vilnius]",
+        "2023-05-15T13:45[Europe/Vilnius]"
       ],
       "defaultSnippets": [
         {
-          "label": "Current Date&Time",
-          "body": "${1:${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}T${CURRENT_HOUR}:${CURRENT_MINUTE}}"
+          "label": "Current Date & Time",
+          "body": "${1:${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}T${CURRENT_HOUR}:${CURRENT_MINUTE}}[$2:UTC]"
         }
-      ]
+      ],
+      "type": "string"
     },
     "EventComponent": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
-            "type": {
+            "$type": {
               "type": "string",
-              "const": "link"
+              "const": "directory.evnt.component.link"
             },
-            "data": {
-              "$ref": "#/$defs/LinkComponent"
+            "url": {
+              "type": "string",
+              "description": "The URL of the link"
+            },
+            "name": {
+              "description": "The name of the link",
+              "$ref": "#/$defs/Translations"
+            },
+            "disabled": {
+              "description": "Whether the link is disabled",
+              "type": "boolean"
+            },
+            "opensAt": {
+              "description": "The date and/or time when the link becomes active",
+              "$ref": "#/$defs/PartialDate"
+            },
+            "closesAt": {
+              "description": "The date and/or time when the link becomes inactive",
+              "$ref": "#/$defs/PartialDate"
             }
           },
           "required": [
-            "type",
-            "data"
+            "$type",
+            "url"
           ],
           "additionalProperties": false
         },
         {
           "type": "object",
           "properties": {
-            "type": {
+            "$type": {
               "type": "string",
-              "const": "source"
+              "const": "directory.evnt.component.source"
             },
-            "data": {
-              "$ref": "#/$defs/SourceComponent"
+            "url": {
+              "type": "string",
+              "description": "The URL of the source"
             }
           },
           "required": [
-            "type",
-            "data"
+            "$type",
+            "url"
           ],
           "additionalProperties": false
         },
         {
           "type": "object",
           "properties": {
-            "type": {
+            "$type": {
               "type": "string",
-              "const": "splashMedia"
+              "const": "directory.evnt.component.splashMedia"
             },
-            "data": {
-              "type": "object",
-              "properties": {
-                "roles": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "media": {
-                  "$ref": "#/$defs/Media"
-                }
-              },
-              "required": [
-                "roles",
-                "media"
-              ],
-              "additionalProperties": false
+            "roles": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "media": {
+              "$ref": "#/$defs/Media"
             }
           },
           "required": [
-            "type",
-            "data"
+            "$type",
+            "roles",
+            "media"
           ],
           "additionalProperties": false
         },
         {
           "type": "object",
           "properties": {
-            "type": {
+            "$type": {
               "type": "string",
               "not": {
                 "anyOf": [
                   {
-                    "const": "link"
+                    "const": "directory.evnt.component.link"
                   },
                   {
-                    "const": "source"
+                    "const": "directory.evnt.component.source"
                   },
                   {
-                    "const": "splashMedia"
+                    "const": "directory.evnt.component.splashMedia"
                   }
                 ]
               }
-            },
-            "data": {
-              "type": "object"
             }
           },
           "required": [
-            "type",
-            "data"
+            "$type"
           ],
-          "additionalProperties": false
+          "additionalProperties": true
         }
       ],
       "id": "EventComponent"
-    },
-    "LinkComponent": {
-      "type": "object",
-      "properties": {
-        "url": {
-          "type": "string",
-          "description": "The URL of the link"
-        },
-        "name": {
-          "description": "The name of the link",
-          "$ref": "#/$defs/Translations"
-        },
-        "description": {
-          "description": "A description of the link",
-          "$ref": "#/$defs/Translations"
-        },
-        "disabled": {
-          "description": "Whether the link is disabled",
-          "type": "boolean"
-        },
-        "opensAt": {
-          "description": "The date and/or time when the link becomes active",
-          "$ref": "#/$defs/PartialDate"
-        },
-        "closesAt": {
-          "description": "The date and/or time when the link becomes inactive",
-          "$ref": "#/$defs/PartialDate"
-        }
-      },
-      "required": [
-        "url"
-      ],
-      "additionalProperties": false,
-      "id": "LinkComponent"
-    },
-    "SourceComponent": {
-      "type": "object",
-      "properties": {
-        "url": {
-          "type": "string",
-          "description": "The URL of the source"
-        }
-      },
-      "required": [
-        "url"
-      ],
-      "additionalProperties": false,
-      "id": "SourceComponent",
-      "description": "A source of information about the event, such as a news article, a social media post, an official announcement etc."
     },
     "Media": {
       "type": "object",
