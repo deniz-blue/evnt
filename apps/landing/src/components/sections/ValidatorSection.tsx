@@ -6,7 +6,7 @@ import { z } from "zod";
 
 export const ValidatorSection = () => {
 	const [value, setValue] = useState(JSON.stringify({
-		v: 0,
+		v: "0.1",
 		name: { en: "Event" },
 	} as EventData, null, 2));
 

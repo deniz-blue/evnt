@@ -14,32 +14,32 @@ export const ATProtoSection = () => {
 				Applications should use the <Code>directory.evnt.event</Code> collection for events.
 			</Text>
 			<Text>
-				You can find the lexicons below. Lexicon version 1 does not support the neccesary features to fully represent the evnt schema, so this is a very rough approximation.
+				You can find the lexicons below! Keep in mind that <Code>Translations</Code> type is not supported in lexicons so they are marked as <Code>unknown</Code> in the lexicon.
 			</Text>
 			<Group justify="center">
 				<Button
 					component="a"
-					href="https://pds.ls/at://evnt.directory/com.atproto.lexicon.schema/directory.evnt.event#schema"
+					href="https://pds.ls/at://evnt.directory/com.atproto.lexicon.schema"
 					target="_blank"
 					rightSection={<IconExternalLink />}
 					variant="light"
 				>
-					Lexicon on PDSls
+					Lexicons on PDSls
 				</Button>
 				<Button
 					component="a"
-					href="https://github.com/openevnt/evnt/blob/main/event-data.lexicon.json"
+					href="https://github.com/openevnt/evnt/blob/main/lexicons/directory/evnt"
 					target="_blank"
 					rightSection={<IconExternalLink />}
 					variant="light"
 				>
-					Lexicon on GitHub
+					Lexicons on GitHub
 				</Button>
 			</Group>
 			<Text>
 				Currently the standard collection for events is the <Anchor component="a" href="https://github.com/lexicon-community/lexicon/blob/main/community/lexicon/calendar/event.json" target="_blank" rel="noopener noreferrer">
 					<Code>community.lexicon.calendar.event</Code>
-				</Anchor> lexicon. Unfortunately, Evnt is more complex so these two lexicons are not fully compatible.
+				</Anchor> lexicon. Open Evnt and the community lexicons are not fully compatible.
 			</Text>
 			<Text>
 				Applications wishing to support both lexicons can use the same TID and do conversion between the formats.
