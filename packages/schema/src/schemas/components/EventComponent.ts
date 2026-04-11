@@ -10,9 +10,7 @@ const KnownEventComponentsMap = {
 } as const;
 
 export type KnownEventComponent = {
-	[K in keyof typeof KnownEventComponentsMap]: {
-		$type: K
-	} & z.infer<(typeof KnownEventComponentsMap)[K]>;
+	[K in keyof typeof KnownEventComponentsMap]: z.infer<(typeof KnownEventComponentsMap)[K]>;
 }[keyof typeof KnownEventComponentsMap];
 
 export type UnknownEventComponent = z.infer<typeof UnknownEventComponentSchema>;
