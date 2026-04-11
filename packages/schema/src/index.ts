@@ -15,6 +15,9 @@ export * from "./schemas/components/LinkComponent";
 export * from "./schemas/components/SourceComponent";
 export * from "./schemas/components/SplashMediaComponent";
 
+export type { PartialDate } from "@evnt/partial-date";
+export type { Translations } from "@evnt/translations";
+
 import type { EventData, $NSID } from "./schemas/EventData";
 import type { } from "@atcute/lexicons/ambient";
 declare module "@atcute/lexicons/ambient" {

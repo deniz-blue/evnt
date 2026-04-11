@@ -1,6 +1,6 @@
 # @evnt/schema
 
-[Evnt](https://evnt.directory) is a standardized, open-source data format for representing events.
+[Open Evnt](https://evnt.directory) is a standardized, open-source data format for representing events.
 
 This package provides Zod schemas for validating and parsing Evnt data, as well as utility functions for working with the schema.
 
@@ -22,12 +22,12 @@ const event: EventData = {
 	],
 	components: [
 		{
-			type: "link",
-			data: { url: "https://example.com" },
+			$type: "directory.evnt.link",
+			url: "https://example.com",
 		},
 		{
-			type: "com.example:custom",
-			data: { custom: "data" },
+			$type: "com.example.custom",
+			custom: "data",
 		},
 	],
 };

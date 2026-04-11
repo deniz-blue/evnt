@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { EventDataSchema } from "../schemas/EventData";
+import { EventDataSchema } from "../src/schemas/EventData";
 
 test("basic parsing", () => {
 	expect(() => EventDataSchema.parse({})).toThrow();
