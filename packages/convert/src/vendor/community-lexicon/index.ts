@@ -1,7 +1,8 @@
-import type { EventData, Media, PhysicalVenue } from "@evnt/schema";
+import type { EventData, Media, PartialDate, PhysicalVenue } from "@evnt/schema";
+import { PartialDateUtil } from "@evnt/partial-date";
+import { TranslationsUtil } from "@evnt/translations";
 import type { CommunityLexiconCalendarEvent } from "../../lexicons";
 import { EventBuilder, PhysicalVenueBuilder } from "@evnt/builder";
-import { UtilPartialDate } from "@evnt/schema/utils";
 import type { AtprotoDid } from "@atcute/lexicons/syntax";
 
 export interface LexiconEvent extends CommunityLexiconCalendarEvent.Main {
@@ -44,7 +45,7 @@ export const convertFromLexicon = (
 	if (event.name) builder.setName(event.name, language);
 
 	const upsertPhysicalVenue = (name: string, fn: (b: PhysicalVenueBuilder) => PhysicalVenueBuilder) => {
-		const idx = builder.data.venues?.findIndex(v => v.type === "physical" && v.name[language] === name);
+		const idx = builder.data.venues?.findIndex(v => v.$type === "directory.evnt.venue.physical" && v.name[language] === name);
 		builder.data.venues ??= [];
 		if (idx !== undefined && idx >= 0) {
 			const venue = builder.data.venues[idx]!;
@@ -94,8 +95,24 @@ export const convertFromLexicon = (
 
 	if (event.startsAt || event.endsAt) {
 		builder.addInstance(i => i
-			.setStart(event.startsAt ? UtilPartialDate.fromDate(new Date(event.startsAt)) : undefined)
-			.setEnd(event.endsAt ? UtilPartialDate.fromDate(new Date(event.endsAt)) : undefined)
+			.setStart(event.startsAt ? PartialDateUtil.format({
+				year: new Date(event.startsAt).getUTCFullYear(),
+				month: new Date(event.startsAt).getUTCMonth() + 1,
+				day: new Date(event.startsAt).getUTCDate(),
+				hour: new Date(event.startsAt).getUTCHours(),
+				minute: new Date(event.startsAt).getUTCMinutes(),
+				timezone: "UTC",
+				precision: (new Date(event.startsAt).getUTCHours() === 0 && new Date(event.startsAt).getUTCMinutes() === 0) ? "day" : "time",
+			} as PartialDate.Parsed) : undefined)
+			.setEnd(event.endsAt ? PartialDateUtil.format({
+				year: new Date(event.endsAt).getUTCFullYear(),
+				month: new Date(event.endsAt).getUTCMonth() + 1,
+				day: new Date(event.endsAt).getUTCDate(),
+				hour: new Date(event.endsAt).getUTCHours(),
+				minute: new Date(event.endsAt).getUTCMinutes(),
+				timezone: "UTC",
+				precision: (new Date(event.endsAt).getUTCHours() === 0 && new Date(event.endsAt).getUTCMinutes() === 0) ? "day" : "time",
+			} as PartialDate.Parsed) : undefined)
 			.addAllVenues()
 		);
 	}
@@ -105,36 +122,41 @@ export const convertFromLexicon = (
 
 	for (let [_index, media] of (event.media || []).entries()) {
 		if (did) builder.data.components?.push({
-			type: "splashMedia",
-			data: {
-				media: {
-					alt: media.alt ? { [language]: media.alt } : undefined,
-					sources: [
-						{
-							// FIXME: hacky!
-							url: `https://blobs.blue/${did}/blob/${media.content.ref.$link}`,
-							mimeType: media.content.mimeType,
-						}
-					],
-				} as Media,
-				roles: [
-					...(media.role ? [media.role] : []),
-					"background",
-					"poster",
+			$type: "directory.evnt.component.splashMedia",
+			media: {
+				alt: media.alt ? { [language]: media.alt } : undefined,
+				sources: [
+					{
+						blob: media.content,
+						// Fallback mechanism
+						url: `https://blobs.blue/${did}/blob/${media.content.ref.$link}`,
+						mimeType: media.content.mimeType,
+					}
 				],
-			},
-		})
+			} as Media,
+			roles: [
+				...(media.role ? [media.role] : []),
+				"background",
+				"poster",
+			],
+		});
 	}
 
 	if (event.description) {
-		builder.addCustomComponent("app.bsky.richtext", {
+		builder.data.components ??= [];
+		builder.data.components.push({
+			$type: "app.bsky.richtext",
 			text: event.description,
 			facets: event.facets,
 		});
-	};
+	}
 
 	if (event.additionalData) {
-		builder.addCustomComponent("community.lexicon.calendar.event:additionalData", event.additionalData);
+		builder.data.components ??= [];
+		builder.data.components.push({
+			$type: "community.lexicon.calendar.event#additionalData",
+			...event.additionalData,
+		});
 	}
 
 	return builder.build();

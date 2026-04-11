@@ -1,4 +1,5 @@
-import { UtilPartialDate } from "@evnt/schema/utils";
+import type { PartialDate } from "@evnt/schema";
+import { PartialDateUtil } from "@evnt/partial-date";
 import type { SnippetIcon, SnippetLabel, TSnippet } from "../core/snippet";
 
 export interface Locale {
@@ -18,6 +19,39 @@ export const getClockEmoji = (time: string) => {
 	return String.fromCodePoint(base + hour12 - 1);
 };
 
+const partialDateToIntlString = (value: PartialDate, locale: string, timezone: string): string => {
+	const parsed = PartialDateUtil.parse(value);
+	const date = new Date(Date.UTC(
+		parsed.year,
+		"month" in parsed ? parsed.month - 1 : 0,
+		"day" in parsed ? parsed.day : 1,
+		"hour" in parsed ? parsed.hour : 0,
+		"minute" in parsed ? parsed.minute : 0,
+	));
+
+	if (parsed.precision === "year") {
+		return new Intl.DateTimeFormat(locale, { year: "numeric", timeZone: timezone }).format(date);
+	}
+
+	if (parsed.precision === "month") {
+		return new Intl.DateTimeFormat(locale, { year: "numeric", month: "long", timeZone: timezone }).format(date);
+	}
+
+	if (parsed.precision === "day") {
+		return new Intl.DateTimeFormat(locale, { year: "numeric", month: "short", day: "numeric", timeZone: timezone }).format(date);
+	}
+
+	return new Intl.DateTimeFormat(locale, {
+		year: "numeric",
+		month: "short",
+		day: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
+		hour12: false,
+		timeZone: timezone,
+	}).format(date);
+};
+
 export const snippetLabelToMarkdown = (label: SnippetLabel, locale: Locale = DefaultLocale): string => {
 	if (label.type === "text") return label.value;
 	if (label.type === "placeholder") switch (label.hint) {
@@ -35,25 +69,25 @@ export const snippetLabelToMarkdown = (label: SnippetLabel, locale: Locale = Def
 				.map(char => 127397 + char.charCodeAt(0)))
 		)) : "");
 
-	if (label.type === "partial-date" || label.type === "date-time") return UtilPartialDate.toIntlString(label.value, {
-		timezone: locale.timezone || DefaultLocale.timezone,
-		locale: locale.language || DefaultLocale.language,
-		noCurrentYear: false,
-	}) + (UtilPartialDate.hasTime(label.value) ? ` (${locale.timezone || DefaultLocale.timezone})` : "");
+	if (label.type === "partial-date" || label.type === "date-time") return partialDateToIntlString(
+		label.value,
+		locale.language || DefaultLocale.language,
+		locale.timezone || DefaultLocale.timezone,
+	) + (PartialDateUtil.has(label.value, "time") ? ` (${locale.timezone || DefaultLocale.timezone})` : "");
 
 	if (label.type === "time") return `${label.value} (${locale.timezone || DefaultLocale.timezone})`;
 
 	if (label.type === "time-range") return `${label.value.start.value} - ${label.value.end.value} (${locale.timezone || DefaultLocale.timezone})`;
 
-	if (label.type === "date-time-range") return `${UtilPartialDate.toIntlString(label.value.start, {
-		timezone: locale.timezone || DefaultLocale.timezone,
-		locale: locale.language || DefaultLocale.language,
-		noCurrentYear: false,
-	})} - ${UtilPartialDate.toIntlString(label.value.end, {
-		timezone: locale.timezone || DefaultLocale.timezone,
-		locale: locale.language || DefaultLocale.language,
-		noCurrentYear: false,
-	})} (${locale.timezone || DefaultLocale.timezone})`;
+	if (label.type === "date-time-range") return `${partialDateToIntlString(
+		label.value.start,
+		locale.language || DefaultLocale.language,
+		locale.timezone || DefaultLocale.timezone,
+	)} - ${partialDateToIntlString(
+		label.value.end,
+		locale.language || DefaultLocale.language,
+		locale.timezone || DefaultLocale.timezone,
+	)} (${locale.timezone || DefaultLocale.timezone})`;
 
 	return "";
 };

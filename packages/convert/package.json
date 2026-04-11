@@ -28,7 +28,9 @@
 		"typescript": "^5.6.3"
 	},
 	"dependencies": {
+		"@evnt/partial-date": "workspace:*",
 		"@evnt/schema": "workspace:*",
+		"@evnt/translations": "workspace:*",
 		"googleapis": "^170.0.0",
 		"ical.js": "^2.2.1",
 		"schema-dts": "^1.1.5",

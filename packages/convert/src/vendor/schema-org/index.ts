@@ -1,5 +1,6 @@
 import type { EventData, PartialDate, Translations, Venue } from "@evnt/schema";
-import { UtilPartialDate } from "@evnt/schema/utils";
+import { PartialDateUtil } from "@evnt/partial-date";
+import { TranslationsUtil } from "@evnt/translations";
 import type { Event, PronounceableText, Role, Text, TextObject, Thing, WithContext } from "schema-dts";
 
 export const convertFromSchemaOrg = (
@@ -52,7 +53,7 @@ export const convertFromSchemaOrg = (
 			venues.push({
 				id: "0",
 				name: parseText(location) || { [language]: "Unknown" },
-				type: "physical", // Assumption...
+				$type: "directory.evnt.venue.physical", // Assumption...
 				address: {},
 			});
 		}
@@ -60,13 +61,28 @@ export const convertFromSchemaOrg = (
 		venues.push({
 			id: "0",
 			name: parseText("name" in location ? location.name : null) || { [language]: "Unknown" },
-			type: "physical",
+			$type: "directory.evnt.venue.physical",
 			address: {
 				// addr: location.address?.streetAddress,
 				// countryCode: location.address?.addressCountry,
 			},
 		});
 	}
+
+	const dateToPartialDate = (dateObj: Date): PartialDate => {
+		const hour = dateObj.getUTCHours();
+		const minute = dateObj.getUTCMinutes();
+		const precision = (hour === 0 && minute === 0) ? "day" : "time";
+		return PartialDateUtil.format({
+			year: dateObj.getUTCFullYear(),
+			month: dateObj.getUTCMonth() + 1,
+			day: dateObj.getUTCDate(),
+			hour,
+			minute,
+			timezone: "UTC",
+			precision,
+		} as PartialDate.Parsed);
+	};
 
 	const convertPartialDate = (dateStr: string | undefined): PartialDate | undefined => {
 		if (!dateStr) return;
@@ -79,13 +95,12 @@ export const convertFromSchemaOrg = (
 
 		const date = new Date(dateStr);
 		if (isNaN(date.getTime())) return;
-		return UtilPartialDate.fromDate(date);
+		return dateToPartialDate(date);
 	}
 
 	return {
-		v: 0,
+		v: "0.1",
 		name: parseText(data.name) || { [language]: "Untitled Event" },
-		description: parseText("description" in data ? data.description : null) || undefined,
 		venues,
 		instances: [
 			{

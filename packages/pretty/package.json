@@ -26,6 +26,8 @@
 		"typescript": "^5.6.3"
 	},
 	"dependencies": {
-		"@evnt/schema": "workspace:*"
+		"@evnt/partial-date": "workspace:*",
+		"@evnt/schema": "workspace:*",
+		"@evnt/translations": "workspace:*"
 	}
 }

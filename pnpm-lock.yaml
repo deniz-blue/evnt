@@ -637,9 +637,15 @@ importers:
 
   packages/convert:
     dependencies:
+      '@evnt/partial-date':
+        specifier: workspace:*
+        version: link:../partial-date
       '@evnt/schema':
         specifier: workspace:*
         version: link:../schema
+      '@evnt/translations':
+        specifier: workspace:*
+        version: link:../translations
       googleapis:
         specifier: ^170.0.0
         version: 170.0.0
@@ -736,9 +742,15 @@ importers:
 
   packages/pretty:
     dependencies:
+      '@evnt/partial-date':
+        specifier: workspace:*
+        version: link:../partial-date
       '@evnt/schema':
         specifier: workspace:*
         version: link:../schema
+      '@evnt/translations':
+        specifier: workspace:*
+        version: link:../translations
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*

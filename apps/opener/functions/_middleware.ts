@@ -1,6 +1,6 @@
 /// <reference types="@cloudflare/workers-types" />
 
-import { type EventData, type KnownEventComponent, type Translations } from "@evnt/schema";
+import { type EventData, type SplashMediaComponent, type Translations } from "@evnt/schema";
 import { snippetToMarkdown } from "@evnt/pretty/markdown";
 import { snippetEvent } from "@evnt/pretty";
 import { fetchEventData } from "../lib/resolve-data";
@@ -29,8 +29,7 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
 	let markdown = data ? snippetEvent(data).map(snip => snippetToMarkdown(snip)).join("\n") : "";
 
 	let splashMediaComponents = data?.components
-		?.filter((c): c is KnownEventComponent & { type: "splashMedia" } => c.type === "splashMedia")
-		.map(c => c.data)
+		?.filter((c): c is SplashMediaComponent => c.$type === "directory.evnt.component.splashMedia")
 	let selected = splashMediaComponents?.find(c => c.roles.includes("ogembed"))
 		?? splashMediaComponents?.find(c => c.roles.includes("embed"))
 		?? splashMediaComponents?.find(c => c.roles.includes("poster"))
@@ -45,7 +44,7 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
 					element.append(`<meta property="twitter:site" content="eventsl.ink"/>`, { html: true });
 					element.append(`<meta property="og:title" content="${title!}" />`, { html: true });
 					if (markdown) element.append(`<meta property="og:description" content="${markdown.slice(0, 400)}" />`, { html: true });
-					if (image) {
+					if (image?.url) {
 						element.append(`<meta property="og:image" content="${image.url}" />`, { html: true });
 						element.append(`<meta property="twitter:image" content="${image.url}" />`, { html: true });
 						if (t(selected?.media.alt ?? {}))

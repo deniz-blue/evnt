@@ -1,6 +1,60 @@
 import type { EventData, EventInstance, PartialDate, Venue } from "@evnt/schema";
 import type { Range, SnippetLabel, TSnippet } from "./snippet";
-import { UtilPartialDate, UtilPartialDateRange, UtilTranslations } from "@evnt/schema/utils";
+import { TranslationsUtil } from "@evnt/translations";
+import { PartialDateUtil } from "@evnt/partial-date";
+
+const twoDigits = (value: number): string => String(value).padStart(2, "0");
+const hasDay = (pd: PartialDate): boolean => PartialDateUtil.has(pd, "day");
+const hasTime = (pd: PartialDate): boolean => PartialDateUtil.has(pd, "time");
+const parseFields = (pd: PartialDate): PartialDate.Parsed.Fields => {
+	const parsed = PartialDateUtil.parse(pd);
+	return {
+		year: parsed.year,
+		month: "month" in parsed ? parsed.month : 1,
+		day: "day" in parsed ? parsed.day : 1,
+		hour: "hour" in parsed ? parsed.hour : 0,
+		minute: "minute" in parsed ? parsed.minute : 0,
+		timezone: parsed.timezone,
+	};
+};
+const getTimePart = (pd: PartialDate): string | undefined => {
+	const parsed = PartialDateUtil.parse(pd);
+	if (parsed.precision !== "time") return undefined;
+	return `${twoDigits(parsed.hour)}:${twoDigits(parsed.minute)}`;
+};
+const getDatePart = (pd: PartialDate): PartialDate.YearMonthDay => {
+	const parsed = parseFields(pd);
+	return PartialDateUtil.format({
+		year: parsed.year,
+		month: parsed.month,
+		day: parsed.day,
+		timezone: parsed.timezone,
+		precision: "day",
+	}) as PartialDate.YearMonthDay;
+};
+const asDay = (pd: PartialDate.YearMonthDayTime): PartialDate.YearMonthDay => getDatePart(pd);
+const comparePartialDate = (a: PartialDate, b: PartialDate): number => {
+	const pa = parseFields(a);
+	const pb = parseFields(b);
+	if (pa.year !== pb.year) return pa.year - pb.year;
+	if (pa.month !== pb.month) return pa.month - pb.month;
+	if (pa.day !== pb.day) return pa.day - pb.day;
+	if (pa.hour !== pb.hour) return pa.hour - pb.hour;
+	return pa.minute - pb.minute;
+};
+const isSameDayRange = (instance: EventInstance): boolean => {
+	if (!instance.start || !instance.end || !hasDay(instance.start) || !hasDay(instance.end)) return false;
+	const start = parseFields(instance.start);
+	const end = parseFields(instance.end);
+	return start.year === end.year && start.month === end.month && start.day === end.day;
+};
+const isNextDay = ({ start, end }: Range<PartialDate.YearMonthDay>): boolean => {
+	const startParsed = parseFields(start);
+	const endParsed = parseFields(end);
+	const startMs = Date.UTC(startParsed.year, startParsed.month - 1, startParsed.day);
+	const endMs = Date.UTC(endParsed.year, endParsed.month - 1, endParsed.day);
+	return endMs - startMs === 24 * 60 * 60 * 1000;
+};
 
 export const snippetEvent = (data: EventData, opts?: {
 	maxVenues?: number;
@@ -23,8 +77,8 @@ export const snippetEvent = (data: EventData, opts?: {
 		for (let venueId of venueIds) {
 			const venue = data.venues?.find(v => v.id === venueId);
 			if (!venue) continue;
-			if (venue.type === "physical") hasPhysical = true;
-			if (venue.type === "online") hasOnline = true;
+			if (venue.$type === "directory.evnt.venue.physical") hasPhysical = true;
+			if (venue.$type === "directory.evnt.venue.online") hasOnline = true;
 		};
 
 		return {
@@ -68,32 +122,32 @@ export const snippetVenue = (venue: Venue, detailed?: boolean): TSnippet => {
 	let sublabel: SnippetLabel | undefined = undefined;
 
 	if (detailed) {
-		if (venue.type === "physical" && venue.address) {
+		if (venue.$type === "directory.evnt.venue.physical" && venue.address) {
 			sublabel = { type: "address", value: venue.address };
-		} else if (venue.type === "online" && venue.url) {
+		} else if (venue.$type === "directory.evnt.venue.online" && venue.url) {
 			sublabel = { type: "external-link", url: venue.url };
-		} else if (venue.type === "unknown") {
+		} else if (venue.$type === "directory.evnt.venue.unknown") {
 			sublabel = undefined;
 		}
 	}
 
 	return {
-		icon: venue.type === "physical" ? "venue-physical" : venue.type === "online" ? "venue-online" : "venue-unknown",
-		label: UtilTranslations.isEmpty(venue.name) ? { type: "placeholder", hint: "unnamed" } : { type: "translations", value: venue.name },
+		icon: venue.$type === "directory.evnt.venue.physical" ? "venue-physical" : venue.$type === "directory.evnt.venue.online" ? "venue-online" : "venue-unknown",
+		label: TranslationsUtil.isEmpty(venue.name) ? { type: "placeholder", hint: "unnamed" } : { type: "translations", value: venue.name },
 		sublabel,
 	};
 };
 
 export const venueGoogleMapsLink = (venue: Venue): string | null => {
-	if (venue.type !== "physical") return null;
-	if (venue.googleMapsPlaceId) return `https://www.google.com/maps/place/?${new URLSearchParams({ q: `place_id:${venue.googleMapsPlaceId}` }).toString()}`;
+	if (venue.$type !== "directory.evnt.venue.physical") return null;
+	// if (venue.googleMapsPlaceId) return `https://www.google.com/maps/place/?${new URLSearchParams({ q: `place_id:${venue.googleMapsPlaceId}` }).toString()}`;
 	if (venue.coordinates) return `https://www.google.com/maps/search/?${new URLSearchParams({ api: "1", query: `${venue.coordinates.lat},${venue.coordinates.lng}` }).toString()}`;
 	if (venue.address?.addr) return `https://www.google.com/maps/search/?${new URLSearchParams({ api: "1", query: venue.address.addr }).toString()}`;
 	return null;
 }
 
 export const venueOpenStreetMapsLink = (venue: Venue): string | null => {
-	if (venue.type !== "physical") return null;
+	if (venue.$type !== "directory.evnt.venue.physical") return null;
 	if (venue.coordinates) return `https://www.openstreetmap.org/?mlat=${venue.coordinates.lat}&mlon=${venue.coordinates.lng}#map=18/${venue.coordinates.lat}/${venue.coordinates.lng}`;
 	if (venue.address?.addr) return `https://www.openstreetmap.org/search?${new URLSearchParams({ query: venue.address.addr }).toString()}`;
 	return null;
@@ -107,13 +161,20 @@ export const snippetInstances = (instances: EventInstance[], maxInstances?: numb
 	// - event that starts at 9am and ends at 5pm each day
 	// - event that occurs between 11-14 and 16-18 on 3 days in a row -> will be grouped together as 3 consecutive days with 2 time ranges per day
 
-	const groupedByDate: Record<PartialDate.Day, EventInstance[]> = {};
+	const isSameDay = (instance: EventInstance): boolean => {
+		const a = PartialDateUtil.parse(instance.start!);
+		const b = PartialDateUtil.parse(instance.end!);
+		return (a.precision === "day" || a.precision === "time") && (b.precision === "day" || b.precision === "time") && a.year === b.year && a.month === b.month && a.day === b.day;
+	}
+
+	const groupedByDate: Record<PartialDate.YearMonthDay, EventInstance[]> = {};
 	const ungroupedByDate: EventInstance[] = [];
 	for (const instance of instances) {
-		if (instance.start && UtilPartialDate.hasDay(instance.start) && (!instance.end || UtilPartialDateRange.isSameDay(instance))) {
-			const day = UtilPartialDate.asDay(instance.start);
-			groupedByDate[day] ||= [];
-			groupedByDate[day].push(instance);
+		if (instance.start && PartialDateUtil.has(instance.start, "day") && (!instance.end || isSameDay(instance))) {
+			const { year, month, day } = PartialDateUtil.parse(instance.start) as PartialDate.Parsed.YearMonthDay | PartialDate.Parsed.YearMonthDayTime;
+			const dayValue = PartialDateUtil.format({ year, month, day, timezone: "UTC", precision: "day" }) as PartialDate.YearMonthDay;
+			groupedByDate[dayValue] ||= [];
+			groupedByDate[dayValue].push(instance);
 		} else {
 			ungroupedByDate.push(instance);
 		}
@@ -121,24 +182,24 @@ export const snippetInstances = (instances: EventInstance[], maxInstances?: numb
 
 	// Check for consecutive days with same time and group them together
 	const groupedByConsecutiveDays: {
-		range: Range<PartialDate.Day>;
+		range: Range<PartialDate.YearMonthDay>;
 		instances: EventInstance[];
 	}[] = [];
 
 	const hashTimes = (instances: EventInstance[]) => instances.map(i => [
 		i.start,
 		i.end,
-	].filter((s): s is PartialDate.Full => !!s && UtilPartialDate.hasTime(s)).map(s => UtilPartialDate.getTimePart(s)).join("-"))
+	].filter((s): s is PartialDate.YearMonthDayTime => !!s && hasTime(s)).map(s => getTimePart(s)).join("-"))
 		.sort()
 		.reduce((acc, time) => acc.includes(time) ? acc : [...acc, time], [] as string[])
 		.join("|");
 
-	for (const [day, instances] of Object.entries(groupedByDate) as [PartialDate.Day, EventInstance[]][]) {
+	for (const [day, instances] of Object.entries(groupedByDate) as [PartialDate.YearMonthDay, EventInstance[]][]) {
 		// Try to find an existing group that this day can be added to
 		let addedToGroup = false;
 		for (const group of groupedByConsecutiveDays) {
 			if (
-				UtilPartialDateRange.isNextDay({ start: group.range.end, end: day })
+				isNextDay({ start: group.range.end, end: day })
 				&& (hashTimes(instances) === hashTimes(group.instances))
 			) {
 				group.range.end = day;
@@ -161,12 +222,12 @@ export const snippetInstances = (instances: EventInstance[], maxInstances?: numb
 	for (const group of groupedByConsecutiveDays) {
 		if (group.instances.length === 0) continue;
 		const deduplicatedTimeRanges = Array.from(new Set(group.instances.map(i => {
-			const hasStartTime = i.start && UtilPartialDate.hasTime(i.start);
-			const hasEndTime = i.end && UtilPartialDate.hasTime(i.end);
+			const hasStartTime = i.start && hasTime(i.start);
+			const hasEndTime = i.end && hasTime(i.end);
 			if (hasStartTime && hasEndTime) {
-				return `range:${UtilPartialDate.getTimePart(i.start as PartialDate.Full)}-${UtilPartialDate.getTimePart(i.end as PartialDate.Full)}`;
+				return `range:${getTimePart(i.start as PartialDate.YearMonthDayTime)}-${getTimePart(i.end as PartialDate.YearMonthDayTime)}`;
 			} else if (hasStartTime) {
-				return `time:${UtilPartialDate.getTimePart(i.start as PartialDate.Full)}`;
+				return `time:${getTimePart(i.start as PartialDate.YearMonthDayTime)}`;
 			}
 			return "none";
 		}))).map(tr => {
@@ -214,7 +275,7 @@ export const snippetInstances = (instances: EventInstance[], maxInstances?: numb
 	}
 
 	if (maxInstances && snippets.length > maxInstances) {
-		const dates = instances.flatMap(i => [i.start, i.end]).filter((d): d is PartialDate => !!d).sort((a, b) => UtilPartialDate.compare(a, b));
+		const dates = instances.flatMap(i => [i.start, i.end]).filter((d): d is PartialDate => !!d).sort((a, b) => comparePartialDate(a, b));
 		const earliest = dates[0];
 		const latest = dates[dates.length - 1];
 
@@ -239,13 +300,13 @@ export const snippetInstance = (instance: EventInstance): TSnippet[] => {
 	const snippets: TSnippet[] = [];
 
 	if (instance.start && instance.end) {
-		const startHasDay = UtilPartialDate.hasDay(instance.start);
-		const endHasDay = UtilPartialDate.hasDay(instance.end);
-		const startHasTime = UtilPartialDate.hasTime(instance.start);
-		const endHasTime = UtilPartialDate.hasTime(instance.end);
+		const startHasDay = hasDay(instance.start);
+		const endHasDay = hasDay(instance.end);
+		const startHasTime = hasTime(instance.start);
+		const endHasTime = hasTime(instance.end);
 
-		const singleDay = startHasDay && endHasDay && UtilPartialDateRange.isSameDay(instance);
-		const bothSameTime = startHasTime && endHasTime && UtilPartialDate.getTimePart(instance.start) === UtilPartialDate.getTimePart(instance.end);
+		const singleDay = startHasDay && endHasDay && isSameDayRange(instance);
+		const bothSameTime = startHasTime && endHasTime && getTimePart(instance.start) === getTimePart(instance.end);
 
 		if (singleDay && bothSameTime) {
 			snippets.push({
@@ -255,28 +316,28 @@ export const snippetInstance = (instance: EventInstance): TSnippet[] => {
 		} else if (singleDay && startHasTime && endHasTime) {
 			snippets.push({
 				icon: "calendar",
-				label: { type: "date-time", value: UtilPartialDate.getDatePart(instance.start) },
+				label: { type: "date-time", value: getDatePart(instance.start) },
 			});
 			snippets.push({
 				icon: "clock",
 				label: {
 					type: "time-range", value: {
-						start: { value: UtilPartialDate.getTimePart(instance.start)!, day: UtilPartialDate.asDay(instance.start! as PartialDate.Full) },
-						end: { value: UtilPartialDate.getTimePart(instance.end)!, day: UtilPartialDate.asDay(instance.end! as PartialDate.Full) },
+						start: { value: getTimePart(instance.start)!, day: asDay(instance.start as PartialDate.YearMonthDayTime) },
+						end: { value: getTimePart(instance.end)!, day: asDay(instance.end as PartialDate.YearMonthDayTime) },
 					}
 				},
 			});
 		} else if (singleDay && startHasTime && !endHasTime) {
 			snippets.push({
 				icon: "calendar",
-				label: { type: "date-time", value: UtilPartialDate.getDatePart(instance.start) },
+				label: { type: "date-time", value: getDatePart(instance.start) },
 			});
 			snippets.push({
 				icon: "clock",
 				label: {
 					type: "time",
-					value: UtilPartialDate.getTimePart(instance.start)!,
-					day: UtilPartialDate.asDay(instance.start! as PartialDate.Full),
+					value: getTimePart(instance.start)!,
+					day: asDay(instance.start as PartialDate.YearMonthDayTime),
 				},
 			});
 		} else {
