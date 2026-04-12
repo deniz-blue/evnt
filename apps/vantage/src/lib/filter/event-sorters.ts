@@ -1,5 +1,5 @@
 import type { EventData, LanguageKey, PartialDate } from "@evnt/schema";
-import { UtilTranslations } from "@evnt/schema/utils";
+import { UtilTranslations } from "~/lib/util/schema-utils";
 import type { EventQueryResult } from "../../db/useEventQuery";
 
 export type EventSorter = (a: EventData, b: EventData) => number;
@@ -10,7 +10,7 @@ export const EventSorters = {
 	Invert: (sorter: EventSorter): EventSorter => (a, b) => -sorter(a, b),
 
 	Name: (userLanguage: LanguageKey) => (a: EventData, b: EventData) => {
-		const t = UtilTranslations.createTranslator(userLanguage);
+		const t = UtilTranslations.createTranslator([userLanguage]);
 		return t(a.name).localeCompare(t(b.name), userLanguage);
 	},
 

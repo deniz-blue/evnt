@@ -1,11 +1,11 @@
-import type { EventComponent } from "@evnt/schema";
+import type { EventComponent, SplashMediaComponent } from "@evnt/schema";
 import classes from "./event-card.module.css";
 import { useEventCardContext } from "./event-card-context";
 import { OverLayer } from "../../../base/layout/OverLayer";
 import { EvntMedia } from "../../../base/media/EvntMedia";
 import { Blurhash } from "../../../base/media/Blurhash";
 import type { ReactNode } from "react";
-import { useEventEnvelope } from "../event-envelope-context";
+import { useResolvedEvent } from "../event-envelope-context";
 
 export interface EventCardBackgroundProps {
 	backgroundDim?: number;
@@ -14,12 +14,12 @@ export interface EventCardBackgroundProps {
 
 export const EventCardBackground = (props: EventCardBackgroundProps) => {
 	const { variant } = useEventCardContext();
-	const { data } = useEventEnvelope();
+	const { data } = useResolvedEvent();
 
 	const backgroundMedia = data?.components
-		?.find((c): c is EventComponent & { type: "splashMedia" } =>
-			c.type === "splashMedia" && c.data.roles.includes("background"))
-		?.data?.media;
+		?.find((c): c is SplashMediaComponent =>
+			c.$type === "directory.evnt.component.splashMedia" && (c as SplashMediaComponent).roles.includes("background"))
+		?.media;
 
 	let backgroundElement: ReactNode = null;
 	if (variant !== "inline" && backgroundMedia)

@@ -1,11 +1,11 @@
-import { ActionIcon, Anchor, AppShell, Code, Container, Flex, Group, Loader, Space, Text, Title, type ActionIconProps } from "@mantine/core";
+import { ActionIcon, Anchor, AppShell, Burger, Center, Code, Container, Flex, Group, Loader, NavLink, Space, Text, Title, type ActionIconProps } from "@mantine/core";
 import { createFileRoute, Link, Outlet, useMatches, type ErrorComponentProps } from "@tanstack/react-router"
-import { IconCalendar, IconList, IconSearch, IconSettings } from "@tabler/icons-react";
+import { IconCalendar, IconList, IconMenu2, IconSearch, IconSettings } from "@tabler/icons-react";
 import z from "zod";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { SettingsDrawer } from "../../components/app/overlay/settings/SettingsDrawer";
 import { useSettingsOverlay } from "../../hooks/app/search-param-modals";
-import { useHotkeys } from "@mantine/hooks";
+import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { EventSourceSchema } from "../../db/models/event-source";
 import { useIsFetching } from "@tanstack/react-query";
 import { useTasksStore } from "../../stores/useTasksStore";
@@ -30,6 +30,8 @@ export const Route = createFileRoute("/_layout")({
 })
 
 function LayoutPage() {
+	const [isNavbarOpened, { toggle: toggleNavbar }] = useDisclosure();
+
 	const spaceless = useMatches({
 		select: (matches) => matches.some((match) => match.staticData?.spaceless),
 	});
@@ -45,12 +47,37 @@ function LayoutPage() {
 			header={{
 				height: "calc(60px + env(safe-area-inset-top, 0px))",
 			}}
+			navbar={{ width: 300, breakpoint: "sm", collapsed: { desktop: true, mobile: !isNavbarOpened } }}
 			mb="env(safe-area-inset-bottom, 0px)"
 			padding={spaceless ? 0 : "xs"}
 		>
+			<AppShell.Navbar>
+				<NavLink
+					leftSection={<IconList />}
+					label="List View"
+					component={Link}
+					to="/list"
+				/>
+				<NavLink
+					leftSection={<IconCalendar />}
+					label="Calendar View"
+					component={Link}
+					to="/calendar"
+				/>
+			</AppShell.Navbar>
 			<AppShell.Header pt="env(safe-area-inset-top, 0px)">
 				<Group gap={0} p="xs" align="center" h="100%" w="100%" justify="space-between">
 					<Group gap={4}>
+						<ActionIcon
+							color="gray"
+							variant="transparent"
+							aria-label="Toggle navigation menu"
+							onClick={toggleNavbar}
+							size="input-md"
+							hiddenFrom="sm"
+						>
+							<IconMenu2 />
+						</ActionIcon>
 						<Logo />
 						<Group gap={4}>
 							<Link to="/list">

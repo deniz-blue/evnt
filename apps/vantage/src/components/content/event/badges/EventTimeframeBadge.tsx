@@ -1,11 +1,11 @@
-import { UtilPartialDate, UtilPartialDateRange } from "@evnt/schema/utils";
-import { useEventEnvelope } from "../event-envelope-context";
-import type { PartialDate } from "@evnt/schema";
+import { UtilPartialDate, UtilPartialDateRange } from "~/lib/util/schema-utils";
+import { useResolvedEvent } from "../event-envelope-context";
+import type { PartialDate as PartialDateParts } from "@evnt/partial-date";
 import { Badge, type BoxProps } from "@mantine/core";
 import { IconCalendarDown, IconHistory, IconHourglass } from "@tabler/icons-react";
 
 export const EventTimeframeBadge = (props: BoxProps) => {
-	const { data } = useEventEnvelope();
+	const { data } = useResolvedEvent();
 	const now = UtilPartialDate.now();
 
 	const status = data?.status ?? "planned";
@@ -13,12 +13,12 @@ export const EventTimeframeBadge = (props: BoxProps) => {
 
 	if (!data) return null;
 
-	const allDays: PartialDate.Day[] = data
+	const allDays: PartialDateParts.YearMonthDay[] = data
 		.instances
 		?.flatMap(instance => UtilPartialDateRange.getIncludedDates(instance))
 		?? [];
 
-	const today: PartialDate.Day = UtilPartialDate.asDay(now);
+	const today: PartialDateParts.YearMonthDay = UtilPartialDate.asDay(now);
 
 	const hasToday = allDays?.some(day => today === day);
 
@@ -31,7 +31,7 @@ export const EventTimeframeBadge = (props: BoxProps) => {
 		?.map(instance => ({
 			low: UtilPartialDate.toLowDate(instance.start!),
 			high: instance.end ? UtilPartialDate.toHighDate(instance.end) : (
-				UtilPartialDate.toHighDate(UtilPartialDate.asDay(instance.start as PartialDate.Day | PartialDate.Full))
+				UtilPartialDate.toHighDate(UtilPartialDate.asDay(instance.start as PartialDateParts.YearMonthDay | PartialDateParts.YearMonthDayTime))
 			),
 		}))
 		?? [];

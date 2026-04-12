@@ -1,5 +1,5 @@
-import type { PartialDate } from "@evnt/schema";
-import { UtilPartialDate } from "@evnt/schema/utils";
+import type { PartialDate as PartialDateParts } from "@evnt/partial-date";
+import { UtilPartialDate } from "~/lib/util/schema-utils";
 import { Box, Indicator, Stack } from "@mantine/core";
 import { useState } from "react";
 import { useLocaleStore } from "../../stores/useLocaleStore";
@@ -8,7 +8,7 @@ import { useShallow } from "zustand/shallow";
 import { useEventQueries } from "../../db/useEventQuery";
 import { EventCard, type EventCardProps } from "../../components/content/event/card/EventCard";
 import { createFileRoute } from "@tanstack/react-router";
-import { EventEnvelopeProvider } from "../../components/content/event/event-envelope-context";
+import { ResolvedEventProvider } from "../../components/content/event/event-envelope-context";
 import { CalendarMonth } from "../../components/calendar/CalendarMonth";
 import { CalendarMobileMonth } from "../../components/calendar/CalendarMobileMonth";
 import { Day } from "@mantine/dates";
@@ -23,10 +23,12 @@ export const Route = createFileRoute("/_layout/calendar")({
 export default function CalendarPage() {
 	const h = "calc(100svh - var(--app-shell-header-height, 0px) - 2 * var(--app-shell-padding) - var(--safe-area-inset-top) - var(--safe-area-inset-bottom))";
 
-	const [month, setMonth] = useState<PartialDate.Month>(UtilPartialDate.asMonth(UtilPartialDate.today()));
-	const [day, setDay] = useState<PartialDate.Day>(UtilPartialDate.asDay(UtilPartialDate.today()));
+	const [month, setMonth] = useState<PartialDateParts.YearMonth>(UtilPartialDate.asMonth(UtilPartialDate.today()));
+	const [day, setDay] = useState<PartialDateParts.YearMonthDay>(UtilPartialDate.asDay(UtilPartialDate.today()));
 
 	let breakpoint = "xs";
+
+	return null;
 
 	return (
 		<Stack
@@ -62,7 +64,7 @@ export default function CalendarPage() {
 export const DayButton = ({
 	day,
 }: {
-	day: PartialDate.Day;
+	day: PartialDateParts.YearMonthDay;
 }) => {
 	const sources = useCacheEventsStore(
 		useShallow(store => store.cache.byDay[day] ?? [])
@@ -87,7 +89,7 @@ export const DayCard = ({
 	day,
 	variant,
 }: {
-	day: PartialDate.Day;
+	day: PartialDateParts.YearMonthDay;
 	variant?: EventCardProps["variant"];
 }) => {
 	const sources = useCacheEventsStore(
@@ -99,7 +101,7 @@ export const DayCard = ({
 	return (
 		<Stack gap={0}>
 			{queries.map(({ query, source }, index) => (
-				<EventEnvelopeProvider
+				<ResolvedEventProvider
 					key={index}
 					value={query.data ?? { data: null }}
 				>
@@ -108,7 +110,7 @@ export const DayCard = ({
 						source={source}
 						loading={query.isFetching}
 					/>
-				</EventEnvelopeProvider>
+				</ResolvedEventProvider>
 			))}
 		</Stack>
 	);

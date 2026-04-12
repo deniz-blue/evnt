@@ -68,7 +68,7 @@ function FormPage() {
 				setLoading(false);
 			}
 		} else {
-			set(dataAtom, { name: {}, v: 0 });
+			set(dataAtom, { name: {}, v: "0.1" });
 		}
 	}), [sourceParam, dataParam, setLoading]));
 

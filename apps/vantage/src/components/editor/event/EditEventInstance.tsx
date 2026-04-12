@@ -9,7 +9,7 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { Snippet } from "../../content/Snippet";
 import { snippetInstance, snippetVenue } from "@evnt/pretty";
 import { VenueAtomDisplay } from "./EditVenue";
-import { UtilPartialDate } from "@evnt/schema/utils";
+import { UtilPartialDate } from "~/lib/util/schema-utils";
 import { CollapsiblePaper } from "../CollapsiblePaper";
 
 export const EditEventInstance = ({

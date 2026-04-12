@@ -1,3 +1,5 @@
+import { Temporal } from "@js-temporal/polyfill";
+
 export namespace PartialDate {
 	type TimezoneIdentifier = string;
 	export type YearOnly = `${number}[${TimezoneIdentifier}]`;
@@ -68,9 +70,9 @@ export class PartialDateUtil {
 
 	static format(parsed: PartialDate.Parsed): PartialDate {
 		let str = parsed.year.toString();
-		if ("month" in parsed) str += `-${String(parsed.month).padStart(2, "0")}`;
-		if ("day" in parsed) str += `-${String(parsed.day).padStart(2, "0")}`;
-		if ("hour" in parsed && "minute" in parsed) str += `T${String(parsed.hour).padStart(2, "0")}:${String(parsed.minute).padStart(2, "0")}`;
+		if (this.has(parsed, "month")) str += `-${String(parsed.month).padStart(2, "0")}`;
+		if (this.has(parsed, "day")) str += `-${String(parsed.day).padStart(2, "0")}`;
+		if (this.has(parsed, "time")) str += `T${String(parsed.hour).padStart(2, "0")}:${String(parsed.minute).padStart(2, "0")}`;
 		str += `[${parsed.timezone}]`;
 		return str as PartialDate;
 	}
@@ -80,14 +82,58 @@ export class PartialDateUtil {
 		return parsed.precision;
 	}
 
-	static has(pd: PartialDate, field: "month" | "day" | "time"): boolean {
-		const parsed = this.parse(pd);
+	static has(pd: PartialDate.Parsed, field: "time"): pd is PartialDate.Parsed.YearMonthDayTime;
+	static has(pd: PartialDate.Parsed, field: "day"): pd is PartialDate.Parsed.YearMonthDay | PartialDate.Parsed.YearMonthDayTime;
+	static has(pd: PartialDate.Parsed, field: "month"): pd is PartialDate.Parsed.YearMonth | PartialDate.Parsed.YearMonthDay | PartialDate.Parsed.YearMonthDayTime;
+	static has(pd: PartialDate, field: "time"): pd is PartialDate.YearMonthDayTime;
+	static has(pd: PartialDate, field: "day"): pd is PartialDate.YearMonthDay | PartialDate.YearMonthDayTime;
+	static has(pd: PartialDate, field: "month"): pd is PartialDate.YearMonth | PartialDate.YearMonthDay | PartialDate.YearMonthDayTime;
+	static has(pd: PartialDate | PartialDate.Parsed, field: "month" | "day" | "time"): boolean {
+		const parsed = typeof pd === "string" ? this.parse(pd) : pd;
 		switch (field) {
 			case "time": return parsed.precision === "time";
 			case "day": return parsed.precision === "day" || parsed.precision === "time";
 			case "month": return parsed.precision === "month" || parsed.precision === "day" || parsed.precision === "time";
 			default: return false;
 		}
+	}
+
+	static lowerPrecision(pd: PartialDate.YearMonthDayTime, to: "day"): PartialDate.YearMonthDay;
+	static lowerPrecision(pd: PartialDate.YearMonthDayTime, to: "month"): PartialDate.YearMonth;
+	static lowerPrecision(pd: PartialDate.YearMonthDayTime, to: "year"): PartialDate.YearOnly;
+	static lowerPrecision(pd: PartialDate.YearMonthDay, to: "month"): PartialDate.YearMonth;
+	static lowerPrecision(pd: PartialDate.YearMonthDay, to: "year"): PartialDate.YearOnly;
+	static lowerPrecision(pd: PartialDate.YearMonth, to: "year"): PartialDate.YearOnly;
+	static lowerPrecision(pd: PartialDate, to: Exclude<PartialDate.Precision, "time">): PartialDate {
+		const { year, month, day, timezone } = this.parse(pd) as PartialDate.Parsed.Fields;
+		switch (to) {
+			case "day": return this.format({ year, month, day, timezone, precision: "day" });
+			case "month": return this.format({ year, month, timezone, precision: "month" });
+			case "year": return this.format({ year, timezone, precision: "year" });
+		}
+	}
+
+	static setPrecision(pd: PartialDate, precision: "year"): PartialDate.YearOnly;
+	static setPrecision(pd: PartialDate, precision: "month", mode: "low" | "high"): PartialDate.YearMonth;
+	static setPrecision(pd: PartialDate, precision: "day", mode: "low" | "high"): PartialDate.YearMonthDay;
+	static setPrecision(pd: PartialDate, precision: "time", mode: "low" | "high"): PartialDate.YearMonthDayTime;
+	static setPrecision(pd: PartialDate, precision: PartialDate.Precision, mode?: "low" | "high"): PartialDate {
+		let { year, month, day, hour, minute, timezone } = this.parse(pd) as PartialDate.Parsed.Fields;
+		month ??= mode === "low" ? 1 : 12;
+		day ??= mode === "low" ? 1 : new Temporal.PlainYearMonth(year, month).daysInMonth;
+		hour ??= mode === "low" ? 0 : 23;
+		minute ??= mode === "low" ? 0 : 59;
+		switch (precision) {
+			case "year": return this.format({ year, timezone, precision: "year" });
+			case "month": return this.format({ year, month, timezone, precision: "month" });
+			case "day": return this.format({ year, month, day, timezone, precision: "day" });
+			case "time": return this.format({ year, month, day, hour, minute, timezone, precision: "time" });
+		}
+	}
+
+	static withTimezone(pd: PartialDate | PartialDate.Parsed, timezone: string): PartialDate {
+		const parsed = typeof pd === "string" ? this.parse(pd) : pd;
+		return this.format({ ...parsed, timezone });
 	}
 
 	static parsedFromTemporal(obj: Temporal.ZonedDateTime | Temporal.PlainDateTime | Temporal.PlainDate | Temporal.PlainYearMonth): PartialDate.Parsed {

@@ -2,11 +2,11 @@ import type { ReactNode } from "react";
 import { useEventDetailsModal } from "../../../../hooks/app/useEventDetailsModal";
 import { Anchor, Group, Loader, Skeleton, Stack, Text, Transition, type MantineTransition } from "@mantine/core";
 import { useEventCardContext } from "./event-card-context";
-import { UtilTranslations } from "@evnt/schema/utils";
 import { Trans } from "../Trans";
 import { Link } from "@tanstack/react-router";
 import { EnvelopeErrorBadge } from "../envelope/EnvelopeErrorBadge";
-import { useEventEnvelope } from "../event-envelope-context";
+import { useResolvedEvent } from "../event-envelope-context";
+import { TranslationsUtil } from "@evnt/translations";
 
 const loaderTransition: MantineTransition = {
 	in: { opacity: 1, width: "1.5rem" },
@@ -21,7 +21,7 @@ const loadingTextTransition: MantineTransition = {
 } as const;
 
 export const EventCardTitle = () => {
-	const { data, err } = useEventEnvelope();
+	const { data, err } = useResolvedEvent();
 	const { loading, variant, menu, embed, source } = useEventCardContext();
 	const { key } = useEventDetailsModal();
 
@@ -29,7 +29,7 @@ export const EventCardTitle = () => {
 	if (!!err) title = <Text inherit inline span c="dimmed" fz="sm" fs="italic" children="<unknown>" />;
 	else if (!!loading) title = <Skeleton height="1rem" width="16ch" />;
 
-	if (!!data && !UtilTranslations.isEmpty(data.name))
+	if (!!data && !TranslationsUtil.isEmpty(data.name))
 		title = <Trans t={data.name} />;
 	else if (!!data)
 		title = <Text inherit inline span c="dimmed" fz="sm" fs="italic" children="<no title>" />;

@@ -1,9 +1,9 @@
 import { Badge, type BoxProps } from "@mantine/core";
-import { useEventEnvelope } from "../event-envelope-context";
+import { useResolvedEvent } from "../event-envelope-context";
 import { IconCalendarOff, IconCalendarPause, IconCalendarQuestion, IconCalendarTime } from "@tabler/icons-react";
 
 export const EventStatusBadge = (props: BoxProps) => {
-	const { data } = useEventEnvelope();
+	const { data } = useResolvedEvent();
 	const status = data?.status ?? "planned";
 	
 	if (status === "cancelled") return (

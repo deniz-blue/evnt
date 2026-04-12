@@ -1,6 +1,6 @@
 import type { Range } from "@evnt/pretty";
 import type { PartialDate } from "@evnt/schema";
-import { UtilPartialDate, UtilPartialDateRange } from "@evnt/schema/utils";
+import { UtilPartialDate, UtilPartialDateRange } from "~/lib/util/schema-utils";
 import { Text, Tooltip } from "@mantine/core";
 import { useLocaleStore } from "../../../stores/useLocaleStore";
 import { useMemo } from "react";

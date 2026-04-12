@@ -29,7 +29,7 @@ export const EditVenuesList = ({
 
 		const newVenue: Venue = {
 			id: id.toString(),
-			type: "unknown",
+			$type: "directory.evnt.venue.unknown",
 			name: {},
 		};
 

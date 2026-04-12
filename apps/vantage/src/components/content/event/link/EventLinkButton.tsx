@@ -1,5 +1,5 @@
 import type { LinkComponent } from "@evnt/schema";
-import { UtilTranslations } from "@evnt/schema/utils";
+import { UtilTranslations } from "~/lib/util/schema-utils";
 import { Button, Group, Stack, Text } from "@mantine/core";
 import { IconExternalLink, IconLink, IconLinkOff } from "@tabler/icons-react";
 import { Trans } from "../Trans";
@@ -45,10 +45,6 @@ export const EventLinkButton = ({
 					style={{ textWrap: "wrap" }}
 					align="start"
 				>
-					<Text inline span ta="start" inherit fw="normal" pt={UtilTranslations.isEmpty(value.description) ? 0 : 4}>
-						<Trans t={value.description} />
-					</Text>
-
 					<Stack gap={0} pt={subtitle ? 4 : 0}>
 						<Group gap={4} justify="start">
 							<Text inherit inline span>

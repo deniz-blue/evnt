@@ -8,10 +8,10 @@ import { useNavigate } from "@tanstack/react-router";
 import { Code } from "@mantine/core";
 import { QRCode } from "../../lib/util/qrcode";
 import { modals } from "@mantine/modals";
-import { DataDB } from "../../db/data-db";
 import { PDSlsIcon } from "../../lib/resources/PDSlsIcon";
 import { AsyncLoader } from "../../components/data/AsyncLoader";
 import { openConfirmModal, withConfirmation } from "../../lib/util/confirm";
+import { DataDB } from "../../db/data-db";
 
 export const EventActionFactory = {
 	All: ({
@@ -27,7 +27,8 @@ export const EventActionFactory = {
 			EventActionFactory.ShareLinkQRCode(source),
 			EventActionFactory.CopySource(source),
 			EventActionFactory.CopyJSON(source),
-			EventActionFactory.ViewJSON(source),
+			EventActionFactory.ViewRawJSON(source),
+			EventActionFactory.ViewResolvedJSON(source),
 			EventActionFactory.RefetchData(source),
 			EventActionFactory.CopyEmbedLink(source),
 			EventActionFactory.ViewOnPDS(source),
@@ -65,7 +66,7 @@ export const EventActionFactory = {
 		category: "Event",
 		execute: handleAsyncCopy(
 			async () => {
-				const data = (await DataDB.get(source))?.data;
+				const data = (await EventResolver.resolve(source))?.data;
 				const name = data?.name["en"] ?? data?.name[Object.keys(data.name)[0]!] ?? "Event";
 				return `[${name}](${EventActions.getShareLink(source)!})`;
 			},
@@ -105,30 +106,50 @@ export const EventActionFactory = {
 		category: "Event",
 		icon: <IconBraces />,
 		execute: handleAsyncCopy(
-			async (): Promise<string> => JSON.stringify((await DataDB.get(source))?.data, null, 2) ?? "",
+			async (): Promise<string> => JSON.stringify((await EventResolver.resolve(source))?.data, null, 2) ?? "",
 			"Event JSON copied to clipboard",
 		),
 		id: "copy-event-json",
 		deps: [source],
 	}),
-	ViewJSON: (source: EventSource) => ({
-		label: "View JSON",
+	ViewRawJSON: (source: EventSource) => ({
+		label: "View JSON (Original)",
 		category: "Event",
 		icon: <IconJson />,
 		execute: () => modals.open({
 			size: "xl",
-			title: "Event JSON Data",
+			title: "JSON Data",
 			children: (
-				<AsyncLoader fetcher={() => DataDB.get(source)}>
-					{(data) => (
+				<AsyncLoader fetcher={() => DataDB.get(source).then(data => data?.data)}>
+					{(o) => (
 						<Code block>
-							{JSON.stringify(data?.data, null, 2) ?? "No data"}
+							{JSON.stringify(o, null, 2) ?? "No data"}
 						</Code>
 					)}
 				</AsyncLoader>
 			),
 		}),
-		id: "view-event-json",
+		id: "view-event-raw-json",
+		deps: [source],
+	}),
+	ViewResolvedJSON: (source: EventSource) => ({
+		label: "View JSON (Resolved)",
+		category: "Event",
+		icon: <IconJson />,
+		execute: () => modals.open({
+			size: "xl",
+			title: "JSON Data",
+			children: (
+				<AsyncLoader fetcher={() => EventResolver.resolve(source).then(envelope => envelope.data)}>
+					{(o) => (
+						<Code block>
+							{JSON.stringify(o, null, 2) ?? "No data"}
+						</Code>
+					)}
+				</AsyncLoader>
+			),
+		}),
+		id: "view-event-resolved-json",
 		deps: [source],
 	}),
 	RefetchData: (source: EventSource) => ({

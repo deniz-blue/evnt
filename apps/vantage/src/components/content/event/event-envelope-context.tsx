@@ -1,25 +1,24 @@
 import { createContext, useContext, type PropsWithChildren } from "react";
-import type { EventEnvelope } from "../../../db/models/event-envelope";
+import type { ResolvedEventEnvelope } from "../../../db/models/event-envelope";
 
-export interface EventEnvelopeContext extends Omit<EventEnvelope, "draft"> {
+export interface ResolvedEventContext extends Omit<ResolvedEventEnvelope, "draft"> {
 	isDraft?: boolean;
 };
 
-const EventEnvelopeContext = createContext<EventEnvelopeContext>({
+const ResolvedEventContext = createContext<ResolvedEventContext>({
 	data: null,
 });
 
-export const useEventEnvelope = () => useContext(EventEnvelopeContext);
+export const useResolvedEvent = () => useContext(ResolvedEventContext);
 
-export const EventEnvelopeProvider = ({
+export const ResolvedEventProvider = ({
 	value,
 	children,
-}: PropsWithChildren<{ value: EventEnvelope }>) => (
-	<EventEnvelopeContext.Provider value={{
+}: PropsWithChildren<{ value: ResolvedEventEnvelope }>) => (
+	<ResolvedEventContext.Provider value={{
 		...value,
-		data: value.draft ?? value.data,
-		isDraft: !!value.draft,
+		isDraft: false,
 	}}>
 		{children}
-	</EventEnvelopeContext.Provider>
+	</ResolvedEventContext.Provider>
 );

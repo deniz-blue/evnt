@@ -4,7 +4,7 @@ import { EventSourceSchema } from "../../db/models/event-source";
 import { useEventQuery } from "../../db/useEventQuery";
 import { Container, Space, Stack, Text } from "@mantine/core";
 import { EventDetailsContent } from "../../components/content/event/details/EventDetailsContent";
-import { EventEnvelopeProvider } from "../../components/content/event/event-envelope-context";
+import { ResolvedEventProvider } from "../../components/content/event/event-envelope-context";
 import { useProvideEventActions } from "../../hooks/actions/useProvideEventActions";
 
 const SearchParamsSchema = z.object({
@@ -42,11 +42,11 @@ function EventPage() {
 				}}
 			>
 				<Stack>
-					<EventEnvelopeProvider value={query.data ?? { data: null }}>
+					<ResolvedEventProvider value={query.data ?? { data: null }}>
 						<EventDetailsContent
 							source={source}
 						/>
-					</EventEnvelopeProvider>
+					</ResolvedEventProvider>
 					<Space h="20rem" />
 				</Stack>
 			</Container>

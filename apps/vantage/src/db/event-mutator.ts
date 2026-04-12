@@ -17,7 +17,7 @@ export class EventMutator {
 	}
 
 	static async updateLocal(source: EventSource.Local, data: EventData): Promise<void> {
-		await DataDB.put(source, { data });
+		await DataDB.put(source, { data, dataType: $NSID });
 	}
 
 	static async updateAtProto(source: EventSource.At, data: EventData): Promise<void> {

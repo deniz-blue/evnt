@@ -14,7 +14,7 @@ export class EventActions {
 			notify: true,
 		}, async () => {
 			const source = UtilEventSource.localRandom();
-			await DataDB.put(source, { data });
+			await DataDB.put(source, { data, dataType: $NSID });
 			useLayersStore.getState().addEventSource(source, layerId);
 			return source;
 		});
@@ -36,7 +36,7 @@ export class EventActions {
 			notify: true,
 		}, async () => {
 			if (!UtilEventSource.isLocal(source)) throw new Error("Can only update local events");
-			await DataDB.put(source, { data });
+			await DataDB.put(source, { data, dataType: $NSID });
 			return source;
 		});
 	}

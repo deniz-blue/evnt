@@ -17,7 +17,7 @@ const BaseMediaSourceSchema = z.object({
 
 export type MediaSource = z.infer<typeof MediaSourceSchema>;
 export const MediaSourceSchema = z.object({
-	url: z.url().meta({ description: "The URL of the media source" }),
+	url: z.url().optional().meta({ description: "The URL of the media source" }),
 	blob: z.object({
 		$type: z.literal("blob"),
 		ref: z.object({
@@ -25,7 +25,7 @@ export const MediaSourceSchema = z.object({
 		}),
 		size: z.number().int().nonnegative().meta({ description: "The size of the blob in bytes" }),
 		mimeType: z.string().meta({ description: "The MIME type of the blob" }),
-	}).meta({ description: "AT Protocol Blob" }),
+	}).optional().meta({ description: "AT Protocol Blob" }),
 }).extend(BaseMediaSourceSchema.shape).refine((src) => src.url || src.blob, {
 	message: "MediaSource must have either a url or a blob",
 }).meta({
