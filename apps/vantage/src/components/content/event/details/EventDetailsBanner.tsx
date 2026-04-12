@@ -2,11 +2,11 @@ import { ActionIcon, Box, Collapse, Group, Loader, Menu, Modal, Stack, Title } f
 import { useEventDetailsContext } from "./event-details-context";
 import { Trans } from "../Trans";
 import { EnvelopeErrorBadge } from "../envelope/EnvelopeErrorBadge";
-import type { KnownEventComponent } from "@evnt/schema";
+import type { SplashMediaComponent } from "@evnt/schema";
 import { OverLayer } from "../../../base/layout/OverLayer";
 import classes from "../card/event-card.module.css";
 import { EvntMedia } from "../../../base/media/EvntMedia";
-import { useEventEnvelope } from "../event-envelope-context";
+import { useResolvedEvent } from "../event-envelope-context";
 import { IconDotsVertical } from "@tabler/icons-react";
 import { useActionsStore } from "../../../app/overlay/spotlight/useActionsStore";
 import { useShallow } from "zustand/shallow";
@@ -14,18 +14,18 @@ import { EventTimeframeBadge } from "../badges/EventTimeframeBadge";
 import { EventStatusBadge } from "../badges/EventStatusBadge";
 
 export const EventDetailsBanner = () => {
-	const { data, err } = useEventEnvelope();
+	const { data, err } = useResolvedEvent();
 	const { loading, withModalCloseButton } = useEventDetailsContext();
 	const actions = useActionsStore(
 		useShallow(state => Object.values(state.actions).filter(a => a.category === "Event"))
 	);
 
 	const splashMediaComponents = data?.components
-		?.filter((c): c is KnownEventComponent & { type: "splashMedia" } =>
-			c.type === "splashMedia") ?? [];
+		?.filter((c): c is SplashMediaComponent =>
+			c.$type === "directory.evnt.component.splashMedia") ?? [];
 
-	const bannerMedia = splashMediaComponents.find(x => x.data.roles.includes("banner"))?.data?.media
-		?? splashMediaComponents.find(x => x.data.roles.includes("background"))?.data?.media;
+	const bannerMedia = splashMediaComponents.find(x => x.roles.includes("banner"))?.media
+		?? splashMediaComponents.find(x => x.roles.includes("background"))?.media;
 
 	return (
 		<Stack>

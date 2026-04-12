@@ -1,5 +1,6 @@
 import type { EventData, PartialDate } from "@evnt/schema";
-import { UtilPartialDate, UtilTranslations } from "@evnt/schema/utils";
+import { PartialDateUtil } from "@evnt/partial-date";
+import { TranslationsUtil } from "@evnt/translations";
 import ICAL from "ical.js";
 
 export const convertFromVEvent = (
@@ -13,9 +14,8 @@ export const convertFromVEvent = (
 	const event = new ICAL.Event(vevent);
 
 	const eventData: EventData = {
-		v: 0,
+		v: "0.1",
 		name: { [language]: event.summary || "" },
-		description: event.description ? { [language]: event.description } : undefined,
 		instances: [],
 		venues: [],
 		components: [],
@@ -26,25 +26,40 @@ export const convertFromVEvent = (
 		if (typeof location == "string") eventData.venues!.push({
 			id: `icalendar:${eventData.venues!.length}`,
 			name: { [language]: location },
-			type: "unknown",
+			$type: "directory.evnt.venue.unknown",
 		});
 	}
 
 	if (event.startDate) {
+		const startDate = event.startDate.toJSDate();
 		eventData.instances!.push({
 			venueIds: eventData.venues?.map(({ id }) => id) || [],
-			start: UtilPartialDate.fromDate(event.startDate.toJSDate()),
-			end: event.endDate ? UtilPartialDate.fromDate(event.endDate.toJSDate()) : undefined,
+			start: PartialDateUtil.format({
+				year: startDate.getUTCFullYear(),
+				month: startDate.getUTCMonth() + 1,
+				day: startDate.getUTCDate(),
+				hour: startDate.getUTCHours(),
+				minute: startDate.getUTCMinutes(),
+				timezone: "UTC",
+				precision: (startDate.getUTCHours() === 0 && startDate.getUTCMinutes() === 0) ? "day" : "time",
+			} as PartialDate.Parsed),
+			end: event.endDate ? PartialDateUtil.format({
+				year: event.endDate.toJSDate().getUTCFullYear(),
+				month: event.endDate.toJSDate().getUTCMonth() + 1,
+				day: event.endDate.toJSDate().getUTCDate(),
+				hour: event.endDate.toJSDate().getUTCHours(),
+				minute: event.endDate.toJSDate().getUTCMinutes(),
+				timezone: "UTC",
+				precision: (event.endDate.toJSDate().getUTCHours() === 0 && event.endDate.toJSDate().getUTCMinutes() === 0) ? "day" : "time",
+			} as PartialDate.Parsed) : undefined,
 		});
 	}
 
 	for (let uri of event.component.getAllProperties("url")) {
 		const url = uri.getFirstValue();
 		if (typeof url == "string") eventData.components!.push({
-			type: "link",
-			data: {
-				url,
-			},
+			$type: "directory.evnt.component.link",
+			url,
 		});
 	}
 
@@ -56,23 +71,20 @@ export const convertToVEvent = (data: EventData, {
 }: {
 	language?: string;
 } = {}) => {
-	const t = UtilTranslations.createTranslator(language);
-
 	const vevent = new ICAL.Component("vevent");
 	const event = new ICAL.Event(vevent);
 
-	event.summary = t(data.name);
-	if (data.description) event.description = t(data.description);
+	event.summary = TranslationsUtil.translate(data.name, [language]);
 
 	const partialDateAsICALTime = (date: PartialDate) => {
-		const [year, month, day, hour, minute] = date.split(/\D/).map(Number);
+		const parsed = PartialDateUtil.parse(date);
 		return new ICAL.Time({
-			year,
-			month,
-			day,
-			hour,
-			minute,
-			isDate: !UtilPartialDate.hasTime(date),
+			year: parsed.year,
+			month: "month" in parsed ? parsed.month : 1,
+			day: "day" in parsed ? parsed.day : 1,
+			hour: "hour" in parsed ? parsed.hour : 0,
+			minute: "minute" in parsed ? parsed.minute : 0,
+			isDate: parsed.precision !== "time",
 		}, ICAL.Timezone.utcTimezone);
 	};
 

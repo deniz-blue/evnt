@@ -20,7 +20,7 @@ export const EditVenue = ({
 	venue: EditAtom<Venue>;
 }) => {
 	const venueId = useAtomValue(useMemo(() => atom((get) => get(venue).id), [venue]));
-	const venueType = useAtomValue(useMemo(() => atom((get) => get(venue).type), [venue]));
+	const venueType = useAtomValue(useMemo(() => atom((get) => get(venue).$type), [venue]));
 
 	// atomically change a venue id across all instances and itself
 	// return false if the newVenueId already exists
@@ -47,8 +47,11 @@ export const EditVenue = ({
 	// helper for if in the future we want logic or required fields
 	const setVenueType = useSetAtom(useMemo(() => atom(null, (get, set, newType: VenueType) => {
 		set(venue, prev => ({
-			...prev,
-			type: newType,
+			id: prev.id,
+			name: prev.name,
+			$type: newType,
+			...(newType === "directory.evnt.venue.online" && prev.$type === "directory.evnt.venue.online" ? { url: prev.url } : {}),
+			...(newType === "directory.evnt.venue.physical" && prev.$type === "directory.evnt.venue.physical" ? { address: prev.address, coordinates: prev.coordinates } : {}),
 		}));
 	}), [venue]));
 
@@ -111,12 +114,12 @@ export const EditVenue = ({
 				</Button>
 			</Group>
 
-			{venueType === "physical" && (
-				<EditVenuePhysical data={venue as EditAtom<Venue & { type: "physical" }>} />
+			{venueType === "directory.evnt.venue.physical" && (
+				<EditVenuePhysical data={venue as unknown as EditAtom<Venue & { $type: "directory.evnt.venue.physical" }> as any} />
 			)}
 
-			{venueType === "online" && (
-				<EditVenueOnline data={venue as EditAtom<Venue & { type: "online" }>} />
+			{venueType === "directory.evnt.venue.online" && (
+				<EditVenueOnline data={venue as unknown as EditAtom<Venue & { $type: "directory.evnt.venue.online" }> as any} />
 			)}
 		</CollapsiblePaper>
 	);
@@ -141,9 +144,9 @@ export const VenueTypePicker = ({
 	return (
 		<SegmentedControl<VenueType>
 			data={[
-				{ label: label(IconQuestionMark, "Unknown"), value: "unknown" },
-				{ label: label(IconMapPin, "Physical"), value: "physical" },
-				{ label: label(IconWorld, "Online"), value: "online" },
+				{ label: label(IconQuestionMark, "Unknown"), value: "directory.evnt.venue.unknown" },
+				{ label: label(IconMapPin, "Physical"), value: "directory.evnt.venue.physical" },
+				{ label: label(IconWorld, "Online"), value: "directory.evnt.venue.online" },
 			]}
 			value={value}
 			onChange={onChange}

@@ -16,11 +16,13 @@ export const getEnvelopeErrorMeta = (err: EventEnvelope.Error) => {
 	if (err.kind === "json-parse") details = err.message;
 	if (err.kind === "validation") details = z.prettifyError(err);
 	if (err.kind === "xrpc") details = `${err.error}: ${err.message}`;
+	if (err.kind === "unknown-data-type") details = `Unknown data type: ${err.dataType}`;
 
 	if (err.kind === "fetch") message = "Fetch Error";
 	if (err.kind === "json-parse") message = "JSON Parse Error";
 	if (err.kind === "validation") message = "Validation Error";
 	if (err.kind === "xrpc") message = "XRPC Error";
+	if (err.kind === "unknown-data-type") message = "Unknown Data Type";
 
 	return {
 		color,

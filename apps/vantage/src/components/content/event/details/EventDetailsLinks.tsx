@@ -1,13 +1,14 @@
 import { Stack } from "@mantine/core";
 import { SmallTitle } from "../../base/SmallTitle";
 import { EventLinkButton } from "../link/EventLinkButton";
-import { useEventEnvelope } from "../event-envelope-context";
-import type { KnownEventComponent } from "@evnt/schema";
+import { useResolvedEvent } from "../event-envelope-context";
+import type { LinkComponent } from "@evnt/schema";
 
 export const EventDetailsLinks = () => {
-	const { data } = useEventEnvelope();
+	const { data } = useResolvedEvent();
 
-	const links = data?.components?.filter((component): component is KnownEventComponent & { type: "link" } => component.type == "link").map(x => x.data);
+	const links = data?.components
+		?.filter((component): component is LinkComponent => component.$type === "directory.evnt.component.link");
 
 	if (!links || links.length === 0) return null;
 

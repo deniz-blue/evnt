@@ -1,6 +1,6 @@
 import { ActionIcon, Menu } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconBraces, IconEdit, IconFileImport, IconLink, IconPlus } from "@tabler/icons-react";
+import { IconBraces, IconCalendarPlus, IconEdit, IconFileImport, IconLink, IconPlus } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useTasksStore } from "../../stores/useTasksStore";
@@ -36,7 +36,7 @@ export const AddEventMenu = () => {
 					color="gray"
 					aria-label="Add Event"
 				>
-					<IconPlus />
+					<IconCalendarPlus />
 					<input
 						ref={icsFileInputRef}
 						type="file"

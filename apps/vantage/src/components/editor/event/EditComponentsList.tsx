@@ -46,7 +46,9 @@ export const EditComponentsList = ({ data }: { data: EditAtom<EventData> }) => {
 					</Menu.Target>
 					<Menu.Dropdown maw="400px">
 						<Menu.Label>Add component with type...</Menu.Label>
-						{Object.entries(EventComponentRegistry).map(([type, { icon: Icon, label, desc, createData }]) => (
+						{Object.entries(EventComponentRegistry).map(([type, entry]) => {
+							const { icon: Icon, label, desc, createData } = entry;
+							return (
 							<Menu.Item
 								key={type}
 								leftSection={<Icon size={18} />}
@@ -57,7 +59,8 @@ export const EditComponentsList = ({ data }: { data: EditAtom<EventData> }) => {
 									{desc && <Input.Description><Trans t={desc} /></Input.Description>}
 								</Stack>
 							</Menu.Item>
-						))}
+							);
+						})}
 					</Menu.Dropdown>
 				</Menu>
 			</Group>

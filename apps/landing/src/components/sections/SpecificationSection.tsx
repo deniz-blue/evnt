@@ -58,7 +58,7 @@ export const SpecificationSection = () => {
 					styles={{
 						code: { paddingRight: 60 },
 					}}
-					code="https://raw.githubusercontent.com/deniz-blue/events-format/refs/heads/main/event-data.schema.json"
+					code="https://raw.githubusercontent.com/openevnt/evnt/refs/heads/main/event-data.schema.json"
 				/>
 
 				<List.Item>

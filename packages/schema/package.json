@@ -1,43 +1,41 @@
 {
-    "name": "@evnt/schema",
-    "version": "0.0.5",
-    "type": "module",
-    "author": "deniz.blue",
-    "keywords": [],
-    "files": [
-        "/dist"
-    ],
-    "exports": {
-        ".": "./src/index.ts",
-        "./utils": "./src/utils.ts"
-    },
-    "publishConfig": {
-        "main": "./dist/index.js",
-        "types": "./dist/index.d.ts",
-        "exports": {
-            ".": "./dist/index.js",
-            "./utils": "./dist/utils.js"
-        }
-    },
-    "homepage": "https://evnt.directory",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/openevnt/evnt.git",
-        "directory": "packages/schema"
-    },
-    "scripts": {
-        "build": "tsc && ts-add-js-extension --dir=dist",
-		"test": "vitest"
-    },
-    "devDependencies": {
-        "@atcute/lexicons": "^1.2.9",
-        "@repo/typescript-config": "workspace:*",
-        "ts-add-js-extension": "^1.6.6",
-        "tsx": "^4.21.0",
-        "typescript": "^5.6.3",
-        "vitest": "^4.0.18"
-    },
-    "peerDependencies": {
-        "zod": "^4"
-    }
+	"name": "@evnt/schema",
+	"version": "0.0.7",
+	"type": "module",
+	"description": "Zod schemas for OpenEvnt format",
+	"author": "deniz.blue <deniz@deniz.blue>",
+	"keywords": [],
+	"files": [
+		"/dist"
+	],
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"publishConfig": {
+		"main": "./dist/index.js",
+		"types": "./dist/index.d.ts"
+	},
+	"homepage": "https://evnt.directory",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/openevnt/evnt.git",
+		"directory": "packages/schema"
+	},
+	"scripts": {
+		"build": "tsc && ts-add-js-extension --dir=dist"
+	},
+	"devDependencies": {
+		"@atcute/lexicons": "^1.2.9",
+		"@repo/typescript-config": "workspace:*",
+		"ts-add-js-extension": "^1.6.6",
+		"tsx": "^4.21.0",
+		"typescript": "^5.6.3"
+	},
+	"peerDependencies": {
+		"zod": "^4"
+	},
+	"dependencies": {
+		"@evnt/partial-date": "workspace:*",
+		"@evnt/translations": "workspace:*"
+	}
 }

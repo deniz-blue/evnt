@@ -1,0 +1,32 @@
+{
+	"name": "@evnt/translations",
+	"version": "0.0.1",
+	"description": "Utility for handling OpenEvnt Translations type",
+	"type": "module",
+	"scripts": {
+		"build": "tsc"
+	},
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"publishConfig": {
+		"main": "./dist/index.js",
+		"types": "./dist/index.d.ts"
+	},
+	"files": [
+		"/dist"
+	],
+	"homepage": "https://evnt.directory",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/openevnt/evnt.git",
+		"directory": "packages/translations"
+	},
+	"keywords": [],
+	"author": "deniz.blue <deniz@deniz.blue>",
+	"license": "MIT",
+	"packageManager": "pnpm@11.0.0-beta.6",
+	"devDependencies": {
+		"typescript": "^6.0.2"
+	}
+}

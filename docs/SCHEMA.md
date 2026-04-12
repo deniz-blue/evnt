@@ -8,11 +8,10 @@ _Object containing the following properties:_
 
 | Property        | Description                           | Type                                               |
 | :-------------- | :------------------------------------ | :------------------------------------------------- |
+| `$type`         | The type of the event data            | `'directory.evnt.event'`                           |
 | **`v`** (\*)    | The version of the Event Data schema  | `0`                                                |
-| `id`            |                                       | `string`                                           |
 | **`name`** (\*) | The name of the event                 | [Translations](#translations)                      |
-| `label`         | !unstable(#9)                         | [Translations](#translations)                      |
-| `description`   | A short description of the event      | [Translations](#translations)                      |
+| `label`         | A secondary label for the event       | [Translations](#translations)                      |
 | `status`        | The status of the event               | [EventStatus](#eventstatus)                        |
 | `venues`        | The venues associated with this event | _Array of [Venue](#venue) items_                   |
 | `instances`     | The instances of the event            | _Array of [EventInstance](#eventinstance) items_   |
@@ -36,10 +35,9 @@ _All properties are optional._
 
 _Object containing the following properties:_
 
-| Property        | Type                      |
-| :-------------- | :------------------------ |
-| **`type`** (\*) | `string`                  |
-| **`data`** (\*) | `Record<string, unknown>` |
+| Property         | Type     |
+| :--------------- | :------- |
+| **`$type`** (\*) | `string` |
 
 _(\*) Required._
 
@@ -71,7 +69,7 @@ _Union of the following possible types:_
 
 ## LanguageKey
 
-BCP37 or ISO 639-1 language code
+BCP37 language code
 
 _String._
 
@@ -90,14 +88,14 @@ _(\*) Required._
 
 _Object containing the following properties:_
 
-| Property       | Description                                         | Type                          |
-| :------------- | :-------------------------------------------------- | :---------------------------- |
-| **`url`** (\*) | The URL of the link                                 | `string`                      |
-| `name`         | The name of the link                                | [Translations](#translations) |
-| `description`  | A description of the link                           | [Translations](#translations) |
-| `disabled`     | Whether the link is disabled                        | `boolean`                     |
-| `opensAt`      | The date and/or time when the link becomes active   | [PartialDate](#partialdate)   |
-| `closesAt`     | The date and/or time when the link becomes inactive | [PartialDate](#partialdate)   |
+| Property         | Description                                         | Type                              |
+| :--------------- | :-------------------------------------------------- | :-------------------------------- |
+| **`$type`** (\*) | The type of the component                           | `'directory.evnt.component.link'` |
+| **`url`** (\*)   | The URL of the link                                 | `string`                          |
+| `name`           | The name of the link                                | [Translations](#translations)     |
+| `disabled`       | Whether the link is disabled                        | `boolean`                         |
+| `opensAt`        | The date and/or time when the link becomes active   | [PartialDate](#partialdate)       |
+| `closesAt`       | The date and/or time when the link becomes inactive | [PartialDate](#partialdate)       |
 
 _(\*) Required._
 
@@ -159,18 +157,18 @@ _(\*) Required._
 
 _Object containing the following properties:_
 
-| Property        | Description                                   | Type                          |
-| :-------------- | :-------------------------------------------- | :---------------------------- |
-| **`type`** (\*) |                                               | `'online'`                    |
-| **`id`** (\*)   | ID of the venue to be used in Event Instances | `string`                      |
-| **`name`** (\*) | The name of the venue                         | [Translations](#translations) |
-| `url`           |                                               | `string`                      |
+| Property         | Description                                   | Type                            |
+| :--------------- | :-------------------------------------------- | :------------------------------ |
+| **`$type`** (\*) |                                               | `'directory.evnt.venue.online'` |
+| **`id`** (\*)    | ID of the venue to be used in Event Instances | `string`                        |
+| **`name`** (\*)  | The name of the venue                         | [Translations](#translations)   |
+| `url`            |                                               | `string`                        |
 
 _(\*) Required._
 
 ## PartialDate
 
-An ISO 8601 date and time string that may be incomplete (e.g. '2023', '2023-05') and does not include timezone information (forced UTC)
+A date string that can have varying levels of precision (year, month, day, time) with a timezone
 
 _String._
 
@@ -180,14 +178,13 @@ A venue with a known or unknown physical location
 
 _Object containing the following properties:_
 
-| Property            | Description                                   | Type                          |
-| :------------------ | :-------------------------------------------- | :---------------------------- |
-| **`type`** (\*)     |                                               | `'physical'`                  |
-| **`id`** (\*)       | ID of the venue to be used in Event Instances | `string`                      |
-| **`name`** (\*)     | The name of the venue                         | [Translations](#translations) |
-| `address`           |                                               | [Address](#address)           |
-| `coordinates`       | Approximate coordinates                       | [LatLng](#latlng)             |
-| `googleMapsPlaceId` |                                               | `string`                      |
+| Property         | Description                                   | Type                              |
+| :--------------- | :-------------------------------------------- | :-------------------------------- |
+| **`$type`** (\*) |                                               | `'directory.evnt.venue.physical'` |
+| **`id`** (\*)    | ID of the venue to be used in Event Instances | `string`                          |
+| **`name`** (\*)  | The name of the venue                         | [Translations](#translations)     |
+| `address`        |                                               | [Address](#address)               |
+| `coordinates`    | Approximate coordinates                       | [LatLng](#latlng)                 |
 
 _(\*) Required._
 
@@ -197,9 +194,10 @@ A source of information about the event, such as a news article, a social media 
 
 _Object containing the following properties:_
 
-| Property       | Description           | Type     |
-| :------------- | :-------------------- | :------- |
-| **`url`** (\*) | The URL of the source | `string` |
+| Property         | Description               | Type                                |
+| :--------------- | :------------------------ | :---------------------------------- |
+| **`$type`** (\*) | The type of the component | `'directory.evnt.component.source'` |
+| **`url`** (\*)   | The URL of the source     | `string`                            |
 
 _(\*) Required._
 
@@ -209,6 +207,7 @@ _Object containing the following properties:_
 
 | Property         | Description                             | Type                                                 |
 | :--------------- | :-------------------------------------- | :--------------------------------------------------- |
+| **`$type`** (\*) | The type of the component               | `'directory.evnt.component.splashMedia'`             |
 | **`roles`** (\*) |                                         | _Array of [SplashMediaRole](#splashmediarole) items_ |
 | **`media`** (\*) | A media item, such as an image or video | [Media](#media)                                      |
 
@@ -227,14 +226,15 @@ _Object record with dynamic keys:_
 - _keys of type_ [LanguageKey](#languagekey)
 - _values of type_ `string` (_optional_)
 
-## UnknownEventComponent
+## UnknownVenue
 
 _Object containing the following properties:_
 
-| Property        | Type                      |
-| :-------------- | :------------------------ |
-| **`type`** (\*) | `string`                  |
-| **`data`** (\*) | `Record<string, unknown>` |
+| Property         | Description                                   | Type                             |
+| :--------------- | :-------------------------------------------- | :------------------------------- |
+| **`$type`** (\*) |                                               | `'directory.evnt.venue.unknown'` |
+| **`id`** (\*)    | ID of the venue to be used in Event Instances | `string`                         |
+| **`name`** (\*)  | The name of the venue                         | [Translations](#translations)    |
 
 _(\*) Required._
 
@@ -244,12 +244,12 @@ _Union of the following possible types:_
 
 - [PhysicalVenue](#physicalvenue)
 - [OnlineVenue](#onlinevenue)
-- _Object with properties:_<ul><li>**`type`** (\*): `'unknown'`</li><li>**`id`** (\*): `string` - ID of the venue to be used in Event Instances</li><li>**`name`** (\*): [Translations](#translations) - The name of the venue</li></ul>
+- [UnknownVenue](#unknownvenue)
 
 ## VenueType
 
 _Enum, one of the following possible values:_
 
-- `'physical'`
-- `'online'`
-- `'unknown'`
+- `'directory.evnt.venue.physical'`
+- `'directory.evnt.venue.online'`
+- `'directory.evnt.venue.unknown'`

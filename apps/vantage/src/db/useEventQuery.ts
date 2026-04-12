@@ -2,7 +2,7 @@ import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
 import { UtilEventSource, type EventSource } from "./models/event-source";
 import { useMemo } from "react";
 import { EventResolver } from "./event-resolver";
-import type { EventEnvelope } from "./models/event-envelope";
+import type { ResolvedEventEnvelope } from "./models/event-envelope";
 
 export const eventQueryKey = (source: EventSource) => {
 	return ["event-data", source] as const;
@@ -13,7 +13,7 @@ export const eventQueryOptions = (source: EventSource) => {
 		queryKey: eventQueryKey(source),
 		networkMode: "always",
 		refetchOnReconnect: UtilEventSource.isFromNetwork(source),
-		queryFn: async (): Promise<EventEnvelope> => {
+		queryFn: async (): Promise<ResolvedEventEnvelope> => {
 			return await EventResolver.resolve(source);
 		},
 	});
@@ -25,7 +25,7 @@ export const useEventQuery = (source: EventSource) => {
 };
 
 export type EventQueryResult = {
-	query: ReturnType<typeof useQuery<EventEnvelope>>;
+	query: ReturnType<typeof useQuery<ResolvedEventEnvelope>>;
 	source: EventSource;
 };
 

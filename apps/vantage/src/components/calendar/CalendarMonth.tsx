@@ -1,15 +1,15 @@
 import { ActionIcon, Box, Group, Paper, ScrollArea, SimpleGrid, Stack, Text, Tooltip } from "@mantine/core";
 import { useLocaleStore } from "../../stores/useLocaleStore";
 import { getMonthDays } from "@mantine/dates";
-import type { PartialDate } from "@evnt/schema";
-import { UtilPartialDate } from "@evnt/schema/utils";
+import type { PartialDate as PartialDateParts } from "@evnt/partial-date";
+import { UtilPartialDate } from "~/lib/util/schema-utils";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import type { PropsWithChildren } from "react";
 
 export interface CalendarMonthProps {
-	month: PartialDate.Month;
-	setMonth: (month: PartialDate.Month) => void;
-	renderDay: (props: { day: PartialDate.Day }) => React.ReactNode;
+	month: PartialDateParts.YearMonth;
+	setMonth: (month: PartialDateParts.YearMonth) => void;
+	renderDay: (props: { day: PartialDateParts.YearMonthDay }) => React.ReactNode;
 }
 
 export const CalendarMonth = ({
@@ -23,7 +23,7 @@ export const CalendarMonth = ({
 		month,
 		firstDayOfWeek: 1,
 		consistentWeeks: true,
-	}) as PartialDate.Day[][];
+	}) as PartialDateParts.YearMonthDay[][];
 
 	return (
 		<Stack w="100%" h="100%" gap={0}>
@@ -53,7 +53,7 @@ export const CalendarMonth = ({
 											p2 = 1;
 											p1 += 1;
 										};
-										setMonth(`${p1.toString()}-${p2.toString().padStart(2, "0")}` as PartialDate.Month);
+										setMonth(`${p1.toString()}-${p2.toString().padStart(2, "0")}` + "[UTC]" as PartialDateParts.YearMonth);
 									}}
 								>
 									{dir === -1 ? <IconArrowLeft /> : <IconArrowRight />}
@@ -119,7 +119,7 @@ export const CalendarMonthDay = ({
 	children,
 	isCurrentMonth,
 }: PropsWithChildren<{
-	day: PartialDate.Day;
+	day: PartialDateParts.YearMonthDay;
 	isCurrentMonth: boolean;
 }>) => {
 	const isToday = UtilPartialDate.today() === day;

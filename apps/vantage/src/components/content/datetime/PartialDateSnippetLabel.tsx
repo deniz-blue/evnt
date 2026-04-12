@@ -1,5 +1,5 @@
 import type { PartialDate } from "@evnt/schema";
-import { UtilPartialDate } from "@evnt/schema/utils";
+import { UtilPartialDate } from "~/lib/util/schema-utils";
 import { Text } from "@mantine/core";
 import { useLocaleStore } from "../../../stores/useLocaleStore";
 

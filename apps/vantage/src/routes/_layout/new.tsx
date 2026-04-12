@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_layout/new")({
 })
 
 function NewPage() {
-	const dataAtom = useMemo(() => atom<EventData | null>({ v: 0, name: {} }), []);
+	const dataAtom = useMemo(() => atom<EventData | null>({ v: "0.1", name: {} }), []);
 	const agent = useATProtoAuthStore(store => store.agent);
 	const handle = useAtProtoHandleQuery(agent?.sub as AtprotoDid);
 	const navigate = useNavigate();

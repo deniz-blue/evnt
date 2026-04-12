@@ -5,7 +5,7 @@ import { focusAtom } from "jotai-optics";
 import { TranslationsInput } from "../../../base/input/TranslationsInput";
 import { ClearableSwitch } from "../../../base/input/ClearableSwitch";
 import { PartialDateInput } from "../../../base/input/PartialDateInput";
-import { UtilPartialDate } from "@evnt/schema/utils";
+import { UtilPartialDate } from "~/lib/util/schema-utils";
 import { useMemo } from "react";
 
 export const EditComponentLink = ({ data }: { data: EditAtom<LinkComponent> }) => {

@@ -4,31 +4,27 @@ import { SourceComponentSchema } from "./SourceComponent";
 import { SplashMediaComponentSchema } from "./SplashMediaComponent";
 
 const KnownEventComponentsMap = {
-	link: LinkComponentSchema,
-	source: SourceComponentSchema,
-	splashMedia: SplashMediaComponentSchema,
+	"directory.evnt.component.link": LinkComponentSchema,
+	"directory.evnt.component.source": SourceComponentSchema,
+	"directory.evnt.component.splashMedia": SplashMediaComponentSchema,
 } as const;
 
 export type KnownEventComponent = {
-	[K in keyof typeof KnownEventComponentsMap]: {
-		type: K;
-		data: z.infer<(typeof KnownEventComponentsMap)[K]>;
-	};
+	[K in keyof typeof KnownEventComponentsMap]: z.infer<(typeof KnownEventComponentsMap)[K]>;
 }[keyof typeof KnownEventComponentsMap];
 
 export type UnknownEventComponent = z.infer<typeof UnknownEventComponentSchema>;
-export const UnknownEventComponentSchema = z.object({
-	type: z.string(),
-	data: z.record(z.string(), z.unknown())
+const UnknownEventComponentSchema = z.looseObject({
+	$type: z.string(),
 });
 
 export type EventComponent = z.infer<typeof EventComponentSchema>;
 export type EventComponentType = keyof typeof KnownEventComponentsMap | (string & {});
 
 export const EventComponentSchema = UnknownEventComponentSchema.superRefine((obj, ctx) => {
-	if (obj.type in KnownEventComponentsMap) {
-		const schema = KnownEventComponentsMap[obj.type as keyof typeof KnownEventComponentsMap];
-		const result = schema.safeParse(obj.data);
+	if (obj.$type in KnownEventComponentsMap) {
+		const schema = KnownEventComponentsMap[obj.$type as keyof typeof KnownEventComponentsMap];
+		const result = schema.safeParse(obj);
 		if (!result.success)
 			result.error.issues.forEach((issue) => {
 				ctx.addIssue({ ...issue, path: ["data", ...issue.path] });
@@ -36,14 +32,10 @@ export const EventComponentSchema = UnknownEventComponentSchema.superRefine((obj
 	}
 }).meta({ id: "EventComponent" }) as z.ZodType<KnownEventComponent | UnknownEventComponent>;
 
-
 EventComponentSchema._zod.processJSONSchema = (ctx, json, params) => {
 	const xor = z.xor([
 		...Object.entries(KnownEventComponentsMap).map(([type, schema]) =>
-			z.strictObject({
-				type: z.literal(type),
-				data: schema,
-			})
+			schema.strict().extend({ $type: z.literal(type) })
 		),
 	]);
 
@@ -55,15 +47,14 @@ EventComponentSchema._zod.processJSONSchema = (ctx, json, params) => {
 	json.oneOf.push({
 		type: "object",
 		properties: {
-			type: {
+			$type: {
 				type: "string",
 				not: {
 					anyOf: Object.keys(KnownEventComponentsMap).map((type) => ({ const: type })),
 				},
 			},
-			data: { type: "object" },
 		},
-		required: ["type", "data"],
-		additionalProperties: false,
+		required: ["$type"],
+		additionalProperties: true,
 	});
 };

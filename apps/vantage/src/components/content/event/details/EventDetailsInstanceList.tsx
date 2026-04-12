@@ -1,7 +1,7 @@
 import { Button, Center, CopyButton, Group, Paper, Stack, Text } from "@mantine/core";
 import { ExternalLink } from "../../base/ExternalLink";
-import { useEventEnvelope } from "../event-envelope-context";
-import { UtilPartialDate, UtilPartialDateRange, UtilTranslations } from "@evnt/schema/utils";
+import { useResolvedEvent } from "../event-envelope-context";
+import { UtilPartialDate, UtilPartialDateRange, UtilTranslations } from "~/lib/util/schema-utils";
 import type { EventInstance, PartialDate, Venue } from "@evnt/schema";
 import type { ReactNode } from "react";
 import { IconCalendar, IconCalendarQuestion, IconCheck, IconCopy, IconExternalLink, IconMapPin, IconWorld, IconWorldPin } from "@tabler/icons-react";
@@ -12,9 +12,10 @@ import { TimeSnippetLabel } from "../../datetime/TimeSnippetLabel";
 import { TimeRangeSnippetLabel } from "../../datetime/TimeRangeSnippetLabel";
 import { PartialDateSnippetLabel } from "../../datetime/PartialDateSnippetLabel";
 import { venueGoogleMapsLink, venueOpenStreetMapsLink } from "@evnt/pretty";
+import { PartialDateUtil } from "@evnt/partial-date";
 
 export const EventDetailsInstanceList = () => {
-	const { data } = useEventEnvelope();
+	const { data } = useResolvedEvent();
 
 	const groupedByVenues = data?.instances?.reduce((acc, instance) => {
 		const key = JSON.stringify(instance.venueIds.slice().sort());
@@ -75,18 +76,21 @@ export const MiniBoxInstance = ({ instance }: { instance: EventInstance }) => {
 	const monthShort = new Intl.DateTimeFormat(language, { month: "short" }).format(UtilPartialDate.toLowDate(instance.start));
 
 	let icon: ReactNode = <IconCalendar />;
-	if (UtilPartialDate.hasDay(instance.start))
+	if (PartialDateUtil.has(instance.start, "day")) {
+		const parsed = UtilPartialDate.toComponents(instance.start);
+		const day = "day" in parsed ? parsed.day : 1;
 		icon = (
 			<Stack gap={0} align="center">
 				<Text span inherit>
-					{UtilPartialDate.toComponents(instance.start).day}
+					{day}
 				</Text>
 				<Text fz="xs" c="dimmed" span inline inherit>
 					{monthShort}
 				</Text>
 			</Stack>
 		);
-	else if (UtilPartialDate.hasMonth(instance.start))
+	}
+	else if (PartialDateUtil.has(instance.start, "month"))
 		icon = (
 			<Stack gap={0} align="center">
 				<Text span inherit>
@@ -146,8 +150,8 @@ export const MiniBoxInstance = ({ instance }: { instance: EventInstance }) => {
 
 export const MiniBoxVenue = ({ venue }: { venue: Venue }) => {
 	let icon = <IconWorldPin />;
-	if (venue.type === "online") icon = <IconWorld />;
-	else if (venue.type === "physical") icon = <IconMapPin />;
+	if (venue.$type === "directory.evnt.venue.online") icon = <IconWorld />;
+	else if (venue.$type === "directory.evnt.venue.physical") icon = <IconMapPin />;
 
 	let title = undefined;
 	if (UtilTranslations.isEmpty(venue.name)) title = (
@@ -158,8 +162,8 @@ export const MiniBoxVenue = ({ venue }: { venue: Venue }) => {
 	else title = <Trans t={venue.name} />;
 
 	let subtitle = undefined;
-	if (venue.type === "physical" && venue.address) subtitle = <AddressSnippetLabel value={venue.address} withCopyButton />;
-	else if (venue.type === "online" && venue.url) subtitle = <ExternalLink href={venue.url} />;
+	if (venue.$type === "directory.evnt.venue.physical" && venue.address) subtitle = <AddressSnippetLabel value={venue.address} withCopyButton />;
+	else if (venue.$type === "directory.evnt.venue.online" && venue.url) subtitle = <ExternalLink href={venue.url} />;
 
 	let links = [
 		{

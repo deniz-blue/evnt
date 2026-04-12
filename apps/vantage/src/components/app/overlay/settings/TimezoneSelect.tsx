@@ -1,41 +1,52 @@
 import { Anchor, Input, Select, Stack } from "@mantine/core";
-import { useLocaleStore } from "../../../../stores/useLocaleStore";
 import { useState } from "react";
 import { trynull } from "../../../../lib/util/trynull";
 
-export const TimezoneSelect = () => {
+export const TimezoneSelect = ({
+	value,
+	onChange,
+	showDetected = true,
+	label,
+	description,
+}: {
+	value: string | undefined;
+	onChange: (value: string) => void;
+	showDetected?: boolean;
+	label?: React.ReactNode;
+	description?: React.ReactNode;
+}) => {
 	const [searchValue, setSearchValue] = useState("");
-	const timezone = useLocaleStore(store => store.timezone);
 
-	const clientTimezone = trynull(() => new Intl.DateTimeFormat().resolvedOptions().timeZone);
+	const intlResolvedTz = trynull(() => new Intl.DateTimeFormat().resolvedOptions().timeZone);
 
 	return (
 		<Stack gap={4}>
 			<Select
-				label="Timezone"
-				description="Select your timezone"
+				label={label ?? "Timezone"}
+				description={description}
 				data={Intl.supportedValuesOf('timeZone').filter(x => !x.startsWith("Etc/")).map(tz => ({ value: tz, label: tz }))}
 				searchable
-				clearable={timezone !== "UTC"}
+				clearable={value !== "UTC"}
 				searchValue={searchValue}
 				onSearchChange={setSearchValue}
 				onFocus={() => setSearchValue("")}
-				value={timezone ?? "UTC"}
+				value={value ?? "UTC"}
 				onChange={(value) => {
-					useLocaleStore.setState({ timezone: value ?? "UTC" });
+					onChange(value ?? "UTC");
+					setSearchValue("");
 				}}
 			/>
-			{(clientTimezone && timezone !== clientTimezone) && (
+			{(showDetected && intlResolvedTz && value !== intlResolvedTz) && (
 				<Input.Description>
-					Change to <Anchor
+					Set to <Anchor
 						component="button"
 						type="button"
 						onClick={() => {
-							useLocaleStore.setState({ timezone: clientTimezone });
+							onChange(intlResolvedTz);
 						}}
 						inherit
 					>
-						{clientTimezone}
+						{intlResolvedTz}
 					</Anchor>
 				</Input.Description>
 			)}

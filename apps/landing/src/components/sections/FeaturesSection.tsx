@@ -27,7 +27,7 @@ export const FeaturesSection = () => {
 					<Text span fw="bold">Partial Dates</Text> - Some events only have partial date information. For example, you might only know the month and year of an event, but not the exact day. Evnt allows you to represent this in a consistent way by allowing partial date strings (e.g. "2024-05" for May 2024).
 				</List.Item>
 				<List.Item>
-					<Text span fw="bold">No Timezones</Text> - Everything is stored in UTC, and it's up to the application to convert it to the user's local timezone.
+					<Text span fw="bold">Timezone-aware Partial Dates</Text> - Dates include an explicit timezone identifier (e.g. "2027-03-08T09:00[UTC]") so data remains portable across systems.
 				</List.Item>
 				<List.Item>
 					<Text span fw="bold">Metadata</Text> - Information that don't belong to a specific instance or venue can be stored as Components, which are extensible.

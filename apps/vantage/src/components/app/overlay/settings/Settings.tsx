@@ -11,6 +11,7 @@ import { EventsGC } from "../../../../db/gc";
 
 export const Settings = () => {
 	const language = useLocaleStore((state) => state.language);
+	const timezone = useLocaleStore((state) => state.timezone);
 
 	return (
 		<Stack>
@@ -21,7 +22,11 @@ export const Settings = () => {
 				onChange={lang => useLocaleStore.getState().setLanguage(lang)}
 			/>
 
-			<TimezoneSelect />
+			<TimezoneSelect
+				value={timezone}
+				onChange={tz => useLocaleStore.setState({ timezone: tz })}
+				description="Used for displaying event times in your local timezone"
+			/>
 
 			<Divider label="ATProto" />
 
@@ -43,20 +48,20 @@ export const Settings = () => {
 
 			<Divider label="Maintenance" />
 
-			<Button
+			{/* <Button
 				color="red"
 				onClick={() => {
-					useCacheEventsStore.setState({ cacheByPartialDate: {} });
+					useCacheEventsStore.setState({ cache: { byPartialDate: {}, byMonth: {}, byDay: {}, byText: {} } });
 					useCacheEventsStore.getState().init();
 				}}
 			>
 				Clear and Rebuild Cache
-			</Button>
+			</Button> */}
 
 			<AsyncAction
 				action={() => EventsGC.deleteUntracked()}
 			>
-				{({ loading, onClick }) => (
+				{({ onClick }) => (
 					<Button
 						color="red"
 						onClick={onClick}

@@ -17,11 +17,10 @@ export const LatLngSchema = z.object({
 
 export type PhysicalVenue = z.infer<typeof PhysicalVenueSchema>;
 export const PhysicalVenueSchema = z.object({
-	type: z.literal(VenueTypeSchema.enum.physical),
+	$type: z.literal(VenueTypeSchema.enum["directory.evnt.venue.physical"]),
 	...BaseVenueSchema.shape,
 	address: AddressSchema.optional(),
 	coordinates: LatLngSchema.optional().meta({ description: "Approximate coordinates" }),
-	googleMapsPlaceId: z.string().optional(),
 }).meta({
 	id: "PhysicalVenue",
 	title: "Physical Venue",

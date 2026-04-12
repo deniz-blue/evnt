@@ -4,31 +4,31 @@ import type { EventData } from "@evnt/schema";
 
 export const HeroSection = () => {
 	const exampleData: EventData = {
-		v: 0,
+		v: "0.1",
 		name: { en: "Some Hackathon" },
 		venues: [
 			{
 				id: "0",
 				name: { en: "Somewhere" },
-				type: "physical",
+				$type: "directory.evnt.venue.physical",
 			},
 			{
 				id: "1",
 				name: { en: "And Online" },
-				type: "online",
+				$type: "directory.evnt.venue.online",
 				url: "https://example.com",
 			},
 		],
 		instances: [
 			{
 				venueIds: ["0", "1"],
-				start: "2027-03-08T09:00",
-				end: "2027-03-08T18:00",
+				start: "2027-03-08T09:00[UTC]",
+				end: "2027-03-08T18:00[UTC]",
 			},
 			{
 				venueIds: ["0", "1"],
-				start: "2027-03-09T09:00",
-				end: "2027-03-09T18:00",
+				start: "2027-03-09T09:00[UTC]",
+				end: "2027-03-09T18:00[UTC]",
 			},
 		],
 	};

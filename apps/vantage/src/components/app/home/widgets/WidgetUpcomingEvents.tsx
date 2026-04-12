@@ -1,9 +1,9 @@
 import { Box, Center, Divider, Group, ScrollArea, Stack, Text, Title } from "@mantine/core";
 import { useEventQueries } from "../../../../db/useEventQuery";
 import { useShallow } from "zustand/react/shallow";
-import { UtilPartialDate } from "@evnt/schema/utils";
+import { UtilPartialDate } from "~/lib/util/schema-utils";
 import { useCacheEventsStore } from "../../../../lib/cache/useCacheEventsStore";
-import { EventEnvelopeProvider } from "../../../content/event/event-envelope-context";
+import { ResolvedEventProvider } from "../../../content/event/event-envelope-context";
 import { EventCard } from "../../../content/event/card/EventCard";
 import { EventContextMenu } from "../../../content/event/EventContextMenu";
 
@@ -54,7 +54,7 @@ export const WidgetUpcomingEvents = () => {
 							miw={300}
 							bg="dark"
 						>
-							<EventEnvelopeProvider
+							<ResolvedEventProvider
 								value={query.data ?? { data: null }}
 							>
 								<EventCard
@@ -63,7 +63,7 @@ export const WidgetUpcomingEvents = () => {
 									loading={query.isFetching}
 									menu={<EventContextMenu source={source} />}
 								/>
-							</EventEnvelopeProvider>
+							</ResolvedEventProvider>
 						</Box>
 					))}
 				</Group>

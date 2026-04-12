@@ -1,11 +1,11 @@
-import type { VenueType, Venue } from "@evnt/schema";
+import type { Venue, VenueType } from "@evnt/schema";
 import type { EventBuilder } from "../EventBuilder";
 import { createTranslationAdder } from "../../utils/helpers";
 
 export class VenueBuilder<Type extends VenueType = VenueType> {
-	venue: Venue & { type: Type; };
+	venue: Extract<Venue, { $type: Type }>;
 	parent?: EventBuilder;
-	constructor(venue: Venue & { type: Type; }, parent?: EventBuilder) {
+	constructor(venue: Extract<Venue, { $type: Type }>, parent?: EventBuilder) {
 		this.venue = venue;
 		this.parent = parent;
 	}

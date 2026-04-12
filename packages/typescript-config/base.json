@@ -10,6 +10,7 @@
 		"moduleDetection": "force",
 		"moduleResolution": "bundler",
 		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": false,
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"strict": true,

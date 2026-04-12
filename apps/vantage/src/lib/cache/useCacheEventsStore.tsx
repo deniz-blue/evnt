@@ -1,16 +1,17 @@
 import { create } from "zustand";
 import type { EventSource } from "../../db/models/event-source";
 import type { EventData, PartialDate } from "@evnt/schema";
+import type { PartialDate as PartialDateParts } from "@evnt/partial-date";
 import { immer } from "zustand/middleware/immer";
-import { DataDB } from "../../db/data-db";
 import { useLayersStore } from "../../db/useLayersStore";
-import { UtilPartialDate } from "@evnt/schema/utils";
+import { UtilPartialDate } from "~/lib/util/schema-utils";
+import { EventResolver } from "../../db/event-resolver";
 
 export interface CacheEventsStore {
 	cache: {
 		byPartialDate: Record<PartialDate, EventSource[]>;
-		byMonth: Record<PartialDate.Month, EventSource[]>;
-		byDay: Record<PartialDate.Day, EventSource[]>;
+		byMonth: Record<PartialDateParts.YearMonth, EventSource[]>;
+		byDay: Record<PartialDateParts.YearMonthDay, EventSource[]>;
 		byText: Record<string, EventSource[]>;
 	};
 
@@ -41,7 +42,7 @@ export const useCacheEventsStore = create<CacheEventsStore>()(
 		}),
 
 		hydrateSource: async (source: EventSource) => {
-			const data = await DataDB.get(source);
+			const data = await EventResolver.resolve(source);
 			get().uncache(source);
 			if (data?.data) {
 				get().hydrate(source, data.data);
@@ -49,37 +50,39 @@ export const useCacheEventsStore = create<CacheEventsStore>()(
 		},
 
 		hydrate: (source: EventSource, data: EventData) => set((state) => {
-			const text = [
-				...Object.values(data.name),
-				...Object.values(data.label ?? {}),
-			].join(" ");
-			state.cache.byText[text] ||= []
-			state.cache.byText[text].push(source);
+			return; // disable cache for now
 
-			for (const instance of data.instances || []) {
-				for (const key of ["start", "end"] as const) {
-					const partialDate = instance[key];
-					if (!partialDate) continue;
+			// const text = [
+			// 	...Object.values(data.name),
+			// 	...Object.values(data.label ?? {}),
+			// ].join(" ");
+			// state.cache.byText[text] ||= []
+			// state.cache.byText[text].push(source);
 
-					state.cache.byPartialDate[partialDate] ||= [];
-					if (!state.cache.byPartialDate[partialDate].includes(source))
-						state.cache.byPartialDate[partialDate].push(source);
+			// for (const instance of data.instances || []) {
+			// 	for (const key of ["start", "end"] as const) {
+			// 		const partialDate = instance[key];
+			// 		if (!partialDate) continue;
 
-					if (UtilPartialDate.hasMonth(partialDate)) {
-						const month = UtilPartialDate.asMonth(partialDate);
-						state.cache.byMonth[month] ||= [];
-						if (!state.cache.byMonth[month].includes(source))
-							state.cache.byMonth[month].push(source);
-					}
+			// 		state.cache.byPartialDate[partialDate] ||= [];
+			// 		if (!state.cache.byPartialDate[partialDate].includes(source))
+			// 			state.cache.byPartialDate[partialDate].push(source);
 
-					if (UtilPartialDate.hasDay(partialDate)) {
-						const day = UtilPartialDate.asDay(partialDate);
-						state.cache.byDay[day] ||= [];
-						if (!state.cache.byDay[day].includes(source))
-							state.cache.byDay[day].push(source);
-					}
-				}
-			}
+			// 		if (UtilPartialDate.hasMonth(partialDate)) {
+			// 			const month = UtilPartialDate.asMonth(partialDate);
+			// 			state.cache.byMonth[month] ||= [];
+			// 			if (!state.cache.byMonth[month].includes(source))
+			// 				state.cache.byMonth[month].push(source);
+			// 		}
+
+			// 		if (UtilPartialDate.hasDay(partialDate)) {
+			// 			const day = UtilPartialDate.asDay(partialDate);
+			// 			state.cache.byDay[day] ||= [];
+			// 			if (!state.cache.byDay[day].includes(source))
+			// 				state.cache.byDay[day].push(source);
+			// 		}
+			// 	}
+			// }
 		}),
 
 		init: async () => {
@@ -87,7 +90,7 @@ export const useCacheEventsStore = create<CacheEventsStore>()(
 			const all = useLayersStore.getState().allTrackedSources();
 			const { hydrate } = get();
 			for (const source of all) {
-				const data = await DataDB.get(source);
+				const data = await EventResolver.resolve(source);
 				if (data?.data) {
 					hydrate(source, data.data);
 				}

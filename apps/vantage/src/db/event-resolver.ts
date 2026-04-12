@@ -1,30 +1,47 @@
-import { EventDataSchema, type EventData, type Venue } from "@evnt/schema";
+import { $NSID, EventDataSchema } from "@evnt/schema";
 import { UtilEventSource, type EventSource } from "./models/event-source";
 import { DataDB } from "./data-db";
-import { Client, simpleFetchHandler, type FailedClientResponse } from "@atcute/client";
-import { parseCanonicalResourceUri, type AtprotoDid, type Did } from "@atcute/lexicons/syntax";
-import type { EventEnvelope } from "./models/event-envelope";
+import { Client, simpleFetchHandler } from "@atcute/client";
+import { parseCanonicalResourceUri, type Did } from "@atcute/lexicons/syntax";
+import { type ResolvedEventEnvelope, type EventEnvelope, EventEnvelopeUtil } from "./models/event-envelope";
 import { tryCatch, tryCatchAsync } from "../lib/util/trynull";
-import { ZodError } from "zod";
 import { didDocumentResolver } from "../lib/atproto/atproto-services";
 import { getPdsEndpoint } from "@atcute/identity";
 import { convertFromLexicon as convertFromCommunityLexicon } from "@evnt/convert/community-lexicon";
 
 export class EventResolver {
-	static async resolve(source: EventSource): Promise<EventEnvelope> {
-		const cached = await DataDB.get(source);
-		if (cached != null) {
-			if (cached.data?.venues) cached.data.venues = cached.data.venues.map((obj: any): Venue => ({
-				...obj,
-				id: obj.id ?? obj.venueId,
-				name: obj.name ?? obj.venueName,
-				type: obj.type ?? obj.venueType,
-			}));
-			return cached;
-		}
+	static #fromStored(stored: EventEnvelope): ResolvedEventEnvelope {
+		const { data, dataType = EventEnvelopeUtil.inferDataType(data), err, rev } = stored;
+		if (!data) return { data: null, err, rev };
 
-		const envelope = await this.#fetch(source);
-		await DataDB.put(source, envelope);
+		switch (dataType) {
+			case "blue.deniz.event": { if (stored.data) (stored.data as any).$type = $NSID }
+			case $NSID: return this.#parseOpenEvnt(stored);
+			case "community.lexicon.calendar.event": return this.#parseCommunityLexicon(stored);
+			default: return { data: null, err: { kind: "unknown-data-type", dataType } };
+		}
+	}
+
+	static #parseOpenEvnt(stored: EventEnvelope): ResolvedEventEnvelope {
+		const { data, err, rev } = stored;
+		const parseResult = EventDataSchema.safeParse(data);
+		if (!parseResult.success) return { data: null, err: EventEnvelopeUtil.createError(parseResult.error), rev };
+		return { data: parseResult.data, err, rev };
+	}
+
+	static #parseCommunityLexicon(stored: EventEnvelope): ResolvedEventEnvelope {
+		const { data, err, rev } = stored;
+		const converted = convertFromCommunityLexicon(data as any);
+		return { data: converted, err, rev };
+	}
+
+	static async resolve(source: EventSource): Promise<ResolvedEventEnvelope> {
+		const cached = await DataDB.get(source);
+		if (cached != null) return this.#fromStored(cached);
+
+		const stored = await this.#fetch(source);
+		await DataDB.put(source, stored);
+		const envelope = this.#fromStored(stored);
 		console.log(`EventResolver: resolved event source ${source} from network, success: ${!!envelope.data}, err: ${!!envelope.err}`);
 		return envelope;
 	}
@@ -61,21 +78,21 @@ export class EventResolver {
 
 			if (fetchError) return {
 				data: envelope.data,
-				err: this.#EnvelopeError(fetchError as TypeError),
+				dataType: envelope.dataType,
+				rev: envelope.rev,
+				err: EventEnvelopeUtil.createError(fetchError as TypeError),
 			};
 
 			const notModified = res.status === 304;
 			if (notModified) return envelope;
 
-			const {
-				data,
-				...newEnvelope
-			} = await this.fromResponse(res);
+			const newEnvelope = await this.fromResponse(res);
 
 			return {
 				...envelope,
 				...newEnvelope,
-				data: data ?? envelope.data,
+				data: newEnvelope.data ?? envelope.data,
+				dataType: newEnvelope.dataType ?? envelope.dataType,
 			};
 		} else {
 			return await this.#fetchHttp(source);
@@ -83,49 +100,30 @@ export class EventResolver {
 	}
 
 	static async #updateAtProto(source: EventSource.At, envelope: EventEnvelope): Promise<EventEnvelope> {
-		const {
-			data,
-			...newEnvelope
-		} = await this.#fetchAtProto(source);
+		const newEnvelope = await this.#fetchAtProto(source);
 		return {
 			...envelope,
 			...newEnvelope,
-			data: data ?? envelope.data,
+			data: newEnvelope.data ?? envelope.data,
+			dataType: newEnvelope.dataType ?? envelope.dataType,
 		};
 	}
 
 	static async #fetchHttp(source: EventSource.Http | EventSource.Https): Promise<EventEnvelope> {
 		const [res, fetchError] = await tryCatchAsync(() => fetch(source));
-		if (fetchError) {
-			return {
-				data: null,
-				err: this.#EnvelopeError(fetchError as TypeError),
-			};
-		};
-
+		if (fetchError) return EventEnvelopeUtil.fromError(fetchError as TypeError);
 		return await this.fromResponse(res);
 	}
 
 	static async fromResponse(res: Response): Promise<EventEnvelope> {
-		if (!res.ok) {
-			return {
-				data: null,
-				err: this.#EnvelopeError(res),
-			};
-		};
+		if (!res.ok) return EventEnvelopeUtil.fromError(res);
 
 		const [json, jsonParseError] = await tryCatchAsync(() => res.json());
-		if (jsonParseError) {
-			return {
-				data: null,
-				err: this.#EnvelopeError(jsonParseError as SyntaxError),
-			};
-		};
-
-		const envelope = this.fromJsonObject(json);
+		if (jsonParseError) return EventEnvelopeUtil.fromError(jsonParseError as TypeError);
 
 		return {
-			...envelope,
+			data: json,
+			dataType: EventEnvelopeUtil.inferDataType(json),
 			rev: {
 				etag: res.headers.get("ETag") ?? undefined,
 			},
@@ -134,30 +132,8 @@ export class EventResolver {
 
 	static fromJsonText(jsontext: string): EventEnvelope {
 		const [json, jsonParseError] = tryCatch(() => JSON.parse(jsontext));
-		if (jsonParseError) {
-			return {
-				data: null,
-				err: this.#EnvelopeError(jsonParseError as SyntaxError),
-			};
-		}
-
-		return this.fromJsonObject(json);
-	}
-
-	static fromJsonObject(json: unknown): EventEnvelope {
-		const result = EventDataSchema.safeParse(json);
-
-		if (!result.success) {
-			return {
-				data: null,
-				err: this.#EnvelopeError(result.error),
-			};
-		}
-
-		return {
-			data: result.data,
-			err: undefined,
-		};
+		if (jsonParseError) return EventEnvelopeUtil.fromError(jsonParseError as SyntaxError);
+		return EventEnvelopeUtil.create(json);
 	}
 
 	static async #fetchAtProto(source: EventSource.At): Promise<EventEnvelope> {
@@ -181,72 +157,15 @@ export class EventResolver {
 			},
 		}));
 
-		if (fetchError) {
-			return {
-				data: null,
-				err: this.#EnvelopeError(fetchError as TypeError),
-			}
-		}
-
-		if (!res.ok) {
-			return {
-				data: null,
-				err: this.#EnvelopeError(res),
-			};
-		}
+		if (fetchError) return EventEnvelopeUtil.fromError(fetchError as TypeError);
+		if (!res.ok) return EventEnvelopeUtil.fromError(res);
 
 		return {
-			...this.fromAtProtoRecord(res.data.value, parsed.value.repo as AtprotoDid),
+			data: res.data.value,
+			dataType: EventEnvelopeUtil.inferDataType(res.data.value),
 			rev: {
 				cid: res.data.cid,
 			},
 		};
-	}
-
-	static fromAtProtoRecord(record: Record<string, unknown>, did?: AtprotoDid): EventEnvelope {
-		if (record.$type === "community.lexicon.calendar.event") {
-			const data = convertFromCommunityLexicon(record as any, { did });
-			return {
-				data,
-				err: undefined,
-			};
-		};
-
-		return this.fromJsonObject(record);
-	}
-
-	static #EnvelopeError(err: TypeError | SyntaxError | Response | ZodError | FailedClientResponse): EventEnvelope.Error {
-		if (err instanceof TypeError) return {
-			kind: "fetch",
-			message: err.message,
-		};
-
-		if (err instanceof SyntaxError) return {
-			kind: "json-parse",
-			message: err.message,
-		};
-
-		if (err instanceof Response) return {
-			kind: "fetch",
-			message: `HTTP error: ${err.status} ${err.statusText}`,
-			status: err.status,
-			// maybe body too?
-		};
-
-		if (err instanceof ZodError) return {
-			kind: "validation",
-			issues: err.issues,
-		};
-
-		// Plain object territory
-
-		if (!err.ok && err.data) return {
-			kind: "xrpc",
-			error: err.data.error,
-			message: err.data.message,
-			status: err.status,
-		}
-
-		throw new Error(`Unreachable`);
 	}
 }

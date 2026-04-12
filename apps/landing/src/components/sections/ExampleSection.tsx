@@ -1,6 +1,6 @@
 import { Text } from "@mantine/core";
 import { Section } from "../Section";
-import type { EventData, SplashMediaComponent } from "@evnt/schema";
+import type { EventData } from "@evnt/schema";
 import { CodeHighlight, CodeHighlightTabs } from "@mantine/code-highlight";
 
 export const ExampleSection = () => {
@@ -13,24 +13,24 @@ export const ExampleSection = () => {
 			<CodeHighlightTabs
 				code={([
 					{
-						v: 0,
+						v: "0.1",
 						name: { en: "No venues" },
 						instances: [
 							{
 								venueIds: [],
-								start: "2027-03-08T09:00",
-								end: "2027-03-08T18:00",
+								start: "2027-03-08T09:00[UTC]",
+								end: "2027-03-08T18:00[UTC]",
 							}
 						],
 					},
 					{
-						v: 0,
+						v: "0.1",
 						name: { en: "Physical Venue, Unknown dates" },
 						venues: [
 							{
 								id: "0",
 								name: { en: "Somewhere" },
-								type: "physical",
+								$type: "directory.evnt.venue.physical",
 								address: {
 									countryCode: "US",
 									addr: "123 Main St, Anytown, USA",
@@ -38,7 +38,7 @@ export const ExampleSection = () => {
 								},
 								coordinates: {
 									lat: 40.7128,
-									lon: -74.0060,
+									lng: -74.006,
 								},
 							},
 						],
@@ -49,67 +49,63 @@ export const ExampleSection = () => {
 						],
 					},
 					{
-						v: 0,
+						v: "0.1",
 						name: { en: "Multiple Instances" },
 						instances: [
 							{
 								venueIds: [],
-								start: "2027-03-08T09:00",
-								end: "2027-03-08T18:00",
+								start: "2027-03-08T09:00[UTC]",
+								end: "2027-03-08T18:00[UTC]",
 							},
 							{
 								venueIds: [],
-								start: "2027-03-09T09:00",
-								end: "2027-03-09T18:00",
+								start: "2027-03-09T09:00[UTC]",
+								end: "2027-03-09T18:00[UTC]",
 							},
 							{
 								venueIds: [],
-								start: "2027-04-01T10:00",
-								end: "2027-04-01T16:00",
+								start: "2027-04-01T10:00[UTC]",
+								end: "2027-04-01T16:00[UTC]",
 							},
 						],
 					},
 					{
-						v: 0,
+						v: "0.1",
 						name: { en: "Links" },
 						components: [
 							{
-								type: "link",
-								data: {
-									name: { en: "Example Link" },
-									url: "https://example.com",
-								},
+								$type: "directory.evnt.component.link",
+								name: { en: "Example Link" },
+								url: "https://example.com",
 							}
 						],
 					},
 
 					{
-						v: 0,
+						v: "0.1",
 						name: { en: "Splash Media" },
 						components: [
 							{
-								type: "splashMedia",
-								data: {
-									media: {
-										sources: [
-											{
-												url: "https://example.com/image.jpg",
-												mimeType: "image/jpeg",
-												dimensions: {
-													width: 1200,
-													height: 630,
-												},
+								$type: "directory.evnt.component.splashMedia",
+								media: {
+									sources: [
+										{
+											url: "https://example.com/image.jpg",
+											mimeType: "image/jpeg",
+											dimensions: {
+												width: 1200,
+												height: 630,
 											},
-										],
-										alt: { en: "Example Image" },
-										presentation: {
-											blurhash: "LKO2?U%2Tw=w]~RBVZRi};RPxuwH",
-											aspectRatio: 1200 / 630,
-											dominantColor: "#cccccc",
 										},
+									],
+									alt: { en: "Example Image" },
+									presentation: {
+										blurhash: "LKO2?U%2Tw=w]~RBVZRi};RPxuwH",
+										aspectRatio: 1200 / 630,
+										dominantColor: "#cccccc",
 									},
-									roles: ["background"],
-								} as SplashMediaComponent,
+								},
+								roles: ["background"],
 							}
 						],
 					},

@@ -1,4 +1,4 @@
-import type { EventData, EventStatus, KnownEventComponent, LinkComponent } from "@evnt/schema";
+import type { EventData, EventStatus, KnownEventComponent, LinkComponent, UnknownEventComponent } from "@evnt/schema";
 import { createBuilderAdder, createTranslationAdder } from "../utils/helpers";
 import { InstanceBuilder } from "./InstanceBuilder";
 import { UnknownVenueBuilder } from "./venues/UnknownVenueBuilder";
@@ -12,7 +12,7 @@ export class EventBuilder {
 
 	constructor(data?: EventData) {
 		this.data = data ?? {
-			v: 0,
+			v: "0.1",
 			name: {},
 		};
 	}
@@ -44,9 +44,9 @@ export class EventBuilder {
 		return new VenueBuilder(venue, this);
 	}
 
-	addCustomComponent<Type extends string, Data extends Record<string, unknown>>(type: Type, data: Data) {
+	addCustomComponent(component: UnknownEventComponent) {
 		this.data.components ??= [];
-		this.data.components.push({ type, data });
+		this.data.components.push(component);
 		return this;
 	};
 
@@ -54,11 +54,10 @@ export class EventBuilder {
 		this.data.components ??= [];
 		const component =
 			typeof arg === "function"
-				? arg(new LinkBuilder()).build()
+				? arg(new LinkBuilder(undefined, this)).build()
 				: typeof arg === "string"
-					? { type: "link", data: { url: arg } }
+					? { $type: "directory.evnt.component.link", url: arg }
 					: arg;
-		this.data.components ??= [];
 		this.data.components.push(component as KnownEventComponent);
 		return this;
 	}

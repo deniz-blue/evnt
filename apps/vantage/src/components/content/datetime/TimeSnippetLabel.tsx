@@ -3,8 +3,8 @@ import { useLocaleStore } from "../../../stores/useLocaleStore";
 import type { SnippetLabel, SnippetLabelProps } from "@evnt/pretty";
 import { useMemo } from "react";
 import { trynull } from "../../../lib/util/trynull";
-import { UtilPartialDate } from "@evnt/schema/utils";
-import type { PartialDate } from "@evnt/schema";
+import { UtilPartialDate } from "~/lib/util/schema-utils";
+import type { PartialDate as PartialDateParts } from "@evnt/partial-date";
 
 export const TimeSnippetLabel = ({
 	value,
@@ -14,7 +14,7 @@ export const TimeSnippetLabel = ({
 
 	const str = useMemo(() => {
 		return trynull(() => {
-			const dateObj = UtilPartialDate.toLowDate(((day ?? UtilPartialDate.today()) + "T" + value) as PartialDate.Full);
+			const dateObj = UtilPartialDate.toLowDate(((day ?? UtilPartialDate.today()) + "T" + value + "[UTC]") as PartialDateParts.YearMonthDayTime);
 
 			return new Intl.DateTimeFormat(undefined, {
 				hour: "numeric",

@@ -4,7 +4,7 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useMemo } from "react";
 import { focusAtom } from "jotai-optics";
 import { CollapsiblePaper } from "../CollapsiblePaper";
-import { EventComponentRegistry } from "./event-components";
+import { EventComponentRegistry, toLegacyComponentKey } from "./event-components";
 import { Trans } from "../../content/event/Trans";
 import { IconQuestionMark } from "@tabler/icons-react";
 
@@ -13,7 +13,7 @@ export const EditComponent = ({ component, data, index }: {
 	component: EditAtom<EventComponent>;
 	index: number;
 }) => {
-	const type: EventComponentType = useAtomValue(useMemo(() => atom((get) => get(component).type), [component]));
+	const type: EventComponentType = useAtomValue(useMemo(() => atom((get) => get(component).$type), [component]));
 
 	const onDelete = useSetAtom(useMemo(() => atom(null, (get, set) => {
 		const index = get(data).components?.findIndex((c) => c === get(component));
@@ -29,7 +29,7 @@ export const EditComponent = ({ component, data, index }: {
 		icon: Icon,
 		editComponent: EditComponent,
 	} = useMemo(() => {
-		const registryEntry = type in EventComponentRegistry ? EventComponentRegistry[type as keyof typeof EventComponentRegistry] : null;
+		const registryEntry = EventComponentRegistry[toLegacyComponentKey(type)] ?? EventComponentRegistry[type];
 		return {
 			label: registryEntry?.label ?? { en: `Unknown: ${type}` },
 			icon: registryEntry?.icon ?? IconQuestionMark,
@@ -39,7 +39,7 @@ export const EditComponent = ({ component, data, index }: {
 		};
 	}, [type]);
 
-	const componentDataAtom = useMemo(() => focusAtom(component, o => o.prop("data")), [component]);
+	const componentDataAtom = useMemo(() => focusAtom(component, o => o), [component]);
 
 	return (
 		<CollapsiblePaper

@@ -7,7 +7,7 @@ import { EventCard } from "../../content/event/card/EventCard";
 import { useEffect, useMemo, useState } from "react";
 import { z, type ZodError } from "zod";
 import { tryCatch } from "../../../lib/util/trynull";
-import { EventEnvelopeProvider } from "../../content/event/event-envelope-context";
+import { ResolvedEventProvider } from "../../content/event/event-envelope-context";
 
 export const EventEditor = ({
 	data,
@@ -134,13 +134,13 @@ export const EventPreview = ({ data }: { data: EditAtom<EventData> }) => {
 
 	return (
 		<Stack>
-			<EventEnvelopeProvider
+			<ResolvedEventProvider
 				value={{ data: snap }}
 			>
 				<EventCard
 					variant="card"
 				/>
-			</EventEnvelopeProvider>
+			</ResolvedEventProvider>
 		</Stack>
 	);
 }

@@ -6,7 +6,7 @@ import { useEventQueries } from "../db/useEventQuery";
 import { Center, Stack, Text } from "@mantine/core";
 import { EventCard } from "../components/content/event/card/EventCard";
 import { useQuery } from "@tanstack/react-query";
-import { EventEnvelopeProvider } from "../components/content/event/event-envelope-context";
+import { ResolvedEventProvider } from "../components/content/event/event-envelope-context";
 import { EventResolver } from "../db/event-resolver";
 
 const SearchParamsSchema = z.object({
@@ -43,14 +43,14 @@ function EmbedPage() {
 
 	return (
 		<Stack align="center" justify="center" style={{ height: "100%" }}>
-			<EventEnvelopeProvider value={query?.data ?? { data: null }}>
+			<ResolvedEventProvider value={query?.data ?? { data: null }}>
 				<EventCard
 					loading={query?.isLoading ?? false}
 					source={source ?? undefined}
 					variant="card"
 					embed
 				/>
-			</EventEnvelopeProvider>
+			</ResolvedEventProvider>
 			<style children="html, body, #root { height: 100%; margin: 0; }" />
 		</Stack>
 	)

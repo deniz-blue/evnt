@@ -3,31 +3,30 @@ import { ComponentBuilder } from "./ComponentBuilder";
 import type { EventBuilder } from "../EventBuilder";
 import { createTranslationAdder } from "../../utils/helpers";
 
-export class LinkBuilder extends ComponentBuilder<"link"> {
-	constructor(data: LinkComponent = { url: "" }, parent?: EventBuilder) {
-		super({ type: "link", data }, parent);
+export class LinkBuilder extends ComponentBuilder<"directory.evnt.component.link"> {
+	constructor(data: LinkComponent = { $type: "directory.evnt.component.link", url: "" }, parent?: EventBuilder) {
+		super(data, parent);
 	}
 
 	setUrl(url: string) {
-		this.component.data.url = url;
+		this.component.url = url;
 		return this;
 	}
 
-	setName = createTranslationAdder(() => this.component.data.name ??= {}, this);
-	setDescription = createTranslationAdder(() => this.component.data.description ??= {}, this);
+	setName = createTranslationAdder(() => this.component.name ??= {}, this);
 
 	setDisabled(disabled: boolean) {
-		this.component.data.disabled = disabled;
+		this.component.disabled = disabled;
 		return this;
 	}
 
 	setOpensAt(opensAt: PartialDate) {
-		this.component.data.opensAt = opensAt;
+		this.component.opensAt = opensAt;
 		return this;
 	}
 
 	setClosesAt(closesAt: PartialDate) {
-		this.component.data.closesAt = closesAt;
+		this.component.closesAt = closesAt;
 		return this;
 	}
 }

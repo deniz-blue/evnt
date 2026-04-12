@@ -1,29 +1,25 @@
 {
-  "name": "scripts",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "gen": "pnpm run gen:typelex && pnpm run gen:scriptables",
-	"gen:scriptables": "tsx ./src/gen.ts",
-    "gen:typelex": "tsp compile ./typelex/main.tsp --emit @typelex/emitter && mv ./tsp-output/@typelex/emitter/directory/evnt/event.json ../event-data.lexicon.json && rm -rf ./tsp-output",
-    "dev": "tsx watch ./src/gen.ts"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.28.0",
-  "devDependencies": {
-    "@evnt/schema": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
-    "@typelex/cli": "^0.4.0",
-    "@typelex/emitter": "^0.4.0",
-    "@types/node": "^25.0.10",
-    "tsx": "^4.21.0",
-    "zod": "^4.3.5",
-    "zod2md": "^0.2.4"
-  },
-  "dependencies": {
-    "@typespec/compiler": "^1.8.0"
-  }
+	"name": "scripts",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"gen": "tsx ./src/gen.ts",
+		"dev": "tsx watch ./src/gen.ts"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.28.0",
+	"devDependencies": {
+		"@evnt/schema": "workspace:*",
+		"@repo/typescript-config": "workspace:*",
+		"@types/node": "^25.0.10",
+		"tsx": "^4.21.0",
+		"zod": "^4.3.5",
+		"zod2md": "^0.2.4"
+	},
+	"dependencies": {
+		"@typespec/compiler": "^1.8.0"
+	}
 }

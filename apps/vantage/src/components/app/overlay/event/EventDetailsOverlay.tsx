@@ -5,7 +5,7 @@ import { useEventQuery } from "../../../../db/useEventQuery";
 import { UtilEventSource, type EventSource } from "../../../../db/models/event-source";
 import { Affix, Button, Code, Space, Stack, Text, Transition } from "@mantine/core";
 import { RQResult } from "../../../data/RQResult";
-import { EventEnvelopeProvider } from "../../../content/event/event-envelope-context";
+import { ResolvedEventProvider } from "../../../content/event/event-envelope-context";
 import { useProvideEventActions } from "../../../../hooks/actions/useProvideEventActions";
 import { Link } from "@tanstack/react-router";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
@@ -74,13 +74,13 @@ export const EventDetailsOverlayHandler = ({ source }: { source: EventSource }) 
 	return (
 		<RQResult query={query}>
 			{(envelope) => (
-				<EventEnvelopeProvider value={envelope}>
+				<ResolvedEventProvider value={envelope}>
 					<EventDetailsContent
 						source={source}
 						loading={query.isFetching}
 						withModalCloseButton
 					/>
-				</EventEnvelopeProvider>
+				</ResolvedEventProvider>
 			)}
 		</RQResult>
 	);

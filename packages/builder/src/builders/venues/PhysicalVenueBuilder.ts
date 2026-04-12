@@ -2,12 +2,12 @@ import type { PhysicalVenue, LatLng } from "@evnt/schema";
 import { VenueBuilder } from "./VenueBuilder";
 import type { EventBuilder } from "../EventBuilder";
 
-export class PhysicalVenueBuilder extends VenueBuilder<"physical"> {
+export class PhysicalVenueBuilder extends VenueBuilder<"directory.evnt.venue.physical"> {
 	constructor(venue?: PhysicalVenue, parent?: EventBuilder) {
 		super(venue ?? {
 			id: "",
 			name: {},
-			type: "physical",
+			$type: "directory.evnt.venue.physical",
 		}, parent);
 	}
 

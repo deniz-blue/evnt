@@ -1,10 +1,10 @@
 import { Group, Stack, Text } from "@mantine/core";
 import { snippetEvent } from "@evnt/pretty";
 import { Snippet } from "../Snippet";
-import { useEventEnvelope } from "./event-envelope-context";
+import { useResolvedEvent } from "./event-envelope-context";
 
 export const EventInstanceList = () => {
-	const { data: value } = useEventEnvelope();
+	const { data: value } = useResolvedEvent();
 
 	if (!value) return null;
 

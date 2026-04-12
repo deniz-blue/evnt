@@ -32,7 +32,14 @@ createJetstream({
 	onUpdate: async (source, record, event) => {
 		if (!(await DataDB.has(source))) return console.debug("Skipped jetstream event because not in db"); // if not in db skip (otherwise we might download every event on atproto lol)
 		const envelope = EventResolver.fromJsonObject(record);
+		const recordType = typeof (record as { $type?: unknown })?.$type === "string"
+			? (record as { $type: string }).$type
+			: undefined;
 		console.debug("Jetstream event commit", { source, record, event, envelope });
-		await DataDB.put(source, envelope);
+		await DataDB.put(source, {
+			data: record,
+			dataType: recordType,
+			err: envelope.err,
+		});
 	},
 });

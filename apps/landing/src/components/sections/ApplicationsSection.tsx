@@ -30,7 +30,7 @@ export const ApplicationsSection = () => {
 									</Group>
 								</Anchor>,
 								<Text fz="sm">
-									Default, reference implementation of an event viewer
+									Reference web app for viewing and embedding Evnt data
 								</Text>,
 								<Group gap={4} wrap="nowrap">
 									<Tooltip label="Web">

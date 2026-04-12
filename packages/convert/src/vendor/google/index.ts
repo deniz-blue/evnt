@@ -1,5 +1,6 @@
 import type { EventData, PartialDate, Translations } from "@evnt/schema";
-import { UtilPartialDate } from "@evnt/schema/utils";
+import { PartialDateUtil } from "@evnt/partial-date";
+import { TranslationsUtil } from "@evnt/translations";
 import { calendar_v3 } from "googleapis";
 
 export const convertFromGoogle = (data: calendar_v3.Schema$Event, {
@@ -20,7 +21,7 @@ export const convertFromGoogle = (data: calendar_v3.Schema$Event, {
 		// string ??? what tf do we do here
 		venues.push({
 			id: "google-calendar-location",
-			type: "physical", // hm
+			$type: "directory.evnt.venue.physical", // hm
 			name: {
 				en: data.location,
 			},
@@ -28,14 +29,29 @@ export const convertFromGoogle = (data: calendar_v3.Schema$Event, {
 		// better than nothing i guess
 	}
 
+	const dateToPartialDate = (dateObj: Date): PartialDate => {
+		const hour = dateObj.getUTCHours();
+		const minute = dateObj.getUTCMinutes();
+		const precision = (hour === 0 && minute === 0) ? "day" : "time";
+		return PartialDateUtil.format({
+			year: dateObj.getUTCFullYear(),
+			month: dateObj.getUTCMonth() + 1,
+			day: dateObj.getUTCDate(),
+			hour,
+			minute,
+			timezone: "UTC",
+			precision,
+		} as PartialDate.Parsed);
+	};
+
 	const asPartialDate = ({
 		date,
 		dateTime,
 		timeZone,
 	}: { dateTime?: string | null; timeZone?: string | null; date?: string | null; }): PartialDate => {
-		if (dateTime && !timeZone) return UtilPartialDate.fromDate(new Date(dateTime));
+		if (dateTime && !timeZone) return dateToPartialDate(new Date(dateTime));
 		if (dateTime && timeZone) {
-			return UtilPartialDate.fromDate(new Date(
+			return dateToPartialDate(new Date(
 				new Date(dateTime).toLocaleString("en-US", { timeZone }),
 			));
 		}
@@ -43,9 +59,8 @@ export const convertFromGoogle = (data: calendar_v3.Schema$Event, {
 	};
 
 	return {
-		v: 0,
+		v: "0.1",
 		name: inverseT(data.summary) || { [assumeLanguage]: "No Title" },
-		description: inverseT(data.description),
 		instances: [
 			{
 				venueIds: venues.map(v => v.id),

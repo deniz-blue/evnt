@@ -13,8 +13,9 @@ import { EnvelopeErrorAlert } from "../envelope/EnvelopeErrorAlert";
 import { EventDetailsSource } from "./EventDetailsSource";
 import { EventActions } from "../../../../lib/actions/event-actions";
 import { EventDetailsAlternatives } from "./EventDetailsAlternatives";
-import { useEventEnvelope } from "../event-envelope-context";
+import { useResolvedEvent } from "../event-envelope-context";
 import { RichTextRenderer } from "./RichTextRenderer";
+import type { Facet } from "@atcute/bluesky-richtext-segmenter";
 
 export interface EventDetailsContentProps {
 	source?: EventSource;
@@ -72,14 +73,15 @@ export const EventDetailsContent = (props: EventDetailsContentProps) => {
 };
 
 export const EventDetailsDescriptionList = () => {
-	const { data } = useEventEnvelope();
+	const { data } = useResolvedEvent();
 
-	const bskyRichTextComp: any = data?.components?.find(x => x.type === "app.bsky.richtext")?.data;
+	const bskyRichTextComp = data?.components?.find((x): x is { $type: "app.bsky.richtext"; text: string; facets?: Facet[] } =>
+		x.$type === "app.bsky.richtext" && typeof (x as { text?: unknown }).text === "string");
 
 	if (!bskyRichTextComp) return null;
 
 	return (
-		<RichTextRenderer content={bskyRichTextComp.text} facets={bskyRichTextComp.facets} />
+		<RichTextRenderer content={bskyRichTextComp.text} facets={bskyRichTextComp.facets ?? []} />
 	)
 };
 
