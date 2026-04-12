@@ -1,6 +1,5 @@
 import type { EventData, Media, PartialDate, PhysicalVenue } from "@evnt/schema";
 import { PartialDateUtil } from "@evnt/partial-date";
-import { TranslationsUtil } from "@evnt/translations";
 import type { CommunityLexiconCalendarEvent } from "../../lexicons";
 import { EventBuilder, PhysicalVenueBuilder } from "@evnt/builder";
 import type { AtprotoDid } from "@atcute/lexicons/syntax";
