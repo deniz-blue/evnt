@@ -6,7 +6,7 @@ export default document({
 	defs: {
 		main: record({
 			key: "tid",
-			description: "An event",
+			description: "An OpenEvnt event record",
 			record: object({
 				properties: {
 					v: required(string()),
@@ -30,6 +30,7 @@ export default document({
 							refs: [
 								ref({ ref: "directory.evnt.component.link" }),
 								ref({ ref: "directory.evnt.component.source" }),
+								ref({ ref: "directory.evnt.component.splashMedia" }),
 								ref({ ref: "app.bsky.richtext" }),
 							],
 						}),

@@ -4,10 +4,12 @@
       "description": "An instance of an event",
       "properties": {
         "start": {
-          "type": "string"
+          "type": "string",
+          "description": "A PartialDate where some components may not be known"
         },
         "end": {
-          "type": "string"
+          "type": "string",
+          "description": "A PartialDate where some components may not be known"
         }
       },
       "type": "object"

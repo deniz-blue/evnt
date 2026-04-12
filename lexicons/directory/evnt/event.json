@@ -1,7 +1,7 @@
 {
   "defs": {
     "main": {
-      "description": "An event",
+      "description": "An OpenEvnt event record",
       "key": "tid",
       "record": {
         "properties": {
@@ -34,6 +34,7 @@
               "refs": [
                 "directory.evnt.component.link",
                 "directory.evnt.component.source",
+                "directory.evnt.component.splashMedia",
                 "app.bsky.richtext"
               ],
               "type": "union"
