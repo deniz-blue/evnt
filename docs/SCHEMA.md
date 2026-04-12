@@ -9,7 +9,7 @@ _Object containing the following properties:_
 | Property        | Description                           | Type                                               |
 | :-------------- | :------------------------------------ | :------------------------------------------------- |
 | `$type`         | The type of the event data            | `'directory.evnt.event'`                           |
-| **`v`** (\*)    | The version of the Event Data schema  | `0`                                                |
+| **`v`** (\*)    | The version of the Event Data schema  | `'0.1'`                                            |
 | **`name`** (\*) | The name of the event                 | [Translations](#translations)                      |
 | `label`         | A secondary label for the event       | [Translations](#translations)                      |
 | `status`        | The status of the event               | [EventStatus](#eventstatus)                        |
@@ -145,13 +145,14 @@ A source for a media item.
 
 _Object containing the following properties:_
 
-| Property       | Description                           | Type                                |
-| :------------- | :------------------------------------ | :---------------------------------- |
-| **`url`** (\*) | The URL of the media source           | `string` (_url_)                    |
-| `dimensions`   | The dimensions of the media in pixels | [MediaDimensions](#mediadimensions) |
-| `mimeType`     | The MIME type of the media            | `string`                            |
+| Property     | Description                           | Type                                                                                                                                                                                                                                                                                                                      |
+| :----------- | :------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `url`        | The URL of the media source           | `string` (_url_)                                                                                                                                                                                                                                                                                                          |
+| `blob`       | AT Protocol Blob                      | _Object with properties:_<ul><li>**`$type`** (\*): `'blob'`</li><li>**`ref`** (\*): _Object with properties:_<ul><li>**`$link`** (\*): `string` - CID</li></ul></li><li>**`size`** (\*): `number` (_int, ≥0_) - The size of the blob in bytes</li><li>**`mimeType`** (\*): `string` - The MIME type of the blob</li></ul> |
+| `dimensions` | The dimensions of the media in pixels | [MediaDimensions](#mediadimensions)                                                                                                                                                                                                                                                                                       |
+| `mimeType`   | The MIME type of the media            | `string`                                                                                                                                                                                                                                                                                                                  |
 
-_(\*) Required._
+_All properties are optional._
 
 ## OnlineVenue
 
